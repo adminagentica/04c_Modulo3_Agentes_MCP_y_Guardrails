@@ -1,6 +1,6 @@
 # Módulo 3 · Agentes, MCP y Guardrails
 
-Demo de cobranza de Agentica · versión **0.6.0** · datos completamente sintéticos.
+Demo de cobranza de Agentica · versión **0.7.0** · datos completamente sintéticos.
 
 Construimos un asistente para el ejecutivo, un orquestador con memoria, un subagente RAG documental, reglas de negocio y un MCP en Python. La app y el cliente Codex/Claude consultan **el mismo workflow n8n local**. Un workflow separado responde consultas de deuda recibidas por Gmail.
 
@@ -51,3 +51,5 @@ El supervisor crea una derivación cuando se solicita un ejecutivo, falta eviden
 **Presupuesto:** las pruebas automáticas no llaman OpenAI. Una consulta válida enviada por una persona a la app o al MCP sí puede consumir crédito de la credencial de n8n. Los modelos de los clientes Codex/Claude tienen su propio consumo. El crédito de la clase queda reservado.
 
 No se incluyen claves, tokens, sesiones, bases con memoria anterior ni credenciales de n8n. No se transfieren automáticamente las credenciales que ya existen en el equipo del docente. Los modelos Ollama se descargan por separado.
+
+Ver [clientes y citas](docs/11_CASOS_Y_CITAS.md) y [RAG con OpenAI](docs/12_RAG_OPENAI.md).

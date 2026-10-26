@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.7.0 · OpenAI en el RAG, casos y citas
+- Generación documental independiente mediante OpenAI/n8n con clave cifrada existente; embeddings locales.
+- Sin reintentos ni fallback; RRF evita otra llamada de reordenamiento.
+- Clientes apto y bloqueado con controles operativos explícitos; bloqueo antes del LLM.
+- Máximo tres secciones pertinentes para contacto y enlaces solo de citas usadas.
+- Registro separado de la prueba real del usuario (ejecución 25).
+
 ## 0.6.0 · Derivación humana
 - Ticket local mediante MCP con motivos y contexto mínimo; solicitud explícita sin LLM.
 - Bandeja autenticada: pendiente, en revisión y resuelta; reclamo/cierre atómicos.

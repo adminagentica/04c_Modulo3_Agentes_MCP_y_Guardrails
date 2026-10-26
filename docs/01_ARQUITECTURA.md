@@ -1,6 +1,6 @@
 # Arquitectura: un equipo orquestado
 
-La arquitectura principal de la versión 0.6.0 utiliza un supervisor ejecutable, especialistas, memoria, guardrails, MCP Python y RAG. La app y Codex/Claude entran por el mismo workflow n8n. El canal Gmail usa el mismo supervisor y una capacidad de correo separada.
+La arquitectura principal de la versión 0.7.0 utiliza un supervisor ejecutable, especialistas, memoria, guardrails, MCP Python y RAG. La app y Codex/Claude entran por el mismo workflow n8n. El canal Gmail usa el mismo supervisor y una capacidad de correo separada.
 
 ```mermaid
 flowchart TD
@@ -82,3 +82,5 @@ Puertos: gateway/app/MCP HTTP 8790; n8n 5678; RAG 4173; Ollama 11434. En otra in
 ## Intervención humana
 
 El supervisor deriva mediante una capacidad MCP separada a human_handoffs. La bandeja del ejecutivo gestiona pendiente → en revisión → resuelta con auditoría. Las reglas consultan el bloqueo humano antes de contactar y el cierre no dispara acciones. [Diagrama y contrato](10_DERIVACION_HUMANA.md).
+
+La generación independiente del RAG usa OpenAI mediante agentica-rag-openai. La consulta del supervisor solo recupera fragmentos y mantiene su única generación en el workflow principal. Ver 11_CASOS_Y_CITAS.md y 12_RAG_OPENAI.md.

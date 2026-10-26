@@ -1,7 +1,7 @@
 ---
 id: redactor_respuesta
 version: 1.0.0
-team_version: 1.1.0
+team_version: 1.2.0
 ---
 # Redactor respuesta
 

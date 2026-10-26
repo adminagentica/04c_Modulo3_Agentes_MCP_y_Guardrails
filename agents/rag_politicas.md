@@ -1,13 +1,13 @@
 ---
 id: rag_politicas
 version: 1.0.0
-team_version: 1.1.0
+team_version: 1.2.0
 ---
 # Subagente RAG de políticas
 
 **Descripción:** Recupera evidencia documental vigente y autorizada para responder políticas y evaluar condiciones de contacto.
 
-**Ejecución:** recuperador documental; la ruta principal usa embeddinggemma local, coseno, BM25 y RRF. La redacción corresponde al subagente redactor en n8n. Qwen se conserva en la interfaz histórica del RAG, no se llama en esta ruta principal.
+**Ejecución:** recuperador documental; la ruta principal usa embeddinggemma local, coseno, BM25 y RRF. La redacción corresponde al subagente redactor en n8n. La interfaz independiente también genera con OpenAI mediante su workflow n8n; Qwen es una opción manual. La ruta principal del supervisor recupera solo fragmentos y evita una generación duplicada.
 
 **Derivación:** lo llama el orquestador mediante la herramienta MCP recuperar_politicas, solo cuando la intención requiere documentación. No llama otros especialistas ni herramientas de correo.
 

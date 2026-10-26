@@ -1,5 +1,6 @@
 """Consultas de cliente por correo y asistente local del ejecutivo, con datos sintéticos."""
 import datetime as dt
+from pathlib import Path
 from email.utils import getaddresses
 import hashlib
 import json
@@ -64,16 +65,21 @@ class CustomerService:
             c.executescript('''
             CREATE TABLE IF NOT EXISTS inquiry_customers(dni TEXT PRIMARY KEY, email TEXT NOT NULL, case_id TEXT NOT NULL, name TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS email_inquiries(message_id TEXT PRIMARY KEY, sender TEXT, state TEXT, reservation TEXT UNIQUE, reply TEXT, reply_digest TEXT, gmail_id TEXT, created TEXT);
+            CREATE TABLE IF NOT EXISTS inquiry_contact_controls(case_id TEXT PRIMARY KEY,payment_history_checked INTEGER,promises_checked INTEGER,pending_payment INTEGER,broken_promise INTEGER,special_attention INTEGER,authorized_channel TEXT);
             CREATE TABLE IF NOT EXISTS executive_questions(id INTEGER PRIMARY KEY, question TEXT, route TEXT, case_id TEXT, citations TEXT, created TEXT);
             ''')
 
     def seed(self):
         """No altera la cartera de la versión previa ni importa clientes del RAG."""
         with self.store.connect() as c:
-            for dni, case_id, amount, name in [('74851236', 'MAIL-DEMO-001', 150000, 'Cliente sintético'), ('40112233', 'MAIL-DEMO-002', 0, 'Cliente sintético sin deuda')]:
+            fixtures=json.loads((Path(__file__).resolve().parents[1]/'config/demo-customers.json').read_text())
+            for fixture in fixtures:
+                dni,case_id,amount,name=(fixture[k] for k in ('dni','case_id','amount_cents','name'))
                 c.execute('INSERT OR IGNORE INTO inquiry_customers VALUES(?,?,?,?)', (dni, MAILBOX, case_id, name))
-                due = (dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=5)).isoformat()
+                due = (dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=fixture['overdue_days'])).isoformat()
                 c.execute('INSERT OR IGNORE INTO cases VALUES(?,?,?,?,?,?,?,?,?,?,?)', ('demo', case_id, 'F-'+case_id, 1, amount, 'PEN', due, MAILBOX, 1, 0, 0))
+                c.execute('INSERT OR IGNORE INTO inquiry_contact_controls VALUES(?,?,?,?,?,?,?)',
+                          (case_id,1,1,int(fixture['pending_payment']),0,0,'EMAIL'))
 
     def balance(self, dni):
         if not isinstance(dni, str) or not re.fullmatch(r'\d{8}', dni):
@@ -101,8 +107,19 @@ class CustomerService:
             reasons=[x for x in reasons if x!='destinatario_fuera_entorno_demo']
         if case['recipient']!=account['email']:
             reasons.append('correo_no_coincide_con_registro')
+        days_overdue=(dt.datetime.now(dt.timezone.utc).date()-dt.date.fromisoformat(case['due'])).days
+        with self.store.connect() as c:
+            control=c.execute('SELECT * FROM inquiry_contact_controls WHERE case_id=?',(case['id'],)).fetchone()
+        if not control or not control['payment_history_checked'] or not control['promises_checked']:
+            reasons.append('historial_no_verificado')
+        if control:
+            for key,reason in [('pending_payment','pago_pendiente_conciliacion'),('broken_promise','promesa_incumplida'),('special_attention','atencion_especial')]:
+                if control[key]:reasons.append(reason)
+            if control['authorized_channel']!='EMAIL':reasons.append('canal_no_autorizado')
+        if days_overdue>30:reasons.append('fuera_gestion_temprana')
         return {'can_prepare':not reasons,'blocking_reasons':reasons,'recipient':account['email'],
                 'scope':'synthetic_preview_only','requires_explicit_confirmation':True,'sent':False,
+                'days_overdue':days_overdue,'controls_verified':bool(control and control['payment_history_checked'] and control['promises_checked']),
                 'policy_version':rules['policy_version'],'evaluated_at':rules['evaluated_at']}
 
     def prepare_email(self, message):

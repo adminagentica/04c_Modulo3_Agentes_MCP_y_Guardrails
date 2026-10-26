@@ -66,7 +66,7 @@ export function createApp(options = {}) {
   app.get('/api/health',async(_req,res)=>{
     try {
       if(pool)await pool.query('SELECT 1');
-      res.json({ok:true,database:repository.mode,ragMode:localRag?'local':'didactic',rag:localRag?.status(),deliveryMode:delivery,implementation:localRag?'DOCX reales, embeddings y generación con Ollama, índice persistente SQLite.':'Orquestación y respuesta por reglas; embeddings de cuatro dimensiones y re-ranking didácticos.'});
+      res.json({ok:true,database:repository.mode,ragMode:localRag?'local':'didactic',rag:localRag?.status(),deliveryMode:delivery,implementation:localRag?`DOCX, embeddings locales e índice SQLite; generación ${localRag.generationProvider==='openai'?'OpenAI mediante n8n':'Ollama'}.`:'Orquestación y respuesta por reglas; embeddings de cuatro dimensiones y re-ranking didácticos.'});
     }catch{res.status(503).json({ok:false,database:'unavailable',error:'PostgreSQL no está disponible. Inicie la base o use npm run demo:clase.'});}
   });
 

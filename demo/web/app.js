@@ -33,3 +33,5 @@ async function loadHandoffs(){
 }
 async function handoffAction(button,action,payload){button.disabled=true;try{await api('/api/handoffs/'+action,payload);await loadHandoffs();}catch(error){$('#handoff-feedback').textContent=error.message;button.disabled=false;}}
 $('#refresh-handoffs').addEventListener('click',loadHandoffs);
+
+document.querySelectorAll('.load-demo-case').forEach(button=>button.addEventListener('click',()=>{$('#dni').value=button.dataset.dni;$('#question').value='¿Cuál es el saldo y puedo preparar un recordatorio de pago?';$('#question').focus();}));

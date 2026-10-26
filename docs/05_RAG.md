@@ -15,7 +15,7 @@ El corpus contiene históricos para explicar trazabilidad. La ingesta usa el man
 
 Node resuelve `../05_Corpus_Documental` desde rag/03_Demo_Cobranza. Python resuelve `../rag/05_Corpus_Documental` desde demo. No depende del directorio en que se inicia el comando. Una ruta absoluta en COBRANZA_RAG_CORPUS permite elegir otro corpus autorizado; el RAG Node debe usar el mismo mediante CORPUS_DIR. Las huellas de los archivos tienen que coincidir.
 
-Ollama usa embeddinggemma:latest y qwen3:4b. La ruta de la app recupera con embeddings y genera en OpenAI/n8n; la interfaz histórica del RAG también puede generar y reordenar con Qwen local. Cambiar el modelo de embeddings requiere reconstruir el índice.
+Los embeddings usan embeddinggemma:latest local. La generación independiente usa OpenAI/n8n; Qwen queda como opción explícita. La ruta de la app recupera con embeddings y genera en OpenAI/n8n; la interfaz independiente del RAG genera mediante el workflow OpenAI. Cambiar el modelo de embeddings requiere reconstruir el índice.
 
 ## Contrato documental
 
@@ -33,3 +33,5 @@ node local-rag-cli.mjs ingest
 ```
 
 No ejecutarlo al mismo tiempo que otra ingesta sobre la misma base. Los modelos Ollama y el índice generado no forman parte de Git. Los manifiestos de fuentes sí se conservan para verificar procedencia.
+
+Configuración actual: [RAG con OpenAI](12_RAG_OPENAI.md).

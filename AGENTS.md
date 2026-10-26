@@ -1,7 +1,7 @@
 # Instrucciones del proyecto para Codex
 
 ## Misión y alcance
-Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQUITECTURA.md antes de cambiar código. La versión actual es 0.6.0. Las instrucciones de cada rol están en agents/. No conviertas estos archivos descriptivos en agentes en ejecución sin configurar el host correspondiente.
+Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQUITECTURA.md antes de cambiar código. La versión actual es 0.7.0. Las instrucciones de cada rol están en agents/. No conviertas estos archivos descriptivos en agentes en ejecución sin configurar el host correspondiente.
 
 ## Reglas obligatorias
 - Todos los datos incluidos son sintéticos. No incorporar información real de clientes.
@@ -23,3 +23,5 @@ Usar Python para MCP/gateway y Node para el RAG existente. Mantener la orquestac
 
 ## Respuesta al usuario
 Responder en español. Indicar qué cambió, qué se verificó y qué falta. Conservar estados, referencias de ejecución y fuentes. No afirmar un envío, una aprobación documental o una prueba con modelo real que no ocurrió.
+
+Ver [clientes y citas](docs/11_CASOS_Y_CITAS.md) y [RAG con OpenAI](docs/12_RAG_OPENAI.md).

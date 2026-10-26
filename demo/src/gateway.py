@@ -102,7 +102,7 @@ def build_app(service=None, admin_token=None):
                     rag_state = 'unavailable'
                 with service.store.connect() as c:
                     gmail_verified = bool(c.execute("SELECT 1 FROM email_inquiries WHERE state='gmail_accepted' LIMIT 1").fetchone())
-                result = {'version':'0.6.0','mcp':'Python SDK / Streamable HTTP','mailbox':'contacto@agentica.com.pe',
+                result = {'version':'0.7.0','mcp':'Python SDK / Streamable HTTP','mailbox':'contacto@agentica.com.pe',
                           'data':'synthetic','gmail':'Respuesta verificada' if gmail_verified else 'Pendiente de prueba OAuth en n8n',
                           'gmail_verified':gmail_verified,'dni_demo':'74851236', 'rag_state':rag_state,
                           'chat_transport':'n8n_webhook','chat_model':MODEL,'chat_workflow':WORKFLOW}

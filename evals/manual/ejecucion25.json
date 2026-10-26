@@ -1,0 +1,24 @@
+{
+  "source": "Prueba real ejecutada por el usuario; lectura de metadatos locales",
+  "execution_id": "25",
+  "model": "gpt-5.4-mini-2026-03-17",
+  "usage": {
+    "input_tokens": 1450,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 641,
+    "output_tokens_details": {
+      "reasoning_tokens": 462
+    },
+    "total_tokens": 2091
+  },
+  "openai_node_executed": true,
+  "automated_paid_test": false,
+  "review": {
+    "status": "real_user_test_with_improvement_findings",
+    "finding": "Cinco secciones de POL-COB-04; §1 redundante, §4 secundaria y §2 lista previa. Faltaba evidenciar controles completos de §3/§6/§7.",
+    "changes": "Controles sintéticos explícitos, máximo tres secciones pertinentes y solo citas usadas; bloqueo antes del LLM."
+  }
+}

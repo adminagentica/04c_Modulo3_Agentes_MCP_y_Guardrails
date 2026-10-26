@@ -1,8 +1,8 @@
 ---
 id: orquestador
-version: 1.1.0
-team_version: 1.1.0
-release: 0.6.0
+version: 1.2.0
+team_version: 1.2.0
+release: 0.7.0
 ---
 # Agente orquestador del equipo
 
@@ -79,3 +79,5 @@ Ante solicitud explícita, resultado needs_review, fallo de proveedor o validaci
 Registrar human_handoff con ID y estado, automation_paused y el evento de memoria. Si se solicita un ejecutivo, responder antes de llamar al LLM. No interpretar una pregunta general sobre revisión humana como una solicitud de transferencia.
 
 La atención posterior pertenece al ejecutivo: pendiente → en revisión → resuelta. Los modelos no tienen herramientas de reclamo o resolución. Una decisión humana no autoriza correos ni salta reglas; las acciones no se reanudan automáticamente. Ver [flujo y límites](../docs/10_DERIVACION_HUMANA.md).
+
+Para consultas de contacto, exigir controles de historial, promesas, conciliación, atención especial, días de atraso y canal. Ante un bloqueo, responder y derivar antes del LLM. Seleccionar como máximo tres secciones directamente pertinentes y mostrar solo enlaces citados en el texto.

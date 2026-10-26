@@ -8,7 +8,7 @@
   "corpus_dir": "../rag/05_Corpus_Documental",
   "models": {
     "embedding": "embeddinggemma:latest",
-    "generation": "qwen3:4b"
+    "generation": "gpt-5.4-mini via n8n"
   },
   "actor": "asesor",
   "allowed_roles": [

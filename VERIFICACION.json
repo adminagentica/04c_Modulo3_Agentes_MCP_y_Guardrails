@@ -1,43 +1,47 @@
 {
-  "release": "0.6.0",
-  "team_version": "1.1.0",
-  "checked_at_utc": "2026-10-26T04:56:34.283702+00:00",
-  "python_tests_passed": 117,
-  "rag_tests_passed": 30,
-  "python_test_network": "TCP connections blocked",
-  "n8n_positive_e2e": "passed in isolated n8n with RAG and OpenAI simulated",
-  "n8n_human_handoff_e2e": "passed in isolated n8n; model node would throw if invoked",
-  "browser_flow": "temporary database: pending -> claimed -> explicit decision -> resolved; no real tickets handled",
-  "openai_calls": 0,
-  "emails_sent": 0,
-  "native_client_model_runs": 0,
-  "features_verified": [
-    "minimal validated handoff context",
-    "MCP-scoped handoff creation",
-    "idempotent ticket creation",
-    "atomic claim and close",
-    "contact/Gmail pause",
-    "decision does not send or resume",
-    "fixed authenticated demo actor",
-    "memory and audit events"
-  ],
-  "limitations": [
-    "local demo inbox, no external human notification",
-    "single executive demo actor, no enterprise identity",
-    "human decisions do not authorize sending or resume workflows",
-    "real model quality was not evaluated"
-  ],
-  "live_connection": {
-    "release": "0.6.0",
-    "team_version": "1.1.0",
-    "execution_id": "24",
+  "release": "0.7.0",
+  "team_version": "1.2.0",
+  "checked_at_utc": "2026-10-26T05:23:40.782567+00:00",
+  "python_tests_passed": 125,
+  "rag_tests_passed": 40,
+  "automated_paid_calls": 0,
+  "emails_sent_during_preparation": 0,
+  "rag_generation": "OpenAI via authenticated n8n workflow agentica-rag-openai",
+  "rag_embeddings": "Ollama embeddinggemma; existing index preserved",
+  "n8n_generation_bridge_test": "passed in isolated n8n with OpenAI replaced by Code",
+  "openai_key": "existing credential reference reused, not extracted or copied",
+  "live_blocked_case": {
+    "execution_id": "26",
+    "model": "no-invocado",
+    "policy": "POL-PAG-02 §4 Conciliación",
+    "handoff_id": "d344451a-7aaf-43c1-80f2-f1165fe97327",
+    "emails_sent": 0,
     "openai_node_executed": false,
-    "nodes": [
+    "executed_nodes": [
       "App · Consulta recibida",
       "Herramientas Python · Contexto",
       "¿Requiere OpenAI?",
       "App · Solicitar aclaración"
-    ],
-    "test_handoffs_created_in_class_instance": 0
-  }
+    ]
+  },
+  "clients": {
+    "71425836": {
+      "balance": "850.00",
+      "can_prepare": true,
+      "reasons": []
+    },
+    "72536914": {
+      "balance": "1200.00",
+      "can_prepare": false,
+      "reasons": [
+        "pago_pendiente_conciliacion"
+      ]
+    }
+  },
+  "user_manual_real_test": {
+    "execution_id": "25",
+    "total_tokens": 2091,
+    "source": "user-executed real OpenAI test, metadata read only"
+  },
+  "quality_limitation": "No additional real generation was executed to quantify improvement; fixtures, contracts and controls tested with simulated providers."
 }

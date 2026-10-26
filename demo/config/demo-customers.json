@@ -1,0 +1,6 @@
+[
+  {"dni":"74851236","case_id":"MAIL-DEMO-001","amount_cents":150000,"name":"Cliente sintético","overdue_days":5,"pending_payment":false},
+  {"dni":"40112233","case_id":"MAIL-DEMO-002","amount_cents":0,"name":"Cliente sintético sin deuda","overdue_days":5,"pending_payment":false},
+  {"dni":"71425836","case_id":"MAIL-DEMO-APTO-001","amount_cents":85000,"name":"Cliente demo apto para recordatorio","overdue_days":5,"pending_payment":false},
+  {"dni":"72536914","case_id":"MAIL-DEMO-BLOQ-001","amount_cents":120000,"name":"Cliente demo con pago en conciliación","overdue_days":7,"pending_payment":true}
+]

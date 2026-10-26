@@ -40,7 +40,7 @@ class ReminderQuestionTests(unittest.TestCase):
         with self.service.store.connect() as c:self.assertEqual(c.execute('SELECT count(*) FROM email_inquiries').fetchone()[0],0)
     def test_zero_balance_blocks_reminder(self):
         with self.service.store.connect() as c:c.execute("UPDATE cases SET balance_cents=0 WHERE id='MAIL-DEMO-001'")
-        self.prepare();result=self.complete()
+        prepared=self.prepare();self.assertFalse(prepared['call_openai']);result=prepared['response']
         self.assertFalse(result['reminder_check']['can_prepare']);self.assertIn('no existe saldo pendiente',result['answer'])
     def test_dispute_blocks_reminder(self):
         with self.service.store.connect() as c:c.execute("UPDATE cases SET disputed=1 WHERE id='MAIL-DEMO-001'")

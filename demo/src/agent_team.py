@@ -49,6 +49,7 @@ class AgentSupervisor:
     def collect(self, dni, account_intent, reminder_intent, policy, rag_question):
         async def run():
             account = snapshot = reminder = rag = None
+            retrieval_question=rag_question
             memory = {'scope': 'no_client', 'authority': 'context_only', 'events': []}
             async with TeamMcpSession(self.service, dni, self.retrieve, self.validate) as session:
                 if account_intent:
@@ -61,10 +62,12 @@ class AgentSupervisor:
                     memory = await self.delegate(session, 'orquestador', 'recordar_contexto')
                 if reminder_intent:
                     reminder = await self.delegate(session, 'analista_elegibilidad', 'evaluar_contacto')
+                if reminder and 'pago_pendiente_conciliacion' in reminder['blocking_reasons']:
+                    retrieval_question='POL-PAG-02 §4: pago pendiente de conciliación. '+retrieval_question
                 rag_failed = False
                 if policy:
                     try:
-                        rag = await self.delegate(session, 'rag_politicas', 'recuperar_politicas', {'pregunta': rag_question})
+                        rag = await self.delegate(session, 'rag_politicas', 'recuperar_politicas', {'pregunta': retrieval_question})
                     except Exception:
                         if not reminder_intent:
                             raise
