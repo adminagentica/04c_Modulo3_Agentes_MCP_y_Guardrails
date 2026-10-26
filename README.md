@@ -58,3 +58,7 @@ Ver [clientes y citas](docs/11_CASOS_Y_CITAS.md) y [RAG con OpenAI](docs/12_RAG_
 ## Cliente activo del chat
 
 Escribe «¿Cuál es el saldo de 71425836?» sin seleccionar un caso. Después puedes preguntar «¿Puedo mandarle un recordatorio?» y el chat conserva el cliente. Al escribir otro DNI cambia el contexto e invalida borradores pendientes del anterior. Dos DNI en una pregunta requieren aclaración. El panel derecho muestra el DNI activo y se restaura al recargar. Gmail conserva su validación de correo registrado + DNI.
+
+## Agente guardrails para mostrar los controles
+
+El [agente revisor guardrails](agents/guardrails.md) reúne 67 controles con condición, efecto y referencia al código. Incluye definiciones para Codex y Claude Code y un [guion para la clase](docs/14_AGENTE_GUARDRAILS.md). Su revisión es informativa: no aprueba correos ni agrega llamadas al workflow. Abrir los archivos no consume tokens; invocar un cliente LLM sí puede consumir su crédito o cuota.

@@ -1,0 +1,886 @@
+{
+  "agent_id": "guardrails",
+  "version": "1.0.0",
+  "demo_release": "0.8.1",
+  "purpose": "Inventario verificable para revisión y clase; no es un motor de autorización ni configuración cargada por el runtime.",
+  "rules": [
+    {
+      "id": "GR-01",
+      "group": "Acceso",
+      "control": "Autenticación de app y backend",
+      "condition": "Sesión web vigente o token interno válido.",
+      "effect": "Rechazar acceso no autorizado.",
+      "implementation": {
+        "path": "demo/src/gateway.py",
+        "symbol": "Access.dispatch"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-02",
+      "group": "Acceso",
+      "control": "Rutas internas separadas",
+      "condition": "Una sesión de ejecutivo no autoriza /mail, /reminder, /mcp, /legacy o /chat.",
+      "effect": "Exigir autenticación interna.",
+      "implementation": {
+        "path": "demo/src/gateway.py",
+        "symbol": "Access.dispatch"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-03",
+      "group": "Acceso",
+      "control": "Origen permitido",
+      "condition": "Si la solicitud incluye Origin, debe ser localhost o 127.0.0.1 en el puerto 8790.",
+      "effect": "Rechazar otros orígenes.",
+      "implementation": {
+        "path": "demo/src/gateway.py",
+        "symbol": "Access.dispatch"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-04",
+      "group": "Acceso",
+      "control": "Sesión y acceso acotados",
+      "condition": "Sesión de ejecutivo de 8 horas; después de cinco fallos de ingreso en un minuto se limita el acceso.",
+      "effect": "Exigir nuevo ingreso o devolver límite de intentos.",
+      "implementation": {
+        "path": "demo/src/gateway.py",
+        "symbol": "login"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-05",
+      "group": "Acceso",
+      "control": "Solicitud acotada",
+      "condition": "Cuerpo JSON hasta 250000 bytes.",
+      "effect": "Rechazar solicitudes excesivas.",
+      "implementation": {
+        "path": "demo/src/gateway.py",
+        "symbol": "body"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-06",
+      "group": "Identidad y conversación",
+      "control": "Entrada de chat válida",
+      "condition": "Pregunta de 3 a 1000 caracteres; parámetro DNI vacío u ocho dígitos; request_id UUID.",
+      "effect": "Rechazar contrato inválido.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._prepare"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-07",
+      "group": "Identidad y conversación",
+      "control": "Un solo DNI por pregunta",
+      "condition": "Si aparecen dos DNI distintos, no elegir uno ni cambiar contexto.",
+      "effect": "Solicitar aclaración antes del LLM.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._prepare"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-08",
+      "group": "Identidad y conversación",
+      "control": "Cliente activo explícito",
+      "condition": "DNI de la pregunta > contexto compatible proporcionado > cliente de la conversación. Nunca inventar un DNI.",
+      "effect": "Persistir el cliente o solicitar identificación si falta para una consulta de saldo.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._prepare"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-09",
+      "group": "Identidad y conversación",
+      "control": "Cliente existente",
+      "condition": "La identidad debe corresponder a un registro sintético conocido.",
+      "effect": "No entregar datos de otra cuenta.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.balance"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-10",
+      "group": "Identidad y conversación",
+      "control": "Cambio de cliente",
+      "condition": "Un cambio de active_dni invalida borradores draft/approved de otro cliente.",
+      "effect": "Marcar superseded; volver al DNI anterior no reactiva el borrador.",
+      "implementation": {
+        "path": "demo/src/conversation_memory.py",
+        "symbol": "ConversationMemory.select_client"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-11",
+      "group": "Identidad y conversación",
+      "control": "Respuesta tardía",
+      "condition": "No completar la respuesta si el cliente activo ya cambió.",
+      "effect": "Detener la respuesta del contexto anterior.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._complete"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-12",
+      "group": "Identidad y conversación",
+      "control": "Conversación íntegra",
+      "condition": "Cookie firmada, HttpOnly y SameSite Strict; UUID, actor y vigencia verificados.",
+      "effect": "No aceptar una conversación alterada o vencida.",
+      "implementation": {
+        "path": "demo/src/gateway.py",
+        "symbol": "conversation_id"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-13",
+      "group": "Reglas de contacto",
+      "control": "Saldo pendiente",
+      "condition": "Saldo mayor que cero.",
+      "effect": "Bloquear recordatorio sin deuda.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-14",
+      "group": "Reglas de contacto",
+      "control": "Deuda vencida",
+      "condition": "Vencimiento anterior a hoy.",
+      "effect": "Bloquear si aún no venció.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-15",
+      "group": "Reglas de contacto",
+      "control": "Sin disputa",
+      "condition": "El caso no puede estar disputado.",
+      "effect": "Bloquear contacto.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-16",
+      "group": "Reglas de contacto",
+      "control": "Consentimiento y bloqueo",
+      "condition": "Consentimiento válido y caso no bloqueado.",
+      "effect": "Bloquear contacto no autorizado.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-17",
+      "group": "Reglas de contacto",
+      "control": "Revisión humana pendiente",
+      "condition": "No existir ticket pendiente/en revisión ni decisión mantener_bloqueo.",
+      "effect": "Pausar contacto.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-18",
+      "group": "Reglas de contacto",
+      "control": "Una reserva por factura",
+      "condition": "No existir reserva para la clave de idempotencia de la factura.",
+      "effect": "Impedir duplicado.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-19",
+      "group": "Reglas de contacto",
+      "control": "Intervalo mínimo",
+      "condition": "No existir contacto en las últimas 72 horas según outbox.",
+      "effect": "Bloquear nuevo contacto dentro del intervalo.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.rules"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-20",
+      "group": "Reglas de contacto",
+      "control": "Destinatario registrado",
+      "condition": "El destinatario del caso debe coincidir con el correo registrado.",
+      "effect": "Bloquear discrepancia.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-21",
+      "group": "Reglas de contacto",
+      "control": "Entorno autorizado",
+      "condition": "Los casos MAIL-DEMO usan solo contacto@agentica.com.pe; no abrir otros destinatarios.",
+      "effect": "Conservar la excepción de demo; no ampliar dominios.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-22",
+      "group": "Reglas de contacto",
+      "control": "Historial comprobado",
+      "condition": "Historial de pagos y promesas verificados.",
+      "effect": "Bloquear si faltan controles.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-23",
+      "group": "Reglas de contacto",
+      "control": "Pago pendiente de conciliación",
+      "condition": "No debe existir pending_payment.",
+      "effect": "Bloquear y derivar para revisión.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-24",
+      "group": "Reglas de contacto",
+      "control": "Promesa incumplida",
+      "condition": "No debe existir broken_promise.",
+      "effect": "Bloquear contacto.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-25",
+      "group": "Reglas de contacto",
+      "control": "Atención especial",
+      "condition": "No debe existir special_attention.",
+      "effect": "Bloquear contacto.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-26",
+      "group": "Reglas de contacto",
+      "control": "Canal autorizado",
+      "condition": "El canal debe ser EMAIL.",
+      "effect": "Bloquear otros canales.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-27",
+      "group": "Reglas de contacto",
+      "control": "Gestión temprana",
+      "condition": "Atraso de hasta 30 días; además debe estar vencida.",
+      "effect": "Bloquear fuera del tramo permitido.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.reminder_eligibility"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-28",
+      "group": "Herramientas y coordinación",
+      "control": "Permisos por rol",
+      "condition": "Agente y herramienta deben pertenecer al registro permitido.",
+      "effect": "Rechazar derivación o llamada no autorizada.",
+      "implementation": {
+        "path": "demo/src/agent_team.py",
+        "symbol": "AgentSupervisor.delegate"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-29",
+      "group": "Herramientas y coordinación",
+      "control": "Ámbito MCP capturado",
+      "condition": "Herramientas de chat, correo, recordatorio y derivación tienen canales y contexto acotados por el backend.",
+      "effect": "No permitir que argumentos del modelo cambien caso, solicitud o fase.",
+      "implementation": {
+        "path": "demo/src/team_mcp.py",
+        "symbol": "create_team_tools"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-30",
+      "group": "Herramientas y coordinación",
+      "control": "Resultado MCP válido",
+      "condition": "Errores de herramienta y resultados fuera del contrato se rechazan.",
+      "effect": "Detener; no convertir un fallo en respuesta válida.",
+      "implementation": {
+        "path": "demo/src/team_mcp.py",
+        "symbol": "TeamMcpSession.call"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-31",
+      "group": "Herramientas y coordinación",
+      "control": "Revisión única",
+      "condition": "Reclamar la revisión de una ejecución solo desde el estado permitido.",
+      "effect": "Impedir completar dos veces una misma consulta.",
+      "implementation": {
+        "path": "demo/src/agent_team.py",
+        "symbol": "AgentSupervisor.claim_review"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-32",
+      "group": "Herramientas y coordinación",
+      "control": "Ruta acotada",
+      "condition": "El supervisor programa especialistas sin delegación libre ni recursiva; una llamada OpenAI por consulta principal y sin reintentos automáticos.",
+      "effect": "Mantener el flujo implementado; los valores del registro no son un limitador general de toda API.",
+      "implementation": {
+        "path": "demo/config/team.json",
+        "symbol": "defaults"
+      },
+      "kind": "diseno",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-33",
+      "group": "RAG y salida",
+      "control": "Servicio RAG local",
+      "condition": "URL local autorizada, sin credenciales en URL ni redirecciones; respuesta con tamaño limitado.",
+      "effect": "Rechazar otro destino o respuesta excesiva.",
+      "implementation": {
+        "path": "demo/src/rag_client.py",
+        "symbol": "request"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-34",
+      "group": "RAG y salida",
+      "control": "Índice y documentos íntegros",
+      "condition": "RAG ready, misma versión de índice y fingerprint del corpus.",
+      "effect": "Detener si fuentes o índice cambiaron.",
+      "implementation": {
+        "path": "demo/src/rag_client.py",
+        "symbol": "validate_bundle"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-35",
+      "group": "RAG y salida",
+      "control": "Documentos autorizados",
+      "condition": "Documento activo, rol documental permitido y fechas vigentes.",
+      "effect": "Excluir o rechazar fuente no autorizada.",
+      "implementation": {
+        "path": "demo/src/rag_client.py",
+        "symbol": "validate_bundle"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-36",
+      "group": "RAG y salida",
+      "control": "Citas verificables",
+      "condition": "Entre una y seis citas; IDs sin duplicados, documento, versión, sección, contenido y hash coincidentes.",
+      "effect": "Rechazar referencias alteradas o inexistentes.",
+      "implementation": {
+        "path": "demo/src/rag_client.py",
+        "symbol": "validate_bundle"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-37",
+      "group": "RAG y salida",
+      "control": "Embeddings compatibles",
+      "condition": "El modelo de embeddings, digest, dimensiones y valores del vector deben coincidir con el índice.",
+      "effect": "Detener recuperación incompatible.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "retrieve_passages"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-38",
+      "group": "RAG y salida",
+      "control": "Contrato del redactor",
+      "condition": "Claves exactas, request_id correspondiente, estado/intro permitidos, texto y lista de citas válidos.",
+      "effect": "Rechazar salida fuera de contrato.",
+      "implementation": {
+        "path": "demo/src/agent_team.py",
+        "symbol": "validate_response"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-39",
+      "group": "RAG y salida",
+      "control": "Fuentes citadas en la respuesta",
+      "condition": "Las referencias inline deben corresponder al conjunto validado; sin respaldo documental para contacto, pedir revisión.",
+      "effect": "No preparar borrador cuando la revisión documental queda pendiente.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._complete"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-40",
+      "group": "RAG y salida",
+      "control": "Datos vigentes",
+      "condition": "Revalidar huella del caso, fuentes y reglas de contacto al revisar la salida.",
+      "effect": "Detener si cambió el contexto.",
+      "implementation": {
+        "path": "demo/src/team_mcp.py",
+        "symbol": "verificar_contexto"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-41",
+      "group": "RAG y salida",
+      "control": "SQL autoritativo",
+      "condition": "El backend construye la sección del saldo desde SQL; el redactor no debe redactar importes operativos en policy_answer.",
+      "effect": "Separar dato de negocio y texto documental; no afirmar detección semántica universal de cifras inventadas.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "account_section"
+      },
+      "kind": "codigo_y_prompt",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-42",
+      "group": "RAG y salida",
+      "control": "Instrucciones no confiables",
+      "condition": "Pasajes y memoria son datos; no deben modificar reglas, permisos o identidad.",
+      "effect": "El prompt lo ordena y las capacidades del backend limitan acciones; no es un detector general de prompt injection.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._prepare"
+      },
+      "kind": "prompt_y_capacidades",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-43",
+      "group": "Borrador y aprobación",
+      "control": "Preparación condicionada",
+      "condition": "Solo crear borrador si caso apto y respuesta revisada answered con evidencia documental.",
+      "effect": "No crear borrador ante bloqueo o falta de respaldo.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ChatOrchestrator._complete"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-44",
+      "group": "Borrador y aprobación",
+      "control": "Borrador inmutable",
+      "condition": "Capturar destinatario, asunto, cuerpo, citas, huella y digest del texto.",
+      "effect": "No sustituirlos durante aprobación o envío.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.create"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-45",
+      "group": "Borrador y aprobación",
+      "control": "Caducidad",
+      "condition": "Borrador vigente por 30 minutos.",
+      "effect": "Requerir nueva preparación si venció.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.check"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-46",
+      "group": "Borrador y aprobación",
+      "control": "Aprobación real del operador",
+      "condition": "Debe existir un turno de usuario con una confirmación exacta admitida, como Envíalo.",
+      "effect": "No aceptar aprobación fabricada por un modelo ni frases ambiguas.",
+      "implementation": {
+        "path": "demo/src/conversation_memory.py",
+        "symbol": "ConversationMemory.require_confirmation"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-47",
+      "group": "Borrador y aprobación",
+      "control": "Borrador exacto mostrado",
+      "condition": "Misma conversación, cliente y draft_id; registro de presentación en un turno assistant.",
+      "effect": "Bloquear confirmación sin borrador o desde una pestaña desactualizada.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.approve"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-48",
+      "group": "Borrador y aprobación",
+      "control": "Revalidación previa",
+      "condition": "Volver a comprobar reglas, política, huella, cliente activo, vencimiento y digest antes de reservar.",
+      "effect": "Bloquear si cambió cualquier condición requerida.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.check"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-49",
+      "group": "Borrador y aprobación",
+      "control": "Destinatario fijo de recordatorios",
+      "condition": "Solo contacto@agentica.com.pe; las órdenes del chat no cambian el destinatario.",
+      "effect": "Rechazar redirección del correo.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.check"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-50",
+      "group": "Borrador y aprobación",
+      "control": "Cancelación y estados",
+      "condition": "Solo un borrador pendiente puede aprobarse; estados cancelado/superseded/bloqueado no se reactivan automáticamente.",
+      "effect": "No enviar borrador invalidado.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.approve"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-51",
+      "group": "Reserva y resultado de envío",
+      "control": "Reserva atómica",
+      "condition": "Estado approved con operador y solicitud correspondientes; transacción y clave única en outbox.",
+      "effect": "Una sola reserva ante confirmaciones o llamadas concurrentes.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.claim"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-52",
+      "group": "Reserva y resultado de envío",
+      "control": "Envío físico en n8n",
+      "condition": "El nodo Gmail se ejecuta solo tras dispatch_requested y should_send válidos.",
+      "effect": "El redactor y el revisor no envían correo.",
+      "implementation": {
+        "path": "demo/n8n/workflow.json",
+        "symbol": "Recordatorio · Gmail enviar"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-53",
+      "group": "Reserva y resultado de envío",
+      "control": "Confirmación de proveedor",
+      "condition": "Registrar resultado solo en estado sending y dentro del ámbito de la aprobación; validar formato del ID Gmail.",
+      "effect": "Marcar aceptación o resultado incierto; no acredita lectura ni pago.",
+      "implementation": {
+        "path": "demo/src/reminder_actions.py",
+        "symbol": "ReminderActions.result"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-54",
+      "group": "Reserva y resultado de envío",
+      "control": "Sin reintento incierto",
+      "condition": "Resultado de envío sin confirmación se marca unknown y solicita revisión humana.",
+      "effect": "No duplicar un posible correo ya enviado.",
+      "implementation": {
+        "path": "demo/src/reminder_orchestration.py",
+        "symbol": "ReminderOrchestrator.result"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-55",
+      "group": "Atención humana",
+      "control": "Derivación acotada",
+      "condition": "Motivo tipado, request_id, tenant demo y contexto mínimo del caso validado.",
+      "effect": "No adjuntar deuda de un cliente sin validar.",
+      "implementation": {
+        "path": "demo/src/human_handoff.py",
+        "symbol": "HandoffQueue.create"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-56",
+      "group": "Atención humana",
+      "control": "Atención por operador",
+      "condition": "Tomar el ticket antes de resolver; actor y decisión permitidos, transición atómica.",
+      "effect": "Los modelos no reciben herramientas internas de toma o resolución.",
+      "implementation": {
+        "path": "demo/src/human_handoff.py",
+        "symbol": "HandoffQueue.resolve"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-57",
+      "group": "Atención humana",
+      "control": "Cierre no equivale a envío",
+      "condition": "Resolver el ticket no reanuda contactos ni aprueba un correo; mantener_bloqueo conserva la pausa.",
+      "effect": "Exigir nueva evaluación y aprobación cuando corresponda.",
+      "implementation": {
+        "path": "demo/src/human_handoff.py",
+        "symbol": "HandoffQueue.view"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-58",
+      "group": "Memoria",
+      "control": "Memoria de caso acotada",
+      "condition": "Ámbito tenant/caso, retención 30 días, máximo 12 eventos recuperados.",
+      "effect": "No mezclar casos ni recuperar eventos vencidos.",
+      "implementation": {
+        "path": "demo/src/cobranza.py",
+        "symbol": "Store.memory"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-59",
+      "group": "Memoria",
+      "control": "Memoria filtrada hacia el LLM",
+      "condition": "Recuperar eventos/fechas/estados permitidos; authority=context_only.",
+      "effect": "No transformar notas históricas en permisos.",
+      "implementation": {
+        "path": "demo/src/team_mcp.py",
+        "symbol": "recordar_contexto"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-60",
+      "group": "Memoria",
+      "control": "Historial conversacional acotado",
+      "condition": "Conversación del actor demo vigente 30 días; restaurar hasta 20 turnos.",
+      "effect": "No afirmar aislamiento empresarial multiusuario.",
+      "implementation": {
+        "path": "demo/src/conversation_memory.py",
+        "symbol": "ConversationMemory.history"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-61",
+      "group": "Gmail entrante",
+      "control": "Mensaje válido de prueba",
+      "condition": "ID con formato esperado, prefijo de asunto autorizado; ignorar respuestas automáticas y mensajes en respuesta.",
+      "effect": "No procesar fuera del recorrido de prueba.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.prepare_email"
+      },
+      "kind": "codigo",
+      "channel": "gmail_entrante"
+    },
+    {
+      "id": "GR-62",
+      "group": "Gmail entrante",
+      "control": "Remitente y DNI coincidentes",
+      "condition": "Cuenta contacto@agentica.com.pe, etiquetas SENT/INBOX y un DNI válido explícito que coincida con el registro.",
+      "effect": "Sin validación no revelar datos de deuda; no equivale a verificar RENIEC o identidad fuerte.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.prepare_email"
+      },
+      "kind": "codigo",
+      "channel": "gmail_entrante"
+    },
+    {
+      "id": "GR-63",
+      "group": "Gmail entrante",
+      "control": "Mensaje entrante único",
+      "condition": "No procesar de nuevo el mismo message_id; reservar y comprobar digest/huella antes de enviar.",
+      "effect": "Evitar respuesta duplicada o alterada.",
+      "implementation": {
+        "path": "demo/src/customer_service.py",
+        "symbol": "CustomerService.claim"
+      },
+      "kind": "codigo",
+      "channel": "gmail_entrante"
+    },
+    {
+      "id": "GR-64",
+      "group": "Operación y alcance",
+      "control": "Sin fallback que evite n8n",
+      "condition": "App y cliente Codex/Claude consultan el mismo webhook local autorizado, sin redirecciones.",
+      "effect": "Reportar indisponibilidad; no consultar saldo por una vía alternativa.",
+      "implementation": {
+        "path": "demo/src/web_orchestration.py",
+        "symbol": "ask_n8n"
+      },
+      "kind": "codigo",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-65",
+      "group": "Operación y alcance",
+      "control": "Presupuesto de clase",
+      "condition": "No ejecutar pruebas pagadas ni correos reales como verificación preparatoria.",
+      "effect": "Usar mocks; invocar el agente revisor en un cliente LLM sí puede consumir el presupuesto de ese cliente.",
+      "implementation": {
+        "path": "AGENTS.md",
+        "symbol": "Reglas obligatorias"
+      },
+      "kind": "instruccion_operativa",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-66",
+      "group": "Operación y alcance",
+      "control": "Secretos fuera del repositorio",
+      "condition": "No leer ni publicar claves, tokens, cookies, bases locales o credenciales n8n.",
+      "effect": "La revisión de distribución detecta ciertos patrones y excluye estado local; no es una garantía universal contra filtraciones.",
+      "implementation": {
+        "path": "scripts/verificar.py",
+        "symbol": "ROOT"
+      },
+      "kind": "instruccion_y_revision",
+      "channel": "principal"
+    },
+    {
+      "id": "GR-67",
+      "group": "Operación y alcance",
+      "control": "Alcance histórico separado",
+      "condition": "SMTP example.test, motor de cuatro roles y sus límites son históricos; no presentarlos como controles nuevos de Gmail.",
+      "effect": "Distinguir el recorrido principal de ejercicios anteriores.",
+      "implementation": {
+        "path": "demo/config/policy.json",
+        "symbol": "internal_rules"
+      },
+      "kind": "alcance",
+      "channel": "historico"
+    }
+  ],
+  "limitations": [
+    "No hay un clasificador general de prompt injection o amenazas.",
+    "Las citas válidas no prueban por sí solas respaldo semántico de cada afirmación.",
+    "La demo usa un ejecutivo compartido y no autenticación empresarial multiusuario.",
+    "Un dictamen del agente revisor nunca es una aprobación de envío.",
+    "Los resultados de mocks no equivalen a evaluación del LLM real ni entrega Gmail real."
+  ]
+}

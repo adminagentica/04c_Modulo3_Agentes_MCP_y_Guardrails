@@ -13,3 +13,7 @@ La validación correo registrado + DNI del canal Gmail permanece igual. Los env�
 ## Casos adicionales
 
 Se agregaron 73148265 y 74259316 (aptos), y 75361428 y 76482539 (pago pendiente de conciliación). Verificación focalizada: reglas y saldos de los cuatro; derivaciones humanas de ambos bloqueos en base temporal; carga idempotente. En la base local se verificó que los casos anteriores y los conteos de envíos/tickets permanecen iguales. No se crearon tickets reales ni se enviaron correos al cargar los datos.
+
+## Agente guardrails
+
+Catálogo de 67 controles comprobado contra archivos y símbolos existentes. Todos los TOML de agentes Codex se interpretan correctamente; se corrigió una frase fuera de bloque en el rol de consulta anterior. Definiciones de agente, enlaces y documentación revisados. No se invocó el agente LLM ni se cambió el equipo/workflow de negocio. Las cifras de pruebas anteriores corresponden a la versión funcional ya verificada, no a una nueva ejecución en esta entrega. Cero consultas pagadas y cero correos.

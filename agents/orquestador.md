@@ -87,3 +87,7 @@ Para consultas de contacto, exigir controles de historial, promesas, conciliaci�
 El supervisor usa preparar_recordatorio tras revisar saldo, reglas y RAG. Guarda el texto inmutable y su hash, muestra destinatario/asunto/cuerpo y vincula draft.id al turno. En el siguiente «Envíalo» usa aprobar_recordatorio; el gestor_correo reclama una reserva y registra el resultado Gmail. Nunca permitir destinatarios o contenido aportados durante la confirmación. Conserva conversation_id y draft.id en clientes nativos; ver docs/13_BORRADOR_Y_CONFIRMACION.md.
 
 El cliente activo del chat se establece por el DNI de la pregunta, sin selector obligatorio. Cambiarlo invalida borradores pendientes; nunca reutilizar un borrador de otro cliente.
+
+## Revisor guardrails para la clase
+
+El contrato agents/guardrails.md define un revisor del código invocado explícitamente en Codex/Claude, con inventario de 67 controles. No pertenece al registro del supervisor determinista de team.json ni se ejecuta en cada consulta. Su informe no autoriza envíos, no resuelve tickets y no puede saltar validadores. El coordinador del cliente debe entregarle fuentes acotadas y recibir un dictamen informativo.

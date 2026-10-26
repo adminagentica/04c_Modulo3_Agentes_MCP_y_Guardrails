@@ -1,5 +1,7 @@
 # 0.8.1
 
+- Agente revisor guardrails para Codex/Claude, catálogo de 67 controles y guion de clase; sin nuevas llamadas en n8n.
+
 - Dos clientes aptos y dos con bloqueo/derivación humana adicionales, con facturas independientes y accesos en la app.
 
 - Cliente activo obtenido del DNI escrito, sin selector obligatorio; seguimiento y restauración por conversación.

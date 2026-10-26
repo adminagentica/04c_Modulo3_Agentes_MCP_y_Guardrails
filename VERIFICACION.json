@@ -93,5 +93,16 @@
     "live_seed_preserved_existing_cases_outbox_and_tickets": true,
     "paid_calls": 0,
     "emails_sent": 0
+  },
+  "guardrails_agent": {
+    "version": "1.0.0",
+    "rule_count": 67,
+    "catalog_paths_and_symbols_checked": true,
+    "codex_agent_toml_parsed": true,
+    "business_workflow_changed": false,
+    "review_agent_invoked": false,
+    "paid_calls": 0,
+    "emails_sent": 0,
+    "checked_at_utc": "2026-10-26T20:02:56.667956+00:00"
   }
 }

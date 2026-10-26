@@ -29,3 +29,7 @@ Ver [clientes y citas](docs/11_CASOS_Y_CITAS.md) y [RAG con OpenAI](docs/12_RAG_
 Ver [borrador y confirmación](docs/13_BORRADOR_Y_CONFIRMACION.md).
 
 El cliente activo del chat se establece por el DNI de la pregunta, sin selector obligatorio. Cambiarlo invalida borradores pendientes; nunca reutilizar un borrador de otro cliente.
+
+## Agente de revisión de guardrails
+
+Ante una petición explícita de usar guardrails, aplicar agents/guardrails.md y el catálogo demo/config/guardrails-reglas.json. El rol solo revisa código y evidencia suministrada; no ejecutar consultas pagadas, webhooks, correos, cambios de estado ni subdelegaciones. No confundir su dictamen con aprobación del operador o validación del backend. Ver docs/14_AGENTE_GUARDRAILS.md.

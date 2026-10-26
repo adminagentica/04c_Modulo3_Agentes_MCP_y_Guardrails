@@ -37,3 +37,7 @@ Esta consulta positiva puede consumir OpenAI y el modelo del cliente. Para demos
 consultar_orquestador deriva al mismo webhook y al supervisor de demo/config/team.json. La respuesta conserva agent_trace, versión del equipo, estado, fuentes y ejecución. No lanzar otros modelos o saltar a herramientas directas para simular la participación de especialistas. Los módulos internos son coordinados por el backend y sus herramientas MCP.
 
 El DNI explícito de la pregunta establece el cliente activo. Conserva conversation_id para preguntas siguientes sin DNI. No es obligatorio proporcionar dni_seleccionado; el panel del chat refleja el contexto confirmado por el backend.
+
+## Revisión de guardrails
+
+El agente guardrails del cliente y su catálogo se documentan en [esta guía](14_AGENTE_GUARDRAILS.md). No es el revisor_respuesta determinista del workflow. La invocación es explícita y puede consumir cuota del cliente. No se ejecuta durante verificaciones preparatorias.

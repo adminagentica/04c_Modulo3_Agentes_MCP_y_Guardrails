@@ -11,5 +11,3 @@ Si falta identidad, hay conflicto o falta evidencia, detén la consulta y pide a
 Conserva conversation_id y draft.id retornados y muestra el borrador completo. Solo si el operador confirma expresamente, llama consultar_orquestador con su confirmación, el mismo conversation_id y draft_id. El envío pertenece a n8n. No inventes aprobaciones.
 Las consultas válidas usan OpenAI en n8n y consumen crédito: no hacer pruebas que gasten saldo.
 """
-
-El cliente activo del chat se establece por el DNI de la pregunta, sin selector obligatorio. Cambiarlo invalida borradores pendientes; nunca reutilizar un borrador de otro cliente.

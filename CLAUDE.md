@@ -9,3 +9,5 @@ No invoques consultas positivas durante pruebas: consumen el saldo reservado par
 La revisión humana se gestiona en la bandeja autenticada. No tomar ni resolver tickets reales o representar una aprobación humana por iniciativa del modelo. Conservar human_handoff y automation_paused al devolver la respuesta del workflow.
 
 El cliente activo del chat se establece por el DNI de la pregunta, sin selector obligatorio. Cambiarlo invalida borradores pendientes; nunca reutilizar un borrador de otro cliente.
+
+El subagente guardrails está en .claude/agents/guardrails.md; su contrato completo, en agents/guardrails.md. Usarlo solo cuando el docente solicite esa revisión. No consulta el workflow ni envía correos.
