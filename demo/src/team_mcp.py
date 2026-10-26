@@ -4,11 +4,20 @@ from datetime import timedelta
 from mcp.server.fastmcp import FastMCP
 from mcp.shared.memory import create_connected_server_and_client_session
 from cobranza import fingerprint
+from human_handoff import HandoffQueue
 
 
-def create_team_tools(service, dni, retrieve, validate, channel="chat"):
+def create_team_tools(service, dni, retrieve, validate, channel="chat", handoff_scope=None):
     server = FastMCP('Agentica herramientas del equipo')
     scope = {'case_id': None}
+    if channel == 'handoff':
+        if not handoff_scope or not handoff_scope.get('request_id'):
+            raise ValueError('Falta el ámbito de la derivación humana')
+        @server.tool()
+        def derivar_a_humano(reason: str) -> dict:
+            """Crea una derivación local; no notifica, resuelve ni envía correos."""
+            return HandoffQueue(service.store).create(handoff_scope['request_id'],reason,handoff_scope.get('case_id'))
+        return server
     if channel == 'mail':
         @server.tool()
         def preparar_consulta_correo(mensaje: dict) -> dict:
@@ -18,6 +27,12 @@ def create_team_tools(service, dni, retrieve, validate, channel="chat"):
         @server.tool()
         def reservar_respuesta_correo(reservation: str) -> dict:
             """Reserva una respuesta y revalida el caso antes del envío de n8n."""
+            with service.store.connect() as c:
+                row=c.execute('SELECT reply FROM email_inquiries WHERE reservation=?',(reservation,)).fetchone()
+            if row:
+                case_id=json.loads(row['reply']).get('_case_id')
+                if case_id and HandoffQueue(service.store).is_blocking(case_id):
+                    raise ValueError('La respuesta está detenida para revisión humana')
             return service.claim(reservation)
 
         @server.tool()
@@ -45,7 +60,7 @@ def create_team_tools(service, dni, retrieve, validate, channel="chat"):
         if not scope['case_id']:
             raise ValueError('Se requiere validar el cliente antes de leer memoria')
         events = service.store.memory('demo', scope['case_id'])
-        allowed_states = {'ok', 'answered', 'needs_review', 'clarify', 'blocked', 'error', 'failed', 'ready', 'prepared', 'sending', 'gmail_accepted'}
+        allowed_states = {'ok', 'answered', 'needs_review', 'clarify', 'blocked', 'error', 'failed', 'ready', 'prepared', 'sending', 'gmail_accepted', 'pending', 'in_review', 'resolved'}
         summary = []
         for event in events:
             payload = event['payload']
@@ -84,8 +99,8 @@ def create_team_tools(service, dni, retrieve, validate, channel="chat"):
 
 class TeamMcpSession:
     """Cliente SDK MCP con transporte en memoria, mismo protocolo y validación de herramientas."""
-    def __init__(self, service, dni, retrieve, validate, channel="chat"):
-        self.server = create_team_tools(service, dni, retrieve, validate, channel)
+    def __init__(self, service, dni, retrieve, validate, channel="chat", handoff_scope=None):
+        self.server = create_team_tools(service, dni, retrieve, validate, channel, handoff_scope)
 
     async def __aenter__(self):
         self.manager = create_connected_server_and_client_session(self.server, read_timeout_seconds=timedelta(seconds=180))

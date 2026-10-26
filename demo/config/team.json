@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "release": "0.5.0",
+  "version": "1.1.0",
+  "release": "0.6.0",
   "defaults": {
     "llm_model": "gpt-5.4-mini",
     "max_llm_calls_per_query": 1,
@@ -13,11 +13,12 @@
     {
       "id": "orquestador",
       "name": "Orquestador",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "Clasifica, deriva, aplica guardrails y conserva el control de la consulta.",
       "execution": "supervisor_determinista",
       "tools": [
-        "recordar_contexto"
+        "recordar_contexto",
+        "derivar_a_humano"
       ],
       "delegates_to": [
         "analista_saldo",

@@ -30,7 +30,7 @@ class GatewayTeamTests(unittest.TestCase):
             with patch('gateway.ask_n8n',side_effect=simulated_n8n),patch('web_orchestration.retrieve_passages',return_value=rag),patch('web_orchestration.validate_bundle',return_value=True):
                 response=client.post('/api/ask',json={'question':'saldo y recordatorio','dni':'74851236'})
             self.assertEqual(response.status_code,200);result=response.json()
-            self.assertEqual(result['team_version'],'1.0.0');self.assertFalse(result['email_sent'])
+            self.assertEqual(result['team_version'],'1.1.0');self.assertFalse(result['email_sent'])
             self.assertIn('revisor_respuesta',{e['agent_id'] for e in result['agent_trace']})
             self.assertIn('1500.00',result['answer'])
     def test_mail_prepare_uses_same_supervisor_and_keeps_session_blocked(self):

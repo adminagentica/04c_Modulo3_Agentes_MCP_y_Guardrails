@@ -18,7 +18,7 @@
     ],
     "orchestrated_by": "n8n",
     "execution_id": "1",
-    "request_id": "3a4f4ab1-c9cb-4ffe-87cf-1367c53ff685",
+    "request_id": "a2cf2653-f180-4b39-b622-c6a8b655d875",
     "workflow_id": "agentica-orquestador-rag",
     "model": "simulated-no-api-credit",
     "usage": {
@@ -33,13 +33,13 @@
       "requires_explicit_confirmation": true,
       "sent": false,
       "policy_version": "1.1.0",
-      "evaluated_at": "2026-10-26T04:21:27.529586+00:00"
+      "evaluated_at": "2026-10-26T04:55:25.897004+00:00"
     },
-    "team_version": "1.0.0",
+    "team_version": "1.1.0",
     "agent_trace": [
       {
         "agent_id": "orquestador",
-        "agent_version": "1.0.0",
+        "agent_version": "1.1.0",
         "phase": "input_guardrail",
         "status": "started",
         "tool": "",
@@ -63,7 +63,7 @@
       },
       {
         "agent_id": "orquestador",
-        "agent_version": "1.0.0",
+        "agent_version": "1.1.0",
         "phase": "delegation",
         "status": "started",
         "tool": "recordar_contexto",
@@ -71,7 +71,7 @@
       },
       {
         "agent_id": "orquestador",
-        "agent_version": "1.0.0",
+        "agent_version": "1.1.0",
         "phase": "delegation",
         "status": "completed",
         "tool": "recordar_contexto",
@@ -111,7 +111,7 @@
       },
       {
         "agent_id": "orquestador",
-        "agent_version": "1.0.0",
+        "agent_version": "1.1.0",
         "phase": "input_guardrail",
         "status": "passed",
         "tool": "",
@@ -183,7 +183,7 @@
       },
       {
         "agent_id": "orquestador",
-        "agent_version": "1.0.0",
+        "agent_version": "1.1.0",
         "phase": "final_response",
         "status": "answered",
         "tool": "",

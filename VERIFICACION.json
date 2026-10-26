@@ -1,42 +1,43 @@
 {
-  "release": "0.5.0",
-  "team_version": "1.0.0",
-  "checked_at_utc": "2026-10-26T04:27:39.670570+00:00",
-  "python_tests_passed": 98,
+  "release": "0.6.0",
+  "team_version": "1.1.0",
+  "checked_at_utc": "2026-10-26T04:56:34.283702+00:00",
+  "python_tests_passed": 117,
   "rag_tests_passed": 30,
   "python_test_network": "TCP connections blocked",
-  "mcp": "real client/server SDK protocol over in-memory transport",
-  "n8n_e2e": "passed in isolated n8n with RAG and OpenAI simulated",
-  "live_positive_generation": "not executed; credit reserved for class",
+  "n8n_positive_e2e": "passed in isolated n8n with RAG and OpenAI simulated",
+  "n8n_human_handoff_e2e": "passed in isolated n8n; model node would throw if invoked",
+  "browser_flow": "temporary database: pending -> claimed -> explicit decision -> resolved; no real tickets handled",
   "openai_calls": 0,
-  "native_codex_or_claude_model_runs": 0,
   "emails_sent": 0,
+  "native_client_model_runs": 0,
   "features_verified": [
-    "supervisor delegation",
-    "case-scoped filtered memory",
-    "MCP tool whitelists",
-    "input/output guardrails",
-    "RAG source checks",
-    "single completion claim",
-    "mail prepare/claim/confirmation with synthetic IDs",
-    "app gateway trace"
+    "minimal validated handoff context",
+    "MCP-scoped handoff creation",
+    "idempotent ticket creation",
+    "atomic claim and close",
+    "contact/Gmail pause",
+    "decision does not send or resume",
+    "fixed authenticated demo actor",
+    "memory and audit events"
   ],
   "limitations": [
-    "bounded deterministic supervisor and data/rule specialists; only response writer uses OpenAI",
-    "semantic quality of real model not evaluated",
-    "Gmail delivery is performed by n8n, not by query agent"
+    "local demo inbox, no external human notification",
+    "single executive demo actor, no enterprise identity",
+    "human decisions do not authorize sending or resume workflows",
+    "real model quality was not evaluated"
   ],
-  "remaining_setup_for_new_machine": "install dependencies, initialize local data, assign n8n credentials and start services",
-  "live_guardrail": {
-    "status": "passed",
-    "runtime_release": "0.5.0",
-    "execution_id": "23",
-    "executed_nodes": [
+  "live_connection": {
+    "release": "0.6.0",
+    "team_version": "1.1.0",
+    "execution_id": "24",
+    "openai_node_executed": false,
+    "nodes": [
       "App · Consulta recibida",
       "Herramientas Python · Contexto",
       "¿Requiere OpenAI?",
       "App · Solicitar aclaración"
     ],
-    "openai_node_executed": false
+    "test_handoffs_created_in_class_instance": 0
   }
 }

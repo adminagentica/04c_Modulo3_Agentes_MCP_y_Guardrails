@@ -35,3 +35,7 @@ Inspeccionar la ejecución n8n y los eventos de memoria: identidad, versión, re
 ## Mostrar la orquestación
 
 Desplegar «Ver recorrido del agente» debajo de una respuesta. Explicar cada rol, su herramienta y su estado. En la pregunta combinada deben aparecer saldo, memoria, contacto, RAG, redacción y revisión; en una pregunta simple se omiten especialistas innecesarios. No afirmar que cada especialista es otro LLM. Para una evidencia gratuita reproducible, revisar examples/traza-orquestacion-simulada.json y scripts/probar_n8n_aislado.py.
+
+## Derivación humana sin llamada OpenAI
+
+Preguntar «Quiero hablar con un ejecutivo humano». Abrir Atención humana y mostrar motivo, contexto y ticket pendiente. Tomar el caso y registrar la revisión. Explicar que el LLM no puede resolverlo y que cerrar no envía correos ni reanuda acciones. Si el ticket incluye el caso de la demo, sus contactos quedan detenidos hasta completar la revisión.

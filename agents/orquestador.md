@@ -1,8 +1,8 @@
 ---
 id: orquestador
-version: 1.0.0
-team_version: 1.0.0
-release: 0.5.0
+version: 1.1.0
+team_version: 1.1.0
+release: 0.6.0
 ---
 # Agente orquestador del equipo
 
@@ -71,3 +71,11 @@ La respuesta final incluye state, answer, citations cuando corresponden, request
 - mail_orchestration.py: usa el mismo supervisor en preparación, reserva y confirmación Gmail.
 
 Estos componentes son ejecutables. Los archivos Markdown explican sus contratos; no crean por sí solos procesos autónomos ni cambian los permisos del cliente.
+
+## Derivación humana coordinada
+
+Ante solicitud explícita, resultado needs_review, fallo de proveedor o validación, derivar a la bandeja humana mediante MCP derivar_a_humano. El supervisor captura request_id y caso validado; no acepta cambiarlos desde argumentos del modelo. Los motivos son tipados. Una discrepancia inicial de DNI pide aclaración y no adjunta datos de otro cliente.
+
+Registrar human_handoff con ID y estado, automation_paused y el evento de memoria. Si se solicita un ejecutivo, responder antes de llamar al LLM. No interpretar una pregunta general sobre revisión humana como una solicitud de transferencia.
+
+La atención posterior pertenece al ejecutivo: pendiente → en revisión → resuelta. Los modelos no tienen herramientas de reclamo o resolución. Una decisión humana no autoriza correos ni salta reglas; las acciones no se reanudan automáticamente. Ver [flujo y límites](../docs/10_DERIVACION_HUMANA.md).

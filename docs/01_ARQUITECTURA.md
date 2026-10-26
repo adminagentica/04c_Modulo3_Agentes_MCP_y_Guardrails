@@ -1,6 +1,6 @@
 # Arquitectura: un equipo orquestado
 
-La arquitectura principal de la versión 0.5.0 utiliza un supervisor ejecutable, especialistas, memoria, guardrails, MCP Python y RAG. La app y Codex/Claude entran por el mismo workflow n8n. El canal Gmail usa el mismo supervisor y una capacidad de correo separada.
+La arquitectura principal de la versión 0.6.0 utiliza un supervisor ejecutable, especialistas, memoria, guardrails, MCP Python y RAG. La app y Codex/Claude entran por el mismo workflow n8n. El canal Gmail usa el mismo supervisor y una capacidad de correo separada.
 
 ```mermaid
 flowchart TD
@@ -78,3 +78,7 @@ memory contiene eventos del caso con TTL de 30 días y recuperación máxima de 
 Se conservan endpoints, webhook y contratos de entrada/salida principales: no es necesario cambiar credenciales ni importar de nuevo el workflow para esta integración Python. Los JSON distribuidos siguen sin credenciales y desactivados. El motor anterior de cuatro roles LLM de cobranza.py y config/agents.json queda como ejercicio histórico; el equipo principal es config/team.json.
 
 Puertos: gateway/app/MCP HTTP 8790; n8n 5678; RAG 4173; Ollama 11434. En otra instalación se reconstruyen bases e índice y se conectan las propias credenciales. No trasladar el historial o los tokens del docente.
+
+## Intervención humana
+
+El supervisor deriva mediante una capacidad MCP separada a human_handoffs. La bandeja del ejecutivo gestiona pendiente → en revisión → resuelta con auditoría. Las reglas consultan el bloqueo humano antes de contactar y el cierre no dispara acciones. [Diagrama y contrato](10_DERIVACION_HUMANA.md).

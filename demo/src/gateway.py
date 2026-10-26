@@ -16,6 +16,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 import uvicorn
 from customer_service import CustomerService
 from mail_orchestration import MailOrchestrator
+from human_handoff import HandoffQueue
 from mcp_server import create_mcp
 from web_orchestration import ChatOrchestrator, ask_n8n, N8nUnavailable, MODEL, WORKFLOW
 
@@ -32,6 +33,7 @@ def build_app(service=None, admin_token=None):
     mcp = create_mcp(service)
     chat = ChatOrchestrator(service)
     mail = MailOrchestrator(service)
+    handoffs = HandoffQueue(service.store)
     mcp_app = mcp.streamable_http_app()
     sessions, attempts = {}, {}
 
@@ -85,6 +87,12 @@ def build_app(service=None, admin_token=None):
                 if not isinstance(question,str) or not 3<=len(question.strip())<=1000 or (dni and not re.fullmatch('[0-9]{8}',dni)):
                     raise ValueError('Pregunta o DNI inválidos')
                 result = await asyncio.to_thread(ask_n8n,question,dni,token)
+            elif request.url.path == '/api/handoffs':
+                result = {'handoffs':await asyncio.to_thread(handoffs.list)}
+            elif request.url.path == '/api/handoffs/claim':
+                result = await asyncio.to_thread(handoffs.claim,data['id'])
+            elif request.url.path == '/api/handoffs/resolve':
+                result = await asyncio.to_thread(handoffs.resolve,data['id'],data['decision'])
             elif request.url.path == '/api/status':
                 from rag_client import request as rag_request
                 try:
@@ -94,7 +102,7 @@ def build_app(service=None, admin_token=None):
                     rag_state = 'unavailable'
                 with service.store.connect() as c:
                     gmail_verified = bool(c.execute("SELECT 1 FROM email_inquiries WHERE state='gmail_accepted' LIMIT 1").fetchone())
-                result = {'version':'0.5.0','mcp':'Python SDK / Streamable HTTP','mailbox':'contacto@agentica.com.pe',
+                result = {'version':'0.6.0','mcp':'Python SDK / Streamable HTTP','mailbox':'contacto@agentica.com.pe',
                           'data':'synthetic','gmail':'Respuesta verificada' if gmail_verified else 'Pendiente de prueba OAuth en n8n',
                           'gmail_verified':gmail_verified,'dni_demo':'74851236', 'rag_state':rag_state,
                           'chat_transport':'n8n_webhook','chat_model':MODEL,'chat_workflow':WORKFLOW}
@@ -134,7 +142,7 @@ def build_app(service=None, admin_token=None):
     routes = [Route('/',index),Route('/login',login,methods=['POST'])]
     async def js(_): return FileResponse(ROOT/'web/app.js')
     async def css(_): return FileResponse(ROOT/'web/style.css')
-    routes += [Route('/app.js',js),Route('/style.css',css),Route('/api/status',api),Route('/api/ask',api,methods=['POST'])]
+    routes += [Route('/app.js',js),Route('/style.css',css),Route('/api/status',api),Route('/api/ask',api,methods=['POST']),Route('/api/handoffs',api),Route('/api/handoffs/claim',api,methods=['POST']),Route('/api/handoffs/resolve',api,methods=['POST'])]
     routes += [Route(p,api,methods=['POST']) for p in ['/mail/prepare','/mail/claim','/mail/sent']]
     routes += [Route('/legacy/'+p,api,methods=['POST']) for p in ['start','agent','rag','finish']]
     routes += [Route('/chat/'+p,api,methods=['POST']) for p in ['context','result']]

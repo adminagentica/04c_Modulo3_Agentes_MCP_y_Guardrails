@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.6.0 · Derivación humana
+- Ticket local mediante MCP con motivos y contexto mínimo; solicitud explícita sin LLM.
+- Bandeja autenticada: pendiente, en revisión y resuelta; reclamo/cierre atómicos.
+- Bloqueo de contacto y de reservas Gmail durante la revisión; sin reanudación automática.
+- Registro en memoria y auditoría; el modelo no dispone de herramientas para resolver.
+
 ## 0.5.0 · Equipo unificado
 - Supervisor ejecutable común para consultas y coordinación del canal Gmail.
 - Derivación real a especialistas mediante cliente/servidor MCP del SDK Python con transporte en memoria.

@@ -1,6 +1,6 @@
 # Módulo 3 · Agentes, MCP y Guardrails
 
-Demo de cobranza de Agentica · versión **0.5.0** · datos completamente sintéticos.
+Demo de cobranza de Agentica · versión **0.6.0** · datos completamente sintéticos.
 
 Construimos un asistente para el ejecutivo, un orquestador con memoria, un subagente RAG documental, reglas de negocio y un MCP en Python. La app y el cliente Codex/Claude consultan **el mismo workflow n8n local**. Un workflow separado responde consultas de deuda recibidas por Gmail.
 
@@ -28,6 +28,10 @@ MCP público conecta Codex/Claude con el workflow. MCP interno conecta especiali
 El RAG aporta documentación; SQL aporta los montos; la memoria aporta contexto previo del mismo caso. Consultar si procede un recordatorio no envía correo. El envío Gmail real sigue dentro de n8n, después de validar y reservar la respuesta.
 
 El motor didáctico anterior de cuatro roles LLM se conserva como ejercicio histórico; el registro del equipo principal es demo/config/team.json.
+
+## Derivación humana
+
+El supervisor crea una derivación cuando se solicita un ejecutivo, falta evidencia, hay un bloqueo de contacto o falla la validación/proveedor. La app incluye **Atención humana**: pendiente → en revisión → resuelta. El ticket conserva contexto mínimo, memoria y auditoría. Tomar o resolver un caso no envía correo ni reanuda acciones. [Ver el flujo completo](docs/10_DERIVACION_HUMANA.md).
 
 ## Documentación
 

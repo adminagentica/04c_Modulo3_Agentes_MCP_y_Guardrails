@@ -39,7 +39,8 @@ def reminder_section(check):
             'recordatorio_ya_reservado':'ya existe un recordatorio reservado para esta factura',
             'intervalo_contacto':'aún no se cumple el intervalo mínimo entre contactos',
             'destinatario_fuera_entorno_demo':'el correo está fuera del entorno autorizado',
-            'correo_no_coincide_con_registro':'el destinatario no coincide con el registro del cliente'}
+            'correo_no_coincide_con_registro':'el destinatario no coincide con el registro del cliente',
+            'revision_humana_pendiente':'el caso requiere revisión humana antes de continuar'}
     if not check['can_prepare']:
         reasons='; '.join(labels.get(x,x) for x in check['blocking_reasons'])
         return 'Recordatorio: no se puede preparar para envío porque '+reasons+'. No se ha enviado ningún correo.'
@@ -134,6 +135,13 @@ class ChatOrchestrator:
         found=set(re.findall(r'\b[0-9]{8}\b',question))
         if len(found)>1 or (dni and found and found!={dni}):
             return {'call_openai':False,'response':{'state':'clarify','route':'clarify','answer':'Revisa el DNI de la pregunta y el cliente seleccionado.','citations':[],'orchestrated_by':'n8n'}}
+        human_requested=any(term in normalized for term in ('hablar con un humano','hablar con una persona','hablar con un ejecutivo','hablar con un asesor','hablar con ejecutivo','hablar con asesor','derivar a un humano','derivar a una persona','derivacion humana','quiero atencion humana','solicito atencion humana','solicito revision humana','necesito un ejecutivo'))
+        if human_requested:
+            if dni:
+                team.collect(dni,True,False,False,question)
+            return {'call_openai':False,'response':{'state':'needs_review','route':'human_handoff',
+                    'answer':'Solicité la revisión de un ejecutivo. El caso queda en la bandeja local de atención humana; no se contactó al cliente.',
+                    'handoff_reason':'solicitud_explicita','citations':[],'orchestrated_by':'n8n'}}
         # El DNI seleccionado es contexto independiente; no completarlo desde la pregunta.
         reminder_intent=any(w in normalized for w in ('recordator','recordarle','recordar el pago'))
         policy=reminder_intent or any(w in normalized for w in ('politica','manual','promesa','concili','condicion','norma','regla','control','pol-','man-'))

@@ -158,6 +158,10 @@ class Store:
             failures.append("no_vencido")
         if not re.fullmatch(r"[A-Za-z0-9._+-]+@example\.test", case["recipient"]):
             failures.append("destinatario_fuera_entorno_demo")
+        if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='human_handoffs'").fetchone():
+            human_hold=c.execute("SELECT 1 FROM human_handoffs WHERE tenant=? AND case_id=? AND (status IN ('pending','in_review') OR decision='mantener_bloqueo') LIMIT 1",(case['tenant'],case['id'])).fetchone()
+            if human_hold:
+                failures.append('revision_humana_pendiente')
         key = self.idempotency_key(case)
         duplicate = c.execute("SELECT state FROM outbox WHERE key=? AND key<>?", (key, ignore_key)).fetchone()
         if duplicate:

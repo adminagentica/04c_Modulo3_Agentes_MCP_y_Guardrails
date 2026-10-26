@@ -1,0 +1,16 @@
+{
+  "verification": "n8n real aislado; solicitud explícita sin LLM ni envío",
+  "openai_calls": 0,
+  "emails_sent": 0,
+  "handoff": {
+    "id": "dabfd256-459b-4a02-acbf-24f3270adaee",
+    "reason": "solicitud_explicita",
+    "status": "pending",
+    "case_id": "MAIL-DEMO-001"
+  },
+  "tools": [
+    "saldo_cliente",
+    "recordar_contexto",
+    "derivar_a_humano"
+  ]
+}

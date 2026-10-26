@@ -27,3 +27,7 @@ Una Eval real futura debe presupuestarse y ejecutarse solo cuando el docente la 
 ## Regresiones del equipo unificado
 
 La versión 0.5.0 agrega pruebas de derivaciones reales por MCP, recuperación de memoria aislada por caso y filtrada, herramientas permitidas por rol/canal, revalidación de fuentes, concurrencia de la revisión, trazas por fase y coordinación del canal correo. Una prueba aislada usa n8n real con OpenAI y RAG simulados; no mide calidad lingüística del proveedor real.
+
+## Derivación humana
+
+Se agregan casos de solicitud explícita sin LLM, pausa por revisión pendiente y distinción frente a una consulta documental sobre revisión humana. Las pruebas tradicionales verifican deduplicación, reclamo/cierre atómicos, autenticación, contexto mínimo y ausencia de envío/reanudación.

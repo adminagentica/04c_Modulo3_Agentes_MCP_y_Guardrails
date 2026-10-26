@@ -2,7 +2,7 @@
 from pathlib import Path
 import argparse,json,os,secrets,shutil,sqlite3,subprocess,tempfile,time,uuid,urllib.request
 ROOT=Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser();p.add_argument('--python',default=str(ROOT/'demo/.venv/bin/python'));p.add_argument('--port',type=int,default=8793);p.add_argument('--broker-port',type=int,default=5694);args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--python',default=str(ROOT/'demo/.venv/bin/python'));p.add_argument('--human-handoff',action='store_true');p.add_argument('--port',type=int,default=8793);p.add_argument('--broker-port',type=int,default=5694);args=p.parse_args()
 n8n=shutil.which('n8n')
 if not n8n:raise SystemExit('Instala n8n o agrega su ejecutable a PATH.')
 with tempfile.TemporaryDirectory(prefix='agentica-n8n-simulado-') as tmp:
@@ -24,10 +24,10 @@ with tempfile.TemporaryDirectory(prefix='agentica-n8n-simulado-') as tmp:
         if node['name']=='OpenAI · Orquestador':
             node.pop('credentials',None)
             code='const p=$("Herramientas Python · Contexto").first().json; return [{json:{statusCode:200,body:{model:"simulated-no-api-credit",output:[{content:[{type:"output_text",text:JSON.stringify({request_id:p.request_id,intro:"Consulta verificada contra las fuentes disponibles.",policy_answer:"Revisar las condiciones de contacto [3].",citation_ids:[3],state:"answered"})}]}],usage:{total_tokens:0}}}}];'
-            node.update(type='n8n-nodes-base.code',typeVersion=2,parameters={'jsCode':code})
+            node.update(type='n8n-nodes-base.code',typeVersion=2,parameters={'jsCode':'throw new Error("La derivación humana no debe invocar el modelo");' if args.human_handoff else code})
         if node['type']=='n8n-nodes-base.respondToWebhook':node.update(type='n8n-nodes-base.code',typeVersion=2,parameters={'jsCode':'return $input.all();'})
     ident=str(uuid.uuid4())
-    fixture={'question':'¿Cuál es el saldo de 74851236 y puedo mandarle un recordatorio?','dni':'74851236','request_id':ident}
+    fixture={'question':'Quiero hablar con un ejecutivo humano' if args.human_handoff else '¿Cuál es el saldo de 74851236 y puedo mandarle un recordatorio?','dni':'74851236','request_id':ident}
     nodes.append({'id':'fixture-web','name':'Consulta simulada','type':'n8n-nodes-base.code','typeVersion':2,'position':[0,0],'parameters':{'jsCode':'return [{json:{body:'+json.dumps(fixture)+'}}];'}})
     connections['App · Consulta recibida']={'main':[[{'node':'Consulta simulada','type':'main','index':0}]]}
     connections['Consulta simulada']={'main':[[{'node':'Herramientas Python · Contexto','type':'main','index':0}]]}
@@ -56,14 +56,25 @@ build_app=gateway.build_app
         else:raise RuntimeError('El servidor de prueba no inició; comprueba que el puerto esté libre.')
         result=subprocess.run([n8n,'execute','--id=agentica-simulation-only','--rawOutput'],env=env,capture_output=True,text=True,timeout=90)
         if result.returncode:raise RuntimeError('Falló el workflow aislado: '+result.stdout[-1200:].replace(token,'[omitido]'))
-        with sqlite3.connect(folder/'cases.sqlite') as db:
-            row=db.execute('SELECT state,result FROM web_chat_runs WHERE id=?',(ident,)).fetchone()
-        assert row and row[0]=='answered','La respuesta no completó la revisión'
-        output=json.loads(row[1]);assert '1500.00' in output['answer'] and output['model']=='simulated-no-api-credit'
-        assert {event['agent_id'] for event in output['agent_trace']}=={'orquestador','analista_saldo','analista_elegibilidad','rag_politicas','redactor_respuesta','revisor_respuesta'}
-        assert output['mcp_transport']=='sdk_in_memory' and not output['email_sent']
-        (ROOT/'examples').mkdir(exist_ok=True)
-        (ROOT/'examples/traza-orquestacion-simulada.json').write_text(json.dumps({'verification':'n8n real aislado; MCP real; RAG y LLM simulados','openai_calls':0,'emails_sent':0,'result':output},ensure_ascii=False,indent=2)+'\n')
-        print('n8n → supervisor → subagentes → MCP → revisión → memoria: APROBADO. OpenAI: 0 llamadas; correos: 0.')
+        if args.human_handoff:
+            with sqlite3.connect(folder/'cases.sqlite') as db:
+                db.row_factory=sqlite3.Row
+                ticket=dict(db.execute('SELECT id,reason,status,case_id FROM human_handoffs WHERE request_id=?',(ident,)).fetchone())
+                tools=[row[0] for row in db.execute("SELECT tool FROM team_events WHERE request_id=? AND status='completed'",(ident,))]
+            assert ticket['status']=='pending' and ticket['reason']=='solicitud_explicita'
+            assert 'derivar_a_humano' in tools
+            (ROOT/'examples').mkdir(exist_ok=True)
+            (ROOT/'examples/derivacion-humana-simulada.json').write_text(json.dumps({'verification':'n8n real aislado; solicitud explícita sin LLM ni envío','openai_calls':0,'emails_sent':0,'handoff':ticket,'tools':tools},ensure_ascii=False,indent=2)+'\n')
+            print('n8n → supervisor → MCP → bandeja humana: APROBADO. LLM no invocado; correos: 0.')
+        else:
+            with sqlite3.connect(folder/'cases.sqlite') as db:
+                row=db.execute('SELECT state,result FROM web_chat_runs WHERE id=?',(ident,)).fetchone()
+            assert row and row[0]=='answered','La respuesta no completó la revisión'
+            output=json.loads(row[1]);assert '1500.00' in output['answer'] and output['model']=='simulated-no-api-credit'
+            assert {event['agent_id'] for event in output['agent_trace']}=={'orquestador','analista_saldo','analista_elegibilidad','rag_politicas','redactor_respuesta','revisor_respuesta'}
+            assert output['mcp_transport']=='sdk_in_memory' and not output['email_sent']
+            (ROOT/'examples').mkdir(exist_ok=True)
+            (ROOT/'examples/traza-orquestacion-simulada.json').write_text(json.dumps({'verification':'n8n real aislado; MCP real; RAG y LLM simulados','openai_calls':0,'emails_sent':0,'result':output},ensure_ascii=False,indent=2)+'\n')
+            print('n8n → supervisor → subagentes → MCP → revisión → memoria: APROBADO. OpenAI: 0 llamadas; correos: 0.')
     finally:
         server.terminate();server.wait(timeout=8)

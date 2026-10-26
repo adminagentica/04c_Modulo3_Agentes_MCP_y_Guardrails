@@ -102,7 +102,23 @@ class AgentSupervisor:
         self.event('revisor_respuesta', 'output_guardrail', 'needs_review' if parsed['state']=='needs_review' else 'passed')
         return result
 
+    def handoff(self,reason):
+        with self.service.store.connect() as c:
+            row=c.execute('SELECT case_id FROM team_runs WHERE id=?',(self.request_id,)).fetchone()
+        scope={'request_id':self.request_id,'case_id':row['case_id'] if row else None}
+        async def run():
+            async with TeamMcpSession(self.service,'',None,None,channel='handoff',handoff_scope=scope) as session:
+                return await self.delegate(session,'orquestador','derivar_a_humano',{'reason':reason})
+        return asyncio.run(run())
+
     def finish(self, result):
+        if result['state'] in {'needs_review','error'}:
+            reason=result.pop('handoff_reason',None) or ('fallo_proveedor' if result['state']=='error' else
+                    'regla_contacto' if result.get('reminder_check') and not result['reminder_check']['can_prepare'] else 'evidencia_insuficiente')
+            result['human_handoff']=self.handoff(reason)
+            result['automation_paused']=True
+            if 'answer' in result:
+                result['answer']+='\n\nDerivación humana registrada: '+result['human_handoff']['id']+'. Estado: pendiente de atención. No se envió ningún correo.'
         self.event('orquestador', 'final_response', result['state'])
         with self.service.store.connect() as c:
             row = c.execute('SELECT case_id FROM team_runs WHERE id=?', (self.request_id,)).fetchone()
@@ -121,6 +137,11 @@ class AgentSupervisor:
             if row and row['case_id']:
                 self.service.store.remember(c,'demo',row['case_id'],self.request_id,'failed',
                                             {'agent_id':'orquestador','version':VERSION,'status':'failed'})
+
+        with self.service.store.connect() as c:
+            attempted=c.execute("SELECT 1 FROM team_events WHERE request_id=? AND agent_id<>'orquestador' LIMIT 1",(self.request_id,)).fetchone()
+        if attempted:
+            self.handoff('fallo_validacion')
 
     def enrich(self, result):
         with self.service.store.connect() as c:

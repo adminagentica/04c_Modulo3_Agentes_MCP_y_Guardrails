@@ -4,6 +4,7 @@ import sqlite3
 import uuid
 from agent_team import AgentSupervisor
 from team_mcp import TeamMcpSession
+from human_handoff import HandoffQueue
 
 
 class MailOrchestrator:
@@ -42,6 +43,8 @@ class MailOrchestrator:
                 self.service.store.case('demo', result['_case_id'])
                 with self.service.store.connect() as c:
                     c.execute('UPDATE team_runs SET case_id=? WHERE id=?', (result['_case_id'], team.request_id))
+            if result.get('_case_id') and HandoffQueue(self.service.store).is_blocking(result['_case_id']):
+                result.update(state='needs_review',should_send=False,handoff_reason='regla_contacto')
             return team.finish(result)
         except Exception:
             team.failed()
