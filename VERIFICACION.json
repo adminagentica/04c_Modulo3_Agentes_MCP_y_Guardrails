@@ -57,5 +57,41 @@
     "paid_calls": 0,
     "emails_sent": 0
   },
-  "active_client": "explicit DNI establishes context; persisted per conversation; pending drafts invalidated on customer switch"
+  "active_client": "explicit DNI establishes context; persisted per conversation; pending drafts invalidated on customer switch",
+  "additional_demo_cases": {
+    "verified": [
+      {
+        "dni": "73148265",
+        "balance": "640.00",
+        "can_prepare": true,
+        "blocking_reasons": []
+      },
+      {
+        "dni": "74259316",
+        "balance": "2150.00",
+        "can_prepare": true,
+        "blocking_reasons": []
+      },
+      {
+        "dni": "75361428",
+        "balance": "980.00",
+        "can_prepare": false,
+        "blocking_reasons": [
+          "pago_pendiente_conciliacion"
+        ]
+      },
+      {
+        "dni": "76482539",
+        "balance": "1740.00",
+        "can_prepare": false,
+        "blocking_reasons": [
+          "pago_pendiente_conciliacion"
+        ]
+      }
+    ],
+    "isolated_blocked_cases_create_handoff": true,
+    "live_seed_preserved_existing_cases_outbox_and_tickets": true,
+    "paid_calls": 0,
+    "emails_sent": 0
+  }
 }

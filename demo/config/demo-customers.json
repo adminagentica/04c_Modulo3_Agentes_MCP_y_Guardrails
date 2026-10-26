@@ -1,6 +1,66 @@
 [
-  {"dni":"74851236","case_id":"MAIL-DEMO-001","amount_cents":150000,"name":"Cliente sintético","overdue_days":5,"pending_payment":false},
-  {"dni":"40112233","case_id":"MAIL-DEMO-002","amount_cents":0,"name":"Cliente sintético sin deuda","overdue_days":5,"pending_payment":false},
-  {"dni":"71425836","case_id":"MAIL-DEMO-APTO-001","amount_cents":85000,"name":"Cliente demo apto para recordatorio","overdue_days":5,"pending_payment":false},
-  {"dni":"72536914","case_id":"MAIL-DEMO-BLOQ-001","amount_cents":120000,"name":"Cliente demo con pago en conciliación","overdue_days":7,"pending_payment":true}
+  {
+    "dni": "74851236",
+    "case_id": "MAIL-DEMO-001",
+    "amount_cents": 150000,
+    "name": "Cliente sintético",
+    "overdue_days": 5,
+    "pending_payment": false
+  },
+  {
+    "dni": "40112233",
+    "case_id": "MAIL-DEMO-002",
+    "amount_cents": 0,
+    "name": "Cliente sintético sin deuda",
+    "overdue_days": 5,
+    "pending_payment": false
+  },
+  {
+    "dni": "71425836",
+    "case_id": "MAIL-DEMO-APTO-001",
+    "amount_cents": 85000,
+    "name": "Cliente demo apto para recordatorio",
+    "overdue_days": 5,
+    "pending_payment": false
+  },
+  {
+    "dni": "72536914",
+    "case_id": "MAIL-DEMO-BLOQ-001",
+    "amount_cents": 120000,
+    "name": "Cliente demo con pago en conciliación",
+    "overdue_days": 7,
+    "pending_payment": true
+  },
+  {
+    "dni": "73148265",
+    "case_id": "MAIL-DEMO-APTO-002",
+    "amount_cents": 64000,
+    "name": "Cliente demo apto alternativa 2",
+    "overdue_days": 5,
+    "pending_payment": false
+  },
+  {
+    "dni": "74259316",
+    "case_id": "MAIL-DEMO-APTO-003",
+    "amount_cents": 215000,
+    "name": "Cliente demo apto alternativa 3",
+    "overdue_days": 8,
+    "pending_payment": false
+  },
+  {
+    "dni": "75361428",
+    "case_id": "MAIL-DEMO-BLOQ-002",
+    "amount_cents": 98000,
+    "name": "Cliente demo conciliación alternativa 2",
+    "overdue_days": 6,
+    "pending_payment": true
+  },
+  {
+    "dni": "76482539",
+    "case_id": "MAIL-DEMO-BLOQ-003",
+    "amount_cents": 174000,
+    "name": "Cliente demo conciliación alternativa 3",
+    "overdue_days": 9,
+    "pending_payment": true
+  }
 ]

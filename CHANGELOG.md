@@ -1,5 +1,7 @@
 # 0.8.1
 
+- Dos clientes aptos y dos con bloqueo/derivación humana adicionales, con facturas independientes y accesos en la app.
+
 - Cliente activo obtenido del DNI escrito, sin selector obligatorio; seguimiento y restauración por conversación.
 - Cambio de cliente invalida borradores pendientes y evita completar una respuesta del contexto anterior.
 - Gmail mantiene la validación correo + DNI. Pruebas sin consumo de modelos ni envío real.

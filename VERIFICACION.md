@@ -9,3 +9,7 @@
 - Cero llamadas pagadas y cero correos reales durante estas verificaciones.
 
 La validación correo registrado + DNI del canal Gmail permanece igual. Los envíos reales se ejecutan solo ante la confirmación expresa del operador de un borrador válido; no se probaron con Gmail real durante esta preparación.
+
+## Casos adicionales
+
+Se agregaron 73148265 y 74259316 (aptos), y 75361428 y 76482539 (pago pendiente de conciliación). Verificación focalizada: reglas y saldos de los cuatro; derivaciones humanas de ambos bloqueos en base temporal; carga idempotente. En la base local se verificó que los casos anteriores y los conteos de envíos/tickets permanecen iguales. No se crearon tickets reales ni se enviaron correos al cargar los datos.
