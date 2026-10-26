@@ -1,0 +1,14 @@
+{
+  "release": "0.4.1",
+  "checked_at_utc": "2026-10-26T03:51:40.569980+00:00",
+  "python_tests_passed": 79,
+  "rag_tests_passed": 30,
+  "python_test_network": "TCP connections blocked",
+  "rag_model_io": "simulated",
+  "openai_calls": 0,
+  "native_codex_or_claude_model_runs": 0,
+  "emails_sent": 0,
+  "live_positive_generation": "not executed; credit reserved for class",
+  "distribution": "no credentials, runtime databases, tokens, sessions or downloaded models",
+  "remaining_setup": "install dependencies, create local token, assign n8n credentials and publish workflows explicitly"
+}

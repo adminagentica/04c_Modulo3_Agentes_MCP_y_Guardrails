@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0.0",
+  "release_version": "0.4.1",
+  "defaults": {
+    "codex_model": "gpt-6.1-sol",
+    "api_model": "gpt-5.4-mini",
+    "language": "es",
+    "output_contract": "agent-response.schema.json",
+    "automatic_model_fallback": false
+  },
+  "agents": [
+    {
+      "id": "orquestador",
+      "version": "1.1.0",
+      "prompt_version": "1.1.0",
+      "description": "Coordina un caso de cobranza, consulta contexto y decide continuar o escalar.",
+      "models": {
+        "codex": "gpt-6.1-sol",
+        "openai": "gpt-5.4-mini"
+      },
+      "internal_rules": [
+        "Asignar una sola tarea por llamado.",
+        "Consultar memoria del mismo caso.",
+        "No omitir analista, redactor ni revisor.",
+        "Detenerse ante bloqueos o evidencia insuficiente.",
+        "Consultar el subagente RAG existente antes de decidir; exigir citas vigentes y no usarlo para calcular saldos."
+      ],
+      "delegates_to": [
+        "analista",
+        "redactor",
+        "revisor"
+      ],
+      "tools": [
+        "consultar_caso",
+        "consultar_memoria",
+        "evaluar_reglas",
+        "consultar_politicas_rag"
+      ],
+      "memory": {
+        "read": true,
+        "write": "backend_validated_events_only"
+      },
+      "stop_conditions": [
+        "regla_bloqueada",
+        "max_agent_calls",
+        "timeout",
+        "respuesta_invalida"
+      ]
+    },
+    {
+      "id": "analista",
+      "version": "1.0.0",
+      "prompt_version": "1.0.0",
+      "description": "Comprueba consistencia de los hechos y de la elegibilidad calculada por reglas.",
+      "models": {
+        "codex": "gpt-6.1-sol",
+        "openai": "gpt-5.4-mini"
+      },
+      "internal_rules": [
+        "No inventar hechos.",
+        "Citar referencias recibidas.",
+        "Escalar inconsistencias.",
+        "No enviar correos ni llamar otros agentes."
+      ],
+      "delegates_to": [],
+      "tools": [
+        "consultar_caso",
+        "evaluar_reglas"
+      ],
+      "memory": {
+        "read": false,
+        "write": false
+      },
+      "stop_conditions": [
+        "datos_inconsistentes",
+        "timeout",
+        "respuesta_invalida"
+      ]
+    },
+    {
+      "id": "redactor",
+      "version": "1.0.0",
+      "prompt_version": "1.0.0",
+      "description": "Selecciona el tono formal o cordial de una plantilla de recordatorio aprobada.",
+      "models": {
+        "codex": "gpt-6.1-sol",
+        "openai": "gpt-5.4-mini"
+      },
+      "internal_rules": [
+        "Elegir solo una variante aprobada.",
+        "No inventar importes ni amenazas.",
+        "No negociar ni cambiar destinatarios.",
+        "El backend construye el mensaje con datos vigentes."
+      ],
+      "delegates_to": [],
+      "tools": [],
+      "memory": {
+        "read": false,
+        "write": false
+      },
+      "stop_conditions": [
+        "falta_contexto",
+        "timeout",
+        "respuesta_invalida"
+      ]
+    },
+    {
+      "id": "revisor",
+      "version": "1.0.0",
+      "prompt_version": "1.0.0",
+      "description": "Revisa la propuesta y solicita escalamiento ante inconsistencias; no autoriza envíos.",
+      "models": {
+        "codex": "gpt-6.1-sol",
+        "openai": "gpt-5.4-mini"
+      },
+      "internal_rules": [
+        "Revisar la variante y evidencias.",
+        "No confundir aprobación de contenido con autorización de envío.",
+        "No llamar herramientas de escritura."
+      ],
+      "delegates_to": [],
+      "tools": [],
+      "memory": {
+        "read": false,
+        "write": false
+      },
+      "stop_conditions": [
+        "inconsistencia",
+        "timeout",
+        "respuesta_invalida"
+      ]
+    }
+  ],
+  "delegation": {
+    "mode": "supervisor",
+    "execution_order": [
+      "orquestador",
+      "analista",
+      "redactor",
+      "revisor"
+    ],
+    "max_depth": 1,
+    "parallel_calls": false,
+    "retry_model_calls": 0,
+    "handoff_fields": [
+      "tenant_id",
+      "case_id",
+      "trace_id",
+      "task",
+      "facts",
+      "evidence",
+      "previous_results"
+    ],
+    "on_failure": "stop_and_record_no_email"
+  },
+  "rag_subagent": "rag-agent.json"
+}

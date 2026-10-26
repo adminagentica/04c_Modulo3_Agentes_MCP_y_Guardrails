@@ -1,0 +1,521 @@
+[
+  {
+    "code": "POL-COB-04",
+    "version": "v4",
+    "title": "Política de cobranza temprana",
+    "owner": "Gerencia de Cobranzas",
+    "approver": "Comité de Riesgo Operativo",
+    "published": "2026-10-20",
+    "valid_from": "2026-10-20",
+    "status": "Vigente",
+    "access": "COBRANZA",
+    "source": "Repositorio corporativo de políticas",
+    "purpose": "Establecer las reglas para gestionar obligaciones con hasta 30 días de atraso, preservar el trato adecuado y mantener aprobación humana antes de formalizar propuestas o enviar comunicaciones.",
+    "scope": "Aplica a asesores de cobranza, supervisores y asistentes internos que consultan obligaciones de personas o empresas dentro de la etapa temprana.",
+    "sections": [
+      [
+        "1 Objeto y alcance",
+        "La política regula consultas, propuestas preliminares y comunicaciones asociadas a obligaciones con hasta 30 días de atraso. No autoriza al asistente a cerrar acuerdos ni modificar condiciones contractuales."
+      ],
+      [
+        "2 Fuentes operativas",
+        "Antes de preparar una respuesta se debe consultar el saldo vigente, los días de atraso, el historial de pagos, las promesas registradas y el canal autorizado del cliente."
+      ],
+      [
+        "3 Condiciones de contacto",
+        "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor."
+      ],
+      [
+        "4 Propuestas preliminares",
+        "El asistente solo prepara borradores informativos para revisión humana. Esta demo no dispone de una tabla aprobada de descuentos, cuotas o prórrogas; por ello no puede proponer valores para esas condiciones. Para habilitarlos se requiere un anexo identificado por código, versión y vigencia, aprobado por el responsable."
+      ],
+      [
+        "5 Gestión temprana",
+        "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7."
+      ],
+      [
+        "6 Canales y trazabilidad",
+        "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío."
+      ],
+      [
+        "7 Excepciones",
+        "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto."
+      ]
+    ],
+    "chunks": [
+      [
+        "§1",
+        "Objeto y alcance"
+      ],
+      [
+        "§2",
+        "Fuentes operativas"
+      ],
+      [
+        "§3",
+        "Condiciones de contacto"
+      ],
+      [
+        "§4",
+        "Propuestas preliminares"
+      ],
+      [
+        "§5",
+        "Gestión temprana"
+      ],
+      [
+        "§6",
+        "Canales y trazabilidad"
+      ],
+      [
+        "§7",
+        "Excepciones"
+      ]
+    ],
+    "history": [
+      [
+        "v1",
+        "2025-09-01",
+        "Emisión inicial"
+      ],
+      [
+        "v2",
+        "2026-02-15",
+        "Se incorporaron controles de canales"
+      ],
+      [
+        "v3",
+        "2026-08-01",
+        "Se añadió aprobación humana y trazabilidad RAG"
+      ],
+      [
+        "v4",
+        "2026-10-20",
+        "Se precisan condiciones, referencias, revisión documental y aprobación simulada. El linaje de procesamiento se mantiene fuera de la política."
+      ]
+    ],
+    "supersedes": "v3",
+    "review_due": "2027-04-20",
+    "approval_status": "Aprobación experta simulada para la clase",
+    "reviewer": "Experto docente simulado",
+    "approval_date": "2026-10-20",
+    "source_path": "05_Corpus_Documental/POL-COB-04_v4.docx",
+    "previous_path": "historicos/2026-10-20/POL-COB-04_v3.docx",
+    "references": [
+      {
+        "code": "POL-PAG-02",
+        "version": "v5"
+      },
+      {
+        "code": "MAN-ATN-02",
+        "version": "v3"
+      },
+      {
+        "code": "POL-PRO-03",
+        "version": "v4"
+      }
+    ],
+    "glossary": [
+      [
+        "Saldo vigente",
+        "Importe consultado en la fuente operativa; no lo determina el modelo."
+      ],
+      [
+        "Pago pendiente de conciliación",
+        "Pago reportado cuya aplicación todavía no ha validado Operaciones."
+      ],
+      [
+        "Borrador informativo",
+        "Texto preparado para revisión, sin acuerdo ni envío autorizado por sí mismo."
+      ],
+      [
+        "Aprobación simulada",
+        "Revisión ficticia que permite recorrer el flujo docente; no acredita aprobación corporativa."
+      ]
+    ]
+  },
+  {
+    "code": "POL-PAG-02",
+    "version": "v5",
+    "title": "Política de aplicación y conciliación de pagos",
+    "owner": "Gerencia de Operaciones",
+    "approver": "Jefatura de Finanzas",
+    "published": "2026-10-20",
+    "valid_from": "2026-10-20",
+    "status": "Vigente",
+    "access": "COBRANZA",
+    "source": "Repositorio corporativo de operaciones",
+    "purpose": "Definir cómo registrar, conciliar y aplicar pagos reportados, evitando comunicaciones de cobranza mientras exista evidencia pendiente de validación.",
+    "scope": "Aplica a Operaciones, Tesorería, Cobranzas y asistentes que consultan pagos recibidos o comprobantes enviados por clientes.",
+    "sections": [
+      [
+        "1 Principio de aplicación",
+        "Un pago modifica el saldo únicamente después de que Operaciones valide su correspondencia con la obligación y registre la aplicación."
+      ],
+      [
+        "2 Evidencia admitida",
+        "El sistema puede registrar el número de operación, fecha, importe, entidad receptora y comprobante. La recepción del comprobante no equivale a conciliación."
+      ],
+      [
+        "3 Estados del pago",
+        "Los estados permitidos son informado, pendiente de conciliación, aplicado, observado y rechazado. Cada cambio conserva fecha, responsable y evidencia."
+      ],
+      [
+        "4 Conciliación",
+        "Cuando existe un pago pendiente de conciliación se debe pausar el contacto de cobranza y derivar el caso a Operaciones. La pausa comprende recordatorios de pago por correo y WhatsApp; no impide una comunicación de atención que solicite evidencia sin exigir el pago."
+      ],
+      [
+        "5 Reanudación",
+        "La gestión puede reanudarse cuando el pago se aplica o cuando Operaciones documenta que la evidencia no corresponde a la obligación consultada. Antes de reanudar, se vuelve a consultar el saldo y se verifican las condiciones de POL-COB-04 §3 y §7. Un saldo sin deuda vencida o una condición de pausa aún vigente impide el recordatorio."
+      ],
+      [
+        "6 Control del asistente",
+        "El asistente no recalcula saldos ni declara un pago aplicado. Debe mostrar el estado registrado, citar esta política y explicar la derivación. El saldo proviene de la consulta operativa actualizada; la aplicación o rechazo del pago corresponde a Operaciones."
+      ]
+    ],
+    "chunks": [
+      [
+        "§1",
+        "Principio de aplicación"
+      ],
+      [
+        "§2",
+        "Evidencia admitida"
+      ],
+      [
+        "§3",
+        "Estados del pago"
+      ],
+      [
+        "§4",
+        "Conciliación"
+      ],
+      [
+        "§5",
+        "Reanudación"
+      ],
+      [
+        "§6",
+        "Control del asistente"
+      ]
+    ],
+    "history": [
+      [
+        "v2",
+        "2025-11-10",
+        "Se formalizaron estados de pago"
+      ],
+      [
+        "v3",
+        "2026-03-05",
+        "Se agregó evidencia digital"
+      ],
+      [
+        "v4",
+        "2026-07-15",
+        "Se añadió pausa automática y derivación"
+      ],
+      [
+        "v5",
+        "2026-10-20",
+        "Se precisan condiciones, referencias, revisión documental y aprobación simulada. El linaje de procesamiento se mantiene fuera de la política."
+      ]
+    ],
+    "supersedes": "v4",
+    "review_due": "2027-04-20",
+    "approval_status": "Aprobación experta simulada para la clase",
+    "reviewer": "Experto docente simulado",
+    "approval_date": "2026-10-20",
+    "source_path": "05_Corpus_Documental/POL-PAG-02_v5.docx",
+    "previous_path": "historicos/2026-10-20/POL-PAG-02_v4.docx",
+    "references": [
+      {
+        "code": "POL-COB-04",
+        "version": "v4"
+      },
+      {
+        "code": "MAN-ATN-02",
+        "version": "v3"
+      },
+      {
+        "code": "POL-PRO-03",
+        "version": "v4"
+      }
+    ],
+    "glossary": [
+      [
+        "Saldo vigente",
+        "Importe consultado en la fuente operativa; no lo determina el modelo."
+      ],
+      [
+        "Pago pendiente de conciliación",
+        "Pago reportado cuya aplicación todavía no ha validado Operaciones."
+      ],
+      [
+        "Borrador informativo",
+        "Texto preparado para revisión, sin acuerdo ni envío autorizado por sí mismo."
+      ],
+      [
+        "Aprobación simulada",
+        "Revisión ficticia que permite recorrer el flujo docente; no acredita aprobación corporativa."
+      ]
+    ]
+  },
+  {
+    "code": "MAN-ATN-02",
+    "version": "v3",
+    "title": "Manual de atención especial al cliente",
+    "owner": "Gerencia de Experiencia del Cliente",
+    "approver": "Responsable de Conducta de Mercado",
+    "published": "2026-10-20",
+    "valid_from": "2026-10-20",
+    "status": "Vigente",
+    "access": "COBRANZA",
+    "source": "Biblioteca interna de atención",
+    "purpose": "Orientar la identificación y derivación de situaciones que requieren trato humano especializado durante una gestión de cobranza.",
+    "scope": "Aplica a asesores, supervisores, personal de atención y sistemas que detectan señales de vulnerabilidad, reclamo o dificultad sensible.",
+    "sections": [
+      [
+        "1 Señales de atención especial",
+        "Se consideran señales relevantes una dificultad sensible comunicada por el cliente, un reclamo activo, una limitación de accesibilidad o una marca vigente en el CRM."
+      ],
+      [
+        "2 Registro mínimo",
+        "El asesor registra únicamente la información necesaria para derivar. No debe solicitar datos sensibles que no sean indispensables para atender el caso."
+      ],
+      [
+        "3 Atención especial",
+        "Los casos marcados para atención especial requieren intervención humana y no deben continuar con negociación automatizada."
+      ],
+      [
+        "4 Derivación",
+        "El sistema deriva al equipo de atención especializada de Experiencia del Cliente, registra el motivo y evita generar recordatorios. La reanudación requiere que el responsable documente el cierre o actualización de la marca en el CRM y que se vuelvan a verificar POL-COB-04 §3 y §7. Un cambio de marca no elimina otras condiciones de pausa."
+      ],
+      [
+        "5 Comunicación",
+        "La respuesta confirma la recepción de la solicitud sin emitir juicios, promesas no autorizadas ni exigencias de pago durante la pausa."
+      ],
+      [
+        "6 Auditoría",
+        "Cada consulta conserva el usuario, la marca del CRM, la fuente del manual, la decisión de derivación y la intervención posterior."
+      ]
+    ],
+    "chunks": [
+      [
+        "§1",
+        "Señales de atención especial"
+      ],
+      [
+        "§2",
+        "Registro mínimo"
+      ],
+      [
+        "§3",
+        "Atención especial"
+      ],
+      [
+        "§4",
+        "Derivación"
+      ],
+      [
+        "§5",
+        "Comunicación"
+      ],
+      [
+        "§6",
+        "Auditoría"
+      ]
+    ],
+    "history": [
+      [
+        "v1",
+        "2025-12-01",
+        "Emisión inicial"
+      ],
+      [
+        "v2",
+        "2026-06-10",
+        "Se incorporó pausa de automatización y auditoría"
+      ],
+      [
+        "v3",
+        "2026-10-20",
+        "Se precisan condiciones, referencias, revisión documental y aprobación simulada. El linaje de procesamiento se mantiene fuera de la política."
+      ]
+    ],
+    "supersedes": "v2",
+    "review_due": "2027-04-20",
+    "approval_status": "Aprobación experta simulada para la clase",
+    "reviewer": "Experto docente simulado",
+    "approval_date": "2026-10-20",
+    "source_path": "05_Corpus_Documental/MAN-ATN-02_v3.docx",
+    "previous_path": "historicos/2026-10-20/MAN-ATN-02_v2.docx",
+    "references": [
+      {
+        "code": "POL-COB-04",
+        "version": "v4"
+      },
+      {
+        "code": "POL-PAG-02",
+        "version": "v5"
+      },
+      {
+        "code": "POL-PRO-03",
+        "version": "v4"
+      }
+    ],
+    "glossary": [
+      [
+        "Saldo vigente",
+        "Importe consultado en la fuente operativa; no lo determina el modelo."
+      ],
+      [
+        "Pago pendiente de conciliación",
+        "Pago reportado cuya aplicación todavía no ha validado Operaciones."
+      ],
+      [
+        "Borrador informativo",
+        "Texto preparado para revisión, sin acuerdo ni envío autorizado por sí mismo."
+      ],
+      [
+        "Aprobación simulada",
+        "Revisión ficticia que permite recorrer el flujo docente; no acredita aprobación corporativa."
+      ]
+    ]
+  },
+  {
+    "code": "POL-PRO-03",
+    "version": "v4",
+    "title": "Política de promesas de pago",
+    "owner": "Gerencia de Cobranzas",
+    "approver": "Comité de Riesgo Operativo",
+    "published": "2026-10-20",
+    "valid_from": "2026-10-20",
+    "status": "Vigente",
+    "access": "COBRANZA",
+    "source": "Repositorio corporativo de políticas",
+    "purpose": "Regular el registro, seguimiento y revisión de promesas de pago para evitar propuestas incompatibles con el historial del cliente.",
+    "scope": "Aplica a promesas registradas durante gestiones de cobranza y a las consultas que preparan alternativas de pago.",
+    "sections": [
+      [
+        "1 Registro de la promesa",
+        "La promesa debe incluir importe, fecha comprometida, obligación relacionada, canal, asesor y confirmación del cliente."
+      ],
+      [
+        "2 Estados permitidos",
+        "Los estados son pendiente, cumplida, cumplida parcialmente, vencida, incumplida y anulada con sustento."
+      ],
+      [
+        "3 Seguimiento",
+        "El sistema puede preparar un recordatorio de una promesa vigente dentro del canal autorizado, sin cambiar el importe ni la fecha acordada. Requiere aprobación humana y las condiciones de POL-COB-04 §3 y §7; un pago pendiente o una marca de atención especial impide el envío."
+      ],
+      [
+        "4 Cumplimiento parcial",
+        "Un pago parcial se deriva a conciliación antes de actualizar el estado de la promesa o calcular un saldo restante. Aplican POL-PAG-02 §4 y §5; el nuevo saldo se consulta en la fuente operativa después de la aplicación."
+      ],
+      [
+        "5 Nueva alternativa",
+        "Una nueva alternativa requiere revisar capacidad e historial. Esta demo no habilita descuentos, cuotas ni prórrogas porque no dispone de un anexo de límites aprobado y vigente. El asistente solo puede preparar un borrador informativo para revisión humana, sin inventar condiciones financieras."
+      ],
+      [
+        "6 Escalamiento",
+        "Dos o más promesas incumplidas en el historial consultado, o información contradictoria, requieren revisión de un supervisor. Una sola promesa incumplida también mantiene la pausa de contacto según POL-COB-04 §7; el número de incumplimientos no autoriza a omitir la revisión."
+      ],
+      [
+        "7 Promesas incumplidas",
+        "Una promesa incumplida requiere revisar el historial antes de presentar una nueva alternativa. El contacto queda en pausa y se deriva al supervisor según POL-COB-04 §7. Solo puede reanudarse tras la resolución documentada y una nueva comprobación de las condiciones aplicables."
+      ]
+    ],
+    "chunks": [
+      [
+        "§1",
+        "Registro de la promesa"
+      ],
+      [
+        "§2",
+        "Estados permitidos"
+      ],
+      [
+        "§3",
+        "Seguimiento"
+      ],
+      [
+        "§4",
+        "Cumplimiento parcial"
+      ],
+      [
+        "§5",
+        "Nueva alternativa"
+      ],
+      [
+        "§6",
+        "Escalamiento"
+      ],
+      [
+        "§7",
+        "Promesas incumplidas"
+      ]
+    ],
+    "history": [
+      [
+        "v1",
+        "2025-08-18",
+        "Emisión inicial"
+      ],
+      [
+        "v2",
+        "2026-01-12",
+        "Se agregó cumplimiento parcial"
+      ],
+      [
+        "v3",
+        "2026-05-20",
+        "Se añadió revisión por incumplimiento"
+      ],
+      [
+        "v4",
+        "2026-10-20",
+        "Se precisan condiciones, referencias, revisión documental y aprobación simulada. El linaje de procesamiento se mantiene fuera de la política."
+      ]
+    ],
+    "supersedes": "v3",
+    "review_due": "2027-04-20",
+    "approval_status": "Aprobación experta simulada para la clase",
+    "reviewer": "Experto docente simulado",
+    "approval_date": "2026-10-20",
+    "source_path": "05_Corpus_Documental/POL-PRO-03_v4.docx",
+    "previous_path": "historicos/2026-10-20/POL-PRO-03_v3.docx",
+    "references": [
+      {
+        "code": "POL-COB-04",
+        "version": "v4"
+      },
+      {
+        "code": "POL-PAG-02",
+        "version": "v5"
+      },
+      {
+        "code": "MAN-ATN-02",
+        "version": "v3"
+      }
+    ],
+    "glossary": [
+      [
+        "Saldo vigente",
+        "Importe consultado en la fuente operativa; no lo determina el modelo."
+      ],
+      [
+        "Pago pendiente de conciliación",
+        "Pago reportado cuya aplicación todavía no ha validado Operaciones."
+      ],
+      [
+        "Borrador informativo",
+        "Texto preparado para revisión, sin acuerdo ni envío autorizado por sí mismo."
+      ],
+      [
+        "Aprobación simulada",
+        "Revisión ficticia que permite recorrer el flujo docente; no acredita aprobación corporativa."
+      ]
+    ]
+  }
+]

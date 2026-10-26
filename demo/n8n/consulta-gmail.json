@@ -1,0 +1,233 @@
+{
+  "id": "agentica-consulta-gmail",
+  "name": "Agentica · Consulta de deuda por Gmail · MCP Python v0.3.0",
+  "nodes": [
+    {
+      "id": "Gmail · Consulta recibida",
+      "name": "Gmail · Consulta recibida",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "in:inbox subject:\"AGENTICA-PRUEBA Consulta deuda\" -subject:\"Respuesta de deuda\"",
+          "readStatus": "both"
+        },
+        "options": {
+          "downloadAttachments": false
+        }
+      },
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "Validar correo y DNI",
+      "name": "Validar correo y DNI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/mail/prepare",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 190000
+        }
+      },
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "id": "¿Consulta habilitada?",
+      "name": "¿Consulta habilitada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "allow",
+              "leftValue": "={{ $json.should_send }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "id": "Reservar respuesta sin duplicados",
+      "name": "Reservar respuesta sin duplicados",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/mail/claim",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({reservation: $json.reservation}) }}",
+        "options": {
+          "timeout": 190000
+        }
+      },
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "id": "Gmail · Enviar respuesta",
+      "name": "Gmail · Enviar respuesta",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "id": "Registrar aceptación Gmail",
+      "name": "Registrar aceptación Gmail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/mail/sent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({reservation: $(\"Reservar respuesta sin duplicados\").item.json.reservation, gmail_id: $json.id}) }}",
+        "options": {
+          "timeout": 190000
+        }
+      },
+      "position": [
+        1200,
+        0
+      ]
+    },
+    {
+      "id": "Configurar antes de activar",
+      "name": "Configurar antes de activar",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "parameters": {
+        "content": "## Prueba controlada — Gmail y MCP Python\n1. Seleccionar Gmail OAuth2 de contacto@agentica.com.pe en los dos nodos Gmail.\n2. Backend Python: http://127.0.0.1:8790. MCP: /mcp.\n3. Activar el workflow. Enviar a contacto@agentica.com.pe: asunto AGENTICA-PRUEBA Consulta deuda y texto DNI 74851236.\n4. Solo la cuenta de prueba puede recibir datos sintéticos; los errores de identidad no revelan saldo.\nSin reintentos automáticos. Si falla el envío tras reservar, revisar Gmail antes de reintentar.",
+        "height": 300,
+        "width": 900
+      },
+      "position": [
+        200,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Gmail · Consulta recibida": {
+      "main": [
+        [
+          {
+            "node": "Validar correo y DNI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar correo y DNI": {
+      "main": [
+        [
+          {
+            "node": "¿Consulta habilitada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Consulta habilitada?": {
+      "main": [
+        [
+          {
+            "node": "Reservar respuesta sin duplicados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservar respuesta sin duplicados": {
+      "main": [
+        [
+          {
+            "node": "Gmail · Enviar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail · Enviar respuesta": {
+      "main": [
+        [
+          {
+            "node": "Registrar aceptación Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false
+  }
+}

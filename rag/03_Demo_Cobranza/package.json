@@ -1,0 +1,22 @@
+{
+  "name": "cobranza-multiagente-rag-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f db",
+    "demo:clase": "DEMO_DATA_MODE=fixtures node server.js",
+    "test": "node --test",
+    "demo:local": "node server.js",
+    "rag:ingest": "node local-rag-cli.mjs ingest",
+    "rag:query": "node local-rag-cli.mjs query"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}

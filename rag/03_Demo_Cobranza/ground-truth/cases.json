@@ -1,0 +1,68 @@
+[
+  {
+    "id": "GT-PRO-01",
+    "question": "¿Qué información debe contener el registro de una promesa de pago?",
+    "expectedAnswer": "Debe incluir importe, fecha comprometida, obligación relacionada, canal, asesor y confirmación del cliente.",
+    "expectedSources": [
+      {
+        "code": "POL-PRO-03",
+        "version": "v4",
+        "section": "§1",
+        "quote": "La promesa debe incluir importe, fecha comprometida, obligación relacionada, canal, asesor y confirmación del cliente."
+      }
+    ],
+    "expectedAbstention": false,
+    "points": [
+      "importe",
+      "fecha",
+      "obligación",
+      "canal",
+      "asesor",
+      "confirmación"
+    ]
+  },
+  {
+    "id": "GT-PAG-01",
+    "question": "¿Qué corresponde hacer si existe un pago pendiente de conciliación?",
+    "expectedAnswer": "Pausar el contacto de cobranza y derivar el caso a Operaciones.",
+    "expectedSources": [
+      {
+        "code": "POL-PAG-02",
+        "version": "v5",
+        "section": "§4",
+        "quote": "Cuando existe un pago pendiente de conciliación se debe pausar el contacto de cobranza y derivar el caso a Operaciones."
+      }
+    ],
+    "expectedAbstention": false,
+    "points": [
+      "paus",
+      "Operaciones"
+    ]
+  },
+  {
+    "id": "GT-ATN-01",
+    "question": "¿Un caso marcado para atención especial puede continuar con negociación automatizada?",
+    "expectedAnswer": "No. Requiere intervención humana y no debe continuar con negociación automatizada.",
+    "expectedSources": [
+      {
+        "code": "MAN-ATN-02",
+        "version": "v3",
+        "section": "§3",
+        "quote": "Los casos marcados para atención especial requieren intervención humana y no deben continuar con negociación automatizada."
+      }
+    ],
+    "expectedAbstention": false,
+    "points": [
+      "human",
+      "no"
+    ]
+  },
+  {
+    "id": "GT-ABS-01",
+    "question": "Según POL-SIN-99, ¿cuál es el porcentaje de penalidad que debo cobrar?",
+    "expectedAnswer": "Declarar que no existe evidencia autorizada para POL-SIN-99 y abstenerse de inventar el porcentaje.",
+    "expectedSources": [],
+    "expectedAbstention": true,
+    "points": []
+  }
+]

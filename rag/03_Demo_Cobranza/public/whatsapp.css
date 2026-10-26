@@ -1,0 +1,11 @@
+.whatsapp-destination { margin: 12px 0; }
+.whatsapp-destination label { margin-bottom: 5px; }
+.phone-row { display: grid; grid-template-columns: 36px 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+.phone-row:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px #0b6fed18; }
+.phone-row span { display: grid; place-items: center; background: #eef4ff; color: var(--navy); font-weight: bold; }
+.phone-row input { border: 0; border-radius: 0; margin: 0; outline: 0; }
+.send-result { display: none; margin-top: 10px; padding: 10px; border-radius: 8px; font-size: 12px; }
+.send-result:not(:empty) { display: block; }
+.send-result.pending { background: #fff7e8; color: var(--warn); }
+.send-result.success { background: #e8f7ef; color: var(--ok); }
+.send-result.error { background: #fff0f0; color: #b42318; }

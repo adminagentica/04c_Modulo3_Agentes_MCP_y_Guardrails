@@ -1,0 +1,21 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: cobranza-demo-db
+    environment:
+      POSTGRES_DB: cobranza_demo
+      POSTGRES_USER: cobranza
+      POSTGRES_PASSWORD: cobranza_demo
+    ports:
+      - "5433:5432"
+    volumes:
+      - cobranza_pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./db/seed_extra.sql:/docker-entrypoint-initdb.d/02-seed-extra.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cobranza -d cobranza_demo"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  cobranza_pgdata:

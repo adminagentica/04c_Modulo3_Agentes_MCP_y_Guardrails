@@ -1,0 +1,19 @@
+# Credenciales y estado local
+.env
+.env.*
+!.env.example
+.mcp.json
+**/data/
+*.sqlite*
+*.db
+*.eml
+*.log
+*.pem
+*.key
+**/.venv/
+**/node_modules/
+**/__pycache__/
+*.pyc
+.DS_Store
+rag/05_Corpus_Documental/processing_lineage.json
+**/.qa/

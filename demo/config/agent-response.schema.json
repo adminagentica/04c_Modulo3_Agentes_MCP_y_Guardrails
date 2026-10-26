@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "agent_id",
+    "version",
+    "case_id",
+    "trace_id",
+    "status",
+    "summary",
+    "evidence",
+    "message_variant"
+  ],
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "enum": [
+        "orquestador",
+        "analista",
+        "redactor",
+        "revisor"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "blocked",
+        "escalate"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "message_variant": {
+      "type": "string",
+      "enum": [
+        "formal",
+        "cordial"
+      ]
+    }
+  }
+}

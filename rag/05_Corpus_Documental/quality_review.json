@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-20",
+  "reviewType": "Aprobación experta simulada para la clase",
+  "reviewer": "Experto docente simulado",
+  "indexVersion": "10fae67dd69a47ad",
+  "documents": [
+    {
+      "code": "POL-COB-04",
+      "version": "v4",
+      "file": "POL-COB-04_v4.docx",
+      "sections": 7,
+      "fileHash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+      "approvalMode": "simulated",
+      "reviewer": "Experto docente simulado",
+      "approvalDate": "2026-10-20"
+    },
+    {
+      "code": "POL-PAG-02",
+      "version": "v5",
+      "file": "POL-PAG-02_v5.docx",
+      "sections": 6,
+      "fileHash": "e0541def32349e49a281061f4ce35ed4b65455a918743908bd95a8b101dc9f67",
+      "approvalMode": "simulated",
+      "reviewer": "Experto docente simulado",
+      "approvalDate": "2026-10-20"
+    },
+    {
+      "code": "MAN-ATN-02",
+      "version": "v3",
+      "file": "MAN-ATN-02_v3.docx",
+      "sections": 6,
+      "fileHash": "912ae984085141f5eec35c964d9abf0ad719b78ece35742b7ef3067fd6e18c5d",
+      "approvalMode": "simulated",
+      "reviewer": "Experto docente simulado",
+      "approvalDate": "2026-10-20"
+    },
+    {
+      "code": "POL-PRO-03",
+      "version": "v4",
+      "file": "POL-PRO-03_v4.docx",
+      "sections": 7,
+      "fileHash": "5d93e80bbe70fa5d8165c6cb2d1c04a0bf11360787d7c7b3a331b582e5a9eff1",
+      "approvalMode": "simulated",
+      "reviewer": "Experto docente simulado",
+      "approvalDate": "2026-10-20"
+    }
+  ],
+  "groundTruthCases": [
+    {
+      "id": "GT-ABS-01",
+      "version": 2,
+      "approvalMode": "simulated",
+      "sources": []
+    },
+    {
+      "id": "GT-ATN-01",
+      "version": 2,
+      "approvalMode": "simulated",
+      "sources": [
+        {
+          "code": "MAN-ATN-02",
+          "version": "v3",
+          "section": "§3",
+          "quote": "Los casos marcados para atención especial requieren intervención humana y no deben continuar con negociación automatizada."
+        }
+      ]
+    },
+    {
+      "id": "GT-PAG-01",
+      "version": 2,
+      "approvalMode": "simulated",
+      "sources": [
+        {
+          "code": "POL-PAG-02",
+          "version": "v5",
+          "section": "§4",
+          "quote": "Cuando existe un pago pendiente de conciliación se debe pausar el contacto de cobranza y derivar el caso a Operaciones."
+        }
+      ]
+    },
+    {
+      "id": "GT-PRO-01",
+      "version": 2,
+      "approvalMode": "simulated",
+      "sources": [
+        {
+          "code": "POL-PRO-03",
+          "version": "v4",
+          "section": "§1",
+          "quote": "La promesa debe incluir importe, fecha comprometida, obligación relacionada, canal, asesor y confirmación del cliente."
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "fileHashes": true,
+    "canonicalHashes": true,
+    "versionedReferences": true,
+    "archivedPredecessors": true,
+    "sectionMapMatchesIndex": true,
+    "groundTruthReferencesCurrent": true
+  },
+  "preservedGroundTruthRevisions": 8
+}

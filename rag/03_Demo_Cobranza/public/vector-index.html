@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Índice vectorial · Demo RAG</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/vector-index.css"></head>
+<body>
+<header><div><span class="eyebrow">AGENTICA AI · DEMO LOCAL</span><h1>Explorar el índice vectorial</h1><p>El texto, su vector y la fuente permanecen unidos en cada registro.</p><a class="library-link" href="/">Volver a la demo</a></div></header>
+<main class="index-view">
+  <section class="panel">
+    <h2>Qué hay guardado</h2>
+    <p id="indexSummary" role="status">Leyendo el índice local…</p>
+    <p id="indexMetadata" class="note"></p>
+    <p>Esta vista de solo lectura muestra los registros reales de SQLite. No ejecuta preguntas ni reconstruye el índice.</p>
+    <button id="refreshIndex" type="button">Actualizar vista</button>
+  </section>
+  <section class="panel" aria-labelledby="filterTitle">
+    <h2 id="filterTitle">Buscar fragmentos</h2>
+    <div class="index-filters"><label for="documentFilter">Documento<select id="documentFilter"><option value="">Todos los documentos</option></select></label><label for="textFilter">Palabra, sección o identificador<input id="textFilter" type="search" placeholder="Por ejemplo: conciliación o §4"></label></div>
+    <p id="resultCount" role="status"></p>
+    <p class="note">Cada embedding es una lista de coordenadas numéricas. Una coordenada aislada no corresponde necesariamente a una palabra o concepto.</p>
+  </section>
+  <div id="indexError" role="alert"></div>
+  <section id="indexRecords" aria-label="Registros del índice vectorial"></section>
+</main>
+<script src="/vector-index.js"></script>
+</body></html>

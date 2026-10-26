@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { LocalRag } from '../local-rag.js';
+import { createApp } from '../app-server.js';
+import { GroundTruth } from '../ground-truth.js';
+test('explorador devuelve los vectores persistidos y sus fuentes sin regenerar ni modificar el índice',async t=>{
+  const rag=new LocalRag({dbPath:':memory:'});let embeddings=0;
+  rag.tags=async()=>[{name:rag.embeddingModel,digest:'viewer-test-embedding'},{name:rag.generationModel,digest:'viewer-test-generation'}];
+  rag.embed=async texts=>{embeddings++;return texts.map(()=>[.5,-.25,.75]);};
+  rag.chat=async()=>{throw Error('El explorador no debe consultar el modelo.');};
+  await rag.start();await new GroundTruth(rag).seed();const app=createApp({localRag:rag});await rag.start();
+  const server=app.listen(0,'127.0.0.1');await new Promise((resolve,reject)=>{server.once('listening',resolve);server.once('error',reject);});
+  t.after(async()=>{await new Promise(resolve=>server.close(resolve));await app.locals.close();});
+  const before=JSON.stringify(rag.metadata()),calls=embeddings,base=`http://127.0.0.1:${server.address().port}`;
+  const response=await fetch(base+'/api/rag/index'),data=await response.json();
+  assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');
+  assert.equal(data.documents.length,4);assert.equal(data.chunks.length,26);
+  const stored=rag.db.prepare('SELECT * FROM rag_chunks ORDER BY id LIMIT 1').get();
+  assert.deepEqual(data.chunks[0].vector,JSON.parse(stored.embedding));
+  assert.equal(data.chunks[0].content,stored.content);assert.equal(data.chunks[0].source_hash,stored.source_hash);
+  assert.ok(data.chunks.every(row=>row.vector.length===data.metadata.dimensions&&row.document_title&&row.access_role));
+  assert.equal(embeddings,calls);assert.equal(JSON.stringify(rag.metadata()),before);
+});

@@ -1,0 +1,748 @@
+{
+  "id": "agentica-orquestador-rag",
+  "name": "Agentica · Orquestador de cobranza · App + OpenAI v0.4.0",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Inicio manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{tenant_id:\"demo\",case_id:\"C-001\",mode:\"demo\"}}];"
+      },
+      "id": "input",
+      "name": "Caso y modo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/start",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 100000
+        }
+      },
+      "id": "Iniciar caso",
+      "name": "Iniciar caso",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Continuar Iniciar caso",
+              "leftValue": "={{ $json.state }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "Continuar Iniciar caso",
+      "name": "Continuar Iniciar caso",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/agent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({trace_id: $(\"Iniciar caso\").first().json.trace_id, agent_id: \"orquestador\"}) }}",
+        "options": {
+          "timeout": 100000
+        }
+      },
+      "id": "orquestador",
+      "name": "orquestador",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Continuar orquestador",
+              "leftValue": "={{ $json.state }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "Continuar orquestador",
+      "name": "Continuar orquestador",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/agent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({trace_id: $(\"Iniciar caso\").first().json.trace_id, agent_id: \"analista\"}) }}",
+        "options": {
+          "timeout": 100000
+        }
+      },
+      "id": "analista",
+      "name": "analista",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1328,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Continuar analista",
+              "leftValue": "={{ $json.state }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "Continuar analista",
+      "name": "Continuar analista",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/agent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({trace_id: $(\"Iniciar caso\").first().json.trace_id, agent_id: \"redactor\"}) }}",
+        "options": {
+          "timeout": 100000
+        }
+      },
+      "id": "redactor",
+      "name": "redactor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Continuar redactor",
+              "leftValue": "={{ $json.state }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "Continuar redactor",
+      "name": "Continuar redactor",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1984,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/agent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({trace_id: $(\"Iniciar caso\").first().json.trace_id, agent_id: \"revisor\"}) }}",
+        "options": {
+          "timeout": 100000
+        }
+      },
+      "id": "revisor",
+      "name": "revisor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2208,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Continuar revisor",
+              "leftValue": "={{ $json.state }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "Continuar revisor",
+      "name": "Continuar revisor",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2432,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/finish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({trace_id: $(\"Iniciar caso\").first().json.trace_id}) }}",
+        "options": {
+          "timeout": 100000
+        }
+      },
+      "id": "Preparar y capturar correo",
+      "name": "Preparar y capturar correo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2640,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Laboratorio manual anterior\nRama de demostración local, independiente de la entrada web superior. El modo predeterminado demo no llama a OpenAI.\nLa app se conecta a la rama Webhook y usa la credencial OpenAi account únicamente cuando el usuario envía una consulta.\nMCP y herramientas: backend Python en 127.0.0.1:8790. No copiar claves en prompts.",
+        "height": 300,
+        "width": 920
+      },
+      "id": "notes",
+      "name": "Leer antes de activar",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/legacy/rag",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({trace_id: $(\"Iniciar caso\").first().json.trace_id}) }}",
+        "options": {
+          "timeout": 190000
+        }
+      },
+      "id": "RAG-policies",
+      "name": "Subagente RAG — políticas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -176
+      ]
+    },
+    {
+      "id": "App · Consulta recibida",
+      "name": "App · Consulta recibida",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -650
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agentica-cobranza-chat",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "agentica-cobranza-chat"
+    },
+    {
+      "id": "Herramientas Python · Contexto",
+      "name": "Herramientas Python · Contexto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        -650
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/chat/context",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {
+          "timeout": 160000
+        }
+      }
+    },
+    {
+      "id": "¿Requiere OpenAI?",
+      "name": "¿Requiere OpenAI?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -650
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "use-model",
+              "leftValue": "={{ $json.call_openai }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "OpenAI · Orquestador",
+      "name": "OpenAI · Orquestador",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        -650
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.openai_payload) }}",
+        "options": {
+          "timeout": 90000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "Guardrails · Validar respuesta",
+      "name": "Guardrails · Validar respuesta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        -650
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/chat/result",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id: $(\"Herramientas Python · Contexto\").item.json.request_id, openai_response: $json.body, openai_status: $json.statusCode, execution_id: $execution.id}) }}",
+        "options": {
+          "timeout": 160000
+        }
+      }
+    },
+    {
+      "id": "App · Responder consulta",
+      "name": "App · Responder consulta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1200,
+        -650
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "App · Solicitar aclaración",
+      "name": "App · Solicitar aclaración",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        -400
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({...$json.response, execution_id: $execution.id, workflow_id: $workflow.id, model: \"no-invocado\"}) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "Demo · App conectada a n8n",
+      "name": "Demo · App conectada a n8n",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -1010
+      ],
+      "parameters": {
+        "content": "## App → n8n → Python/RAG → OpenAI → app\nLa API key se configura únicamente en la credencial OpenAi account. Modelo: gpt-5.4-mini. Una llamada como máximo por consulta. Sin reintentos automáticos.\nEl saldo lo determina SQLite; el LLM no lo modifica. Las políticas salen del índice documental.\nWebhook de producción: /webhook/agentica-cobranza-chat (autenticado). Publicar este workflow antes de usar la app.\nLa rama inferior manual se conserva como laboratorio anterior.",
+        "height": 260,
+        "width": 1140
+      }
+    }
+  ],
+  "connections": {
+    "Inicio manual": {
+      "main": [
+        [
+          {
+            "node": "Caso y modo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caso y modo": {
+      "main": [
+        [
+          {
+            "node": "Iniciar caso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Iniciar caso": {
+      "main": [
+        [
+          {
+            "node": "Continuar Iniciar caso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continuar Iniciar caso": {
+      "main": [
+        [
+          {
+            "node": "Subagente RAG — políticas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "orquestador": {
+      "main": [
+        [
+          {
+            "node": "Continuar orquestador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continuar orquestador": {
+      "main": [
+        [
+          {
+            "node": "analista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "analista": {
+      "main": [
+        [
+          {
+            "node": "Continuar analista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continuar analista": {
+      "main": [
+        [
+          {
+            "node": "redactor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "redactor": {
+      "main": [
+        [
+          {
+            "node": "Continuar redactor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continuar redactor": {
+      "main": [
+        [
+          {
+            "node": "revisor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "revisor": {
+      "main": [
+        [
+          {
+            "node": "Continuar revisor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continuar revisor": {
+      "main": [
+        [
+          {
+            "node": "Preparar y capturar correo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subagente RAG — políticas": {
+      "main": [
+        [
+          {
+            "node": "orquestador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "App · Consulta recibida": {
+      "main": [
+        [
+          {
+            "node": "Herramientas Python · Contexto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Herramientas Python · Contexto": {
+      "main": [
+        [
+          {
+            "node": "¿Requiere OpenAI?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Requiere OpenAI?": {
+      "main": [
+        [
+          {
+            "node": "OpenAI · Orquestador",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "App · Solicitar aclaración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI · Orquestador": {
+      "main": [
+        [
+          {
+            "node": "Guardrails · Validar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails · Validar respuesta": {
+      "main": [
+        [
+          {
+            "node": "App · Responder consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "active": false
+}

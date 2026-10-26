@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Demo de la diapositiva 33 · Cobranza con RAG</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/whatsapp.css"><link rel="stylesheet" href="/lesson33.css"></head>
+<body>
+<header><div><span class="eyebrow">AGENTICA AI · DEMO LOCAL · DIAPOSITIVA 33</span><h1>Flujo RAG del agente de cobranza</h1><p>Datos operativos, evidencia documental y aprobación antes de actuar.</p><a class="library-link" href="/documentos/">Consultar políticas y linaje documental</a></div><div class="health-status"><div id="dbStatus" class="status">Verificando datos…</div><div id="waStatus" class="status">Envío simulado por defecto</div></div></header>
+<div class="implementation-note" id="implementationNote">Consultando la configuración de la demo…</div>
+<section id="localRagPanel" class="panel local-rag-panel" hidden>
+  <div class="rag-lab-heading"><div><span class="eyebrow dark">RAG LOCAL FUNCIONAL</span><h2>Documentos reales, modelos locales y Ground Truth</h2><p id="localIndexStatus" role="status">Comprobando el índice…</p></div><button id="rebuildIndex" type="button">Reconstruir índice desde los Word</button></div>
+  <p><a href="/vector-index.html" target="_blank" rel="noopener">Abrir el índice vectorial: fragmentos y vectores</a></p>
+  <p class="note">Corpus docente con aprobación experta simulada · Experto docente simulado · 20/10/2026. Las versiones anteriores se conservan en el histórico.</p>
+  <div id="sourceDocuments" class="source-documents"></div>
+  <form id="ragQuestionForm"><label for="ragQuestion">Pregunta libre sobre los documentos<textarea id="ragQuestion" rows="2" maxlength="1500" required>¿Qué información debe contener una promesa de pago?</textarea></label><button id="ragQuestionButton" type="submit">Consultar el RAG local</button></form>
+  <div id="ragAnswerStatus" role="status"></div><div id="ragAnswer" class="rag-local-answer" hidden></div>
+  <details id="groundTruthPanel"><summary>Flujo de Ground Truth y evaluación</summary>
+    <ol class="gt-flow"><li>Preparar preguntas y referencias</li><li>Validar con una persona</li><li>Ejecutar contra el RAG</li><li>Revisar los resultados</li></ol>
+    <p class="note">El corpus y los casos de referencia incluyen una aprobación experta simulada para recorrer la clase. Cada ficha conserva su estado, versión y revisor. Aprobar una referencia no aprueba las respuestas del modelo: las comprobaciones automáticas se complementan con revisión del respaldo y de la respuesta completa.</p>
+    <label for="gtReviewer">Responsable de revisión<input id="gtReviewer" placeholder="Nombre del revisor" maxlength="100"></label>
+    <div id="gtCases"></div>
+    <label for="gtK">Cantidad de fragmentos a revisar por pregunta (K)<select id="gtK"><option value="1">1</option><option value="3">3</option><option value="5" selected>5</option><option value="10">10</option></select></label>
+    <p class="note">Esta cantidad se aplica a la próxima evaluación. Los resultados guardados mantienen su valor original.</p>
+    <details id="gtIndicatorGuide"><summary>Cómo interpretar los indicadores: fórmulas y ejemplos</summary><div id="gtIndicatorGuideContent"></div></details>
+    <button id="gtRun" type="button">Ejecutar casos seleccionados</button><p id="gtStatus" role="status"></p><div id="gtMetrics"></div><div id="gtResults"></div>
+    <details><summary>Crear una pregunta de referencia</summary><form id="gtCreateForm">
+      <label for="gtQuestion">Pregunta<textarea id="gtQuestion" required maxlength="1500"></textarea></label>
+      <label for="gtExpected">Respuesta esperada<textarea id="gtExpected" required maxlength="4000"></textarea></label>
+      <label class="review-check"><input id="gtAbstain" type="checkbox"> Este caso debe abstenerse por falta de evidencia.</label>
+      <label for="gtSource">Sección real que respalda la respuesta<select id="gtSource" required></select></label>
+      <button type="submit">Guardar como borrador</button>
+    </form></details>
+  </details>
+</section>
+<main>
+<aside class="panel">
+  <h2>Consulta del asesor</h2>
+  <form id="searchForm">
+    <label for="actor">Perfil simulado<select id="actor" disabled><option value="asesor">Asesor de Cobranzas</option><option value="supervisor">Supervisor de Cobranzas</option></select></label>
+    <label for="documentType">Tipo de documento<select id="documentType" disabled><option>DNI</option><option>RUC</option></select></label>
+    <label for="documentNumber">Identificador sintético<input id="documentNumber" readonly value="74851236" inputmode="numeric" required maxlength="11"></label>
+    <label for="query">Pregunta<textarea id="query" readonly rows="4" maxlength="1500">Revisar pagos atrasados, historial y política aplicable para decidir si preparar un recordatorio</textarea></label>
+    <button id="searchButton" type="submit">Mostrar recorrido</button>
+  </form>
+  <p class="note">El perfil es una simulación de permisos para la clase, sin autenticación real. El modo de datos aparece en la cabecera.</p>
+  <p id="error" class="error-message" role="alert"></p>
+</aside>
+<section class="lesson-content">
+  <div class="panel rag-lab">
+    <div class="rag-lab-heading"><div><span class="eyebrow dark">EL MISMO FLUJO DE LA DIAPOSITIVA 33</span><h2>Un caso, ocho etapas</h2><p>La pregunta predeterminada recorre ocho etapas con respuestas preparadas para la clase.</p></div><div class="tour-actions"><button id="pipelineReset" type="button" class="secondary">Reiniciar recorrido</button></div></div>
+    <div class="pipeline-question"><strong>Pregunta del asesor</strong><p id="pipelineQuestion"></p><span id="pipelineQuestionStatus" class="note" role="status"></span></div>
+    <p class="note">Simulación didáctica: datos, vector, posiciones y respuesta precargados. Este recorrido no consulta modelos ni envía mensajes.</p>
+    <nav id="pipelineSteps" class="pipeline-steps" aria-label="Etapas del agente de cobranza"></nav>
+    <div class="pipeline-stage">
+      <div class="stage-copy"><span id="pipelineCounter" class="stage-number"></span><h3 id="pipelineTitle"></h3><p id="pipelineDescription"></p><div class="io-grid"><div><small>ENTRADA</small><p id="pipelineInput"></p></div><div><small>PROCESO</small><p id="pipelineProcess"></p></div><div><small>SALIDA</small><p id="pipelineOutput"></p></div></div><p id="pipelineRisk" class="stage-risk"></p></div>
+      <div class="stage-visual"><div id="pipelineArtifact" class="artifact-view" aria-live="polite"></div><div class="artifact-caption"><span id="pipelineEvidence"></span><b id="pipelineMetric"></b></div></div>
+    </div>
+    <div class="step-navigation"><button id="pipelinePrev" type="button" class="secondary">Anterior</button><button id="pipelineNext" type="button">Siguiente etapa</button></div>
+  </div>
+  <div id="empty" class="panel empty">Pulsa Mostrar recorrido para ver al instante los datos y resultados preparados.</div>
+  <div id="dashboard" hidden>
+    <div class="panel"><h2 id="currentCase"></h2><div id="traces" class="trace-grid"></div></div>
+    <div class="columns">
+      <div class="panel"><span class="eyebrow dark">DATOS OPERATIVOS</span><h2>Deuda, historial y cliente</h2><div id="customer"></div><h3>Pagos atrasados</h3><div id="debts"></div><h3>Historial de pago</h3><div id="history"></div></div>
+      <div class="panel"><span class="eyebrow dark">CONOCIMIENTO DOCUMENTAL</span><h2>Evidencia del RAG</h2><div id="queryTransform"></div><div id="rag"></div></div>
+    </div>
+    <div class="panel"><h2>Reglas, permisos y evidencia</h2><div id="decision"></div><h3>Respuesta fundamentada</h3><p id="answer"></p><div id="citations" class="citations"></div>
+      <div id="reminder" hidden>
+        <h3>Propuesta editable para aprobación</h3>
+        <p id="authorizedContact" class="note"></p>
+        <label for="channel">Canal<select id="channel"><option value="WHATSAPP">WhatsApp</option><option value="EMAIL">Correo</option></select></label>
+        <label for="email">Correo del CRM<input id="email" type="email"></label>
+        <label for="whatsapp">WhatsApp del CRM<input id="whatsapp" inputmode="numeric" maxlength="15"></label>
+        <label for="message">Mensaje<textarea id="message" rows="4" maxlength="1000"></textarea></label>
+        <label class="review-check"><input id="reviewConfirmed" type="checkbox"> Revisé el caso, la evidencia, el contacto y el mensaje.</label>
+        <button id="approveButton" type="button" disabled>Aprobar esta propuesta</button><p id="approvalStatus" role="status"></p>
+        <div class="actions"><button id="emailButton" type="button" disabled>Abrir borrador aprobado</button><button id="whatsappButton" type="button" disabled>Procesar WhatsApp aprobado</button></div>
+        <p class="note">Editar la propuesta invalida la aprobación. El servidor vuelve a consultar el caso antes de actuar.</p>
+      </div>
+      <div id="sendResult" class="send-result" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="/lesson33.js"></script>
+<script src="/gt-metrics.js"></script>
+<script src="/local-mode.js"></script>
+</body></html>

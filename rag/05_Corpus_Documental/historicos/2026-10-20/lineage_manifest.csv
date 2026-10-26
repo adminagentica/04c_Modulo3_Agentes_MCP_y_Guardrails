@@ -1,0 +1,5 @@
+document_code,version,title,owner,valid_from,status,access_role,sha256,chunk_count
+POL-COB-04,v3,Política de cobranza temprana,Gerencia de Cobranzas,2026-08-01,Vigente,COBRANZA,5f58b54ac2076bf2fe004d316ba6ed0520d4ac59a3e3d8f46af2d34e7e97a6b1,5
+POL-PAG-02,v4,Política de aplicación y conciliación de pagos,Gerencia de Operaciones,2026-07-20,Vigente,COBRANZA,9796a7e4c9978c3c2afec936efbb72eaf2a47de84f5312b742be1d240cb8581f,5
+MAN-ATN-02,v2,Manual de atención especial al cliente,Gerencia de Experiencia del Cliente,2026-06-15,Vigente,COBRANZA,94aa19657cc8cc32d29bcc6afca5b58e2c407615eae3ef2cb23def6a3424ff98,5
+POL-PRO-03,v3,Política de promesas de pago,Gerencia de Cobranzas,2026-06-01,Vigente,COBRANZA,5561d9d7ead8e3d0eecf2e283872820e8b07065081a93df9096debf8f3341d8a,5

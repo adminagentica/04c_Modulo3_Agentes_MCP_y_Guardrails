@@ -1,0 +1,146 @@
+{
+  "generated_at": "2026-10-17",
+  "classification": "Datos sintéticos para formación",
+  "documents": [
+    {
+      "code": "POL-COB-04",
+      "version": "v3",
+      "title": "Política de cobranza temprana",
+      "owner": "Gerencia de Cobranzas",
+      "approver": "Comité de Riesgo Operativo",
+      "published": "2026-08-01",
+      "valid_from": "2026-08-01",
+      "status": "Vigente",
+      "access": "COBRANZA",
+      "source": "Repositorio corporativo de políticas",
+      "hash": "5f58b54ac2076bf2fe004d316ba6ed0520d4ac59a3e3d8f46af2d34e7e97a6b1",
+      "chunks": [
+        [
+          "§2",
+          "Fuentes operativas"
+        ],
+        [
+          "§3",
+          "Condiciones de contacto"
+        ],
+        [
+          "§5",
+          "Gestión temprana"
+        ],
+        [
+          "§6",
+          "Canales y trazabilidad"
+        ],
+        [
+          "§7",
+          "Excepciones"
+        ]
+      ]
+    },
+    {
+      "code": "POL-PAG-02",
+      "version": "v4",
+      "title": "Política de aplicación y conciliación de pagos",
+      "owner": "Gerencia de Operaciones",
+      "approver": "Jefatura de Finanzas",
+      "published": "2026-07-15",
+      "valid_from": "2026-07-20",
+      "status": "Vigente",
+      "access": "COBRANZA",
+      "source": "Repositorio corporativo de operaciones",
+      "hash": "9796a7e4c9978c3c2afec936efbb72eaf2a47de84f5312b742be1d240cb8581f",
+      "chunks": [
+        [
+          "§2",
+          "Evidencia admitida"
+        ],
+        [
+          "§3",
+          "Estados del pago"
+        ],
+        [
+          "§4",
+          "Conciliación"
+        ],
+        [
+          "§5",
+          "Reanudación"
+        ],
+        [
+          "§6",
+          "Control del asistente"
+        ]
+      ]
+    },
+    {
+      "code": "MAN-ATN-02",
+      "version": "v2",
+      "title": "Manual de atención especial al cliente",
+      "owner": "Gerencia de Experiencia del Cliente",
+      "approver": "Responsable de Conducta de Mercado",
+      "published": "2026-06-10",
+      "valid_from": "2026-06-15",
+      "status": "Vigente",
+      "access": "COBRANZA",
+      "source": "Biblioteca interna de atención",
+      "hash": "94aa19657cc8cc32d29bcc6afca5b58e2c407615eae3ef2cb23def6a3424ff98",
+      "chunks": [
+        [
+          "§1",
+          "Señales de atención especial"
+        ],
+        [
+          "§2",
+          "Registro mínimo"
+        ],
+        [
+          "§3",
+          "Atención especial"
+        ],
+        [
+          "§4",
+          "Derivación"
+        ],
+        [
+          "§5",
+          "Comunicación"
+        ]
+      ]
+    },
+    {
+      "code": "POL-PRO-03",
+      "version": "v3",
+      "title": "Política de promesas de pago",
+      "owner": "Gerencia de Cobranzas",
+      "approver": "Comité de Riesgo Operativo",
+      "published": "2026-05-20",
+      "valid_from": "2026-06-01",
+      "status": "Vigente",
+      "access": "COBRANZA",
+      "source": "Repositorio corporativo de políticas",
+      "hash": "5561d9d7ead8e3d0eecf2e283872820e8b07065081a93df9096debf8f3341d8a",
+      "chunks": [
+        [
+          "§1",
+          "Registro de la promesa"
+        ],
+        [
+          "§2",
+          "Estados permitidos"
+        ],
+        [
+          "§4",
+          "Cumplimiento parcial"
+        ],
+        [
+          "§6",
+          "Escalamiento"
+        ],
+        [
+          "§7",
+          "Promesas incumplidas"
+        ]
+      ]
+    }
+  ]
+}

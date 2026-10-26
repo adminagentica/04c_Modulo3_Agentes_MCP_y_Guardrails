@@ -1,0 +1,461 @@
+{
+  "prepared": true,
+  "preparedAt": "2026-10-23T17:32:55.384703+00:00",
+  "preparedCanPrepare": true,
+  "query": {
+    "documentType": "DNI",
+    "documentNumber": "74851236",
+    "query": "Revisar pagos atrasados, historial y política aplicable para decidir si preparar un recordatorio",
+    "actor": "asesor",
+    "roles": [
+      "COBRANZA"
+    ]
+  },
+  "actor": "Asesor de Cobranzas",
+  "customer": {
+    "id": 1,
+    "fullName": "Cliente Demo Uno",
+    "email": "cliente.demo@example.com",
+    "whatsapp": "51999900001",
+    "preferredChannel": "WHATSAPP",
+    "specialAttention": false
+  },
+  "overdue": [
+    {
+      "customer_id": 1,
+      "account_code": "CB-204",
+      "days_overdue": 18,
+      "outstanding_amount": 1850,
+      "status": "OVERDUE"
+    }
+  ],
+  "history": [
+    {
+      "customer_id": 1,
+      "event_type": "PAYMENT",
+      "status": "APPLIED",
+      "amount": 900,
+      "details": "Pago anterior aplicado"
+    }
+  ],
+  "total": 1850,
+  "decision": {
+    "code": "PREPARED_REVIEW",
+    "label": "Borrador para revisión humana · simulación",
+    "reason": "18 días de atraso, saldo vencido positivo y ninguna condición de pausa en el caso preparado. El recorrido no habilita aprobación ni envío reales.",
+    "canApprove": false
+  },
+  "answer": "El caso registra S/ 1,850 de deuda vencida con 18 días de atraso y un pago anterior ya aplicado. No presenta pago pendiente de conciliación, promesa incumplida ni atención especial. Puede prepararse un borrador informativo para revisión humana, siempre que se verifiquen las condiciones de contacto y sus excepciones [3] [7]. La Política de cobranza temprana permite preparar ese borrador, conservando el saldo consultado y sin inventar descuentos, cuotas o prórrogas [5]. El canal del cliente es WhatsApp. Este recorrido es una simulación y no envía mensajes.",
+  "citations": [
+    {
+      "id": 5,
+      "code": "POL-COB-04",
+      "version": "v4",
+      "section": "§5 Gestión temprana",
+      "title": "Política de cobranza temprana",
+      "content": "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7.",
+      "url": "/rag/sources/POL-COB-04#chunk-5",
+      "sourceHash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47"
+    },
+    {
+      "id": 3,
+      "code": "POL-COB-04",
+      "version": "v4",
+      "section": "§3 Condiciones de contacto",
+      "title": "Política de cobranza temprana",
+      "content": "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor.",
+      "url": "/rag/sources/POL-COB-04#chunk-3",
+      "sourceHash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47"
+    },
+    {
+      "id": 7,
+      "code": "POL-COB-04",
+      "version": "v4",
+      "section": "§7 Excepciones",
+      "title": "Política de cobranza temprana",
+      "content": "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto.",
+      "url": "/rag/sources/POL-COB-04#chunk-7",
+      "sourceHash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47"
+    },
+    {
+      "id": 6,
+      "code": "POL-COB-04",
+      "version": "v4",
+      "section": "§6 Canales y trazabilidad",
+      "title": "Política de cobranza temprana",
+      "content": "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío.",
+      "url": "/rag/sources/POL-COB-04#chunk-6",
+      "sourceHash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47"
+    }
+  ],
+  "rag": [
+    {
+      "id": 5,
+      "document_code": "POL-COB-04",
+      "version": "v4",
+      "section": "§5 Gestión temprana",
+      "title": "Política de cobranza temprana",
+      "content": "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7.",
+      "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+      "access_role": "COBRANZA",
+      "vectorRank": 2,
+      "lexicalRank": 3,
+      "fusionRank": 2,
+      "rerankPosition": 1,
+      "rerankReason": "Regla para preparar un borrador informativo con revisión humana."
+    },
+    {
+      "id": 3,
+      "document_code": "POL-COB-04",
+      "version": "v4",
+      "section": "§3 Condiciones de contacto",
+      "title": "Política de cobranza temprana",
+      "content": "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor.",
+      "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+      "access_role": "COBRANZA",
+      "vectorRank": 1,
+      "lexicalRank": 1,
+      "fusionRank": 1,
+      "rerankPosition": 2,
+      "rerankReason": "Comprueba atraso, saldo y ausencia de condiciones de pausa."
+    },
+    {
+      "id": 7,
+      "document_code": "POL-COB-04",
+      "version": "v4",
+      "section": "§7 Excepciones",
+      "title": "Política de cobranza temprana",
+      "content": "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto.",
+      "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+      "access_role": "COBRANZA",
+      "vectorRank": 4,
+      "lexicalRank": 2,
+      "fusionRank": 3,
+      "rerankPosition": 3,
+      "rerankReason": "Muestra las excepciones que bloquean el contacto."
+    },
+    {
+      "id": 6,
+      "document_code": "POL-COB-04",
+      "version": "v4",
+      "section": "§6 Canales y trazabilidad",
+      "title": "Política de cobranza temprana",
+      "content": "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío.",
+      "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+      "access_role": "COBRANZA",
+      "vectorRank": 3,
+      "lexicalRank": 4,
+      "fusionRank": 4,
+      "rerankPosition": 4,
+      "rerankReason": "Comprueba las condiciones de comunicación y aprobación."
+    }
+  ],
+  "mode": "prepared",
+  "generation": {
+    "called": false,
+    "model": "Respuesta precargada para clase"
+  },
+  "elapsedMs": 0,
+  "ragPipeline": {
+    "raw": "Revisar pagos atrasados, historial y política aplicable para decidir si preparar un recordatorio",
+    "retrievalText": "Revisar pagos atrasados, historial y política aplicable para decidir si preparar un recordatorio\nContexto preparado: saldo vencido S/ 1,850, atraso 18 días, pago anterior aplicado y ninguna condición de pausa.",
+    "normalized": "revisar pagos atrasados, historial y política aplicable para decidir si preparar un recordatorio",
+    "concepts": [
+      "deuda vencida",
+      "pago aplicado",
+      "revisión humana"
+    ],
+    "queryVector": [
+      0.83,
+      0.42,
+      0.12,
+      0.21
+    ],
+    "dimensions": [
+      "cobranza",
+      "pagos",
+      "atención",
+      "promesas"
+    ],
+    "dimensionCount": 4,
+    "model": "Vector ilustrativo precargado",
+    "lexicalMethod": "Ordenamientos ilustrativos precargados para la explicación",
+    "vectorCandidates": [
+      {
+        "id": 3,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§3 Condiciones de contacto",
+        "title": "Política de cobranza temprana",
+        "content": "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 1,
+        "lexicalRank": 1,
+        "fusionRank": 1,
+        "rerankPosition": 2,
+        "rerankReason": "Comprueba atraso, saldo y ausencia de condiciones de pausa."
+      },
+      {
+        "id": 5,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§5 Gestión temprana",
+        "title": "Política de cobranza temprana",
+        "content": "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 2,
+        "lexicalRank": 3,
+        "fusionRank": 2,
+        "rerankPosition": 1,
+        "rerankReason": "Regla para preparar un borrador informativo con revisión humana."
+      },
+      {
+        "id": 6,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§6 Canales y trazabilidad",
+        "title": "Política de cobranza temprana",
+        "content": "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 3,
+        "lexicalRank": 4,
+        "fusionRank": 4,
+        "rerankPosition": 4,
+        "rerankReason": "Comprueba las condiciones de comunicación y aprobación."
+      },
+      {
+        "id": 7,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§7 Excepciones",
+        "title": "Política de cobranza temprana",
+        "content": "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 4,
+        "lexicalRank": 2,
+        "fusionRank": 3,
+        "rerankPosition": 3,
+        "rerankReason": "Muestra las excepciones que bloquean el contacto."
+      }
+    ],
+    "lexicalCandidates": [
+      {
+        "id": 3,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§3 Condiciones de contacto",
+        "title": "Política de cobranza temprana",
+        "content": "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 1,
+        "lexicalRank": 1,
+        "fusionRank": 1,
+        "rerankPosition": 2,
+        "rerankReason": "Comprueba atraso, saldo y ausencia de condiciones de pausa."
+      },
+      {
+        "id": 7,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§7 Excepciones",
+        "title": "Política de cobranza temprana",
+        "content": "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 4,
+        "lexicalRank": 2,
+        "fusionRank": 3,
+        "rerankPosition": 3,
+        "rerankReason": "Muestra las excepciones que bloquean el contacto."
+      },
+      {
+        "id": 5,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§5 Gestión temprana",
+        "title": "Política de cobranza temprana",
+        "content": "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 2,
+        "lexicalRank": 3,
+        "fusionRank": 2,
+        "rerankPosition": 1,
+        "rerankReason": "Regla para preparar un borrador informativo con revisión humana."
+      },
+      {
+        "id": 6,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§6 Canales y trazabilidad",
+        "title": "Política de cobranza temprana",
+        "content": "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 3,
+        "lexicalRank": 4,
+        "fusionRank": 4,
+        "rerankPosition": 4,
+        "rerankReason": "Comprueba las condiciones de comunicación y aprobación."
+      }
+    ],
+    "fused": [
+      {
+        "id": 3,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§3 Condiciones de contacto",
+        "title": "Política de cobranza temprana",
+        "content": "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 1,
+        "lexicalRank": 1,
+        "fusionRank": 1,
+        "rerankPosition": 2,
+        "rerankReason": "Comprueba atraso, saldo y ausencia de condiciones de pausa."
+      },
+      {
+        "id": 5,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§5 Gestión temprana",
+        "title": "Política de cobranza temprana",
+        "content": "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 2,
+        "lexicalRank": 3,
+        "fusionRank": 2,
+        "rerankPosition": 1,
+        "rerankReason": "Regla para preparar un borrador informativo con revisión humana."
+      },
+      {
+        "id": 7,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§7 Excepciones",
+        "title": "Política de cobranza temprana",
+        "content": "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 4,
+        "lexicalRank": 2,
+        "fusionRank": 3,
+        "rerankPosition": 3,
+        "rerankReason": "Muestra las excepciones que bloquean el contacto."
+      },
+      {
+        "id": 6,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§6 Canales y trazabilidad",
+        "title": "Política de cobranza temprana",
+        "content": "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 3,
+        "lexicalRank": 4,
+        "fusionRank": 4,
+        "rerankPosition": 4,
+        "rerankReason": "Comprueba las condiciones de comunicación y aprobación."
+      }
+    ],
+    "reranked": [
+      {
+        "id": 5,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§5 Gestión temprana",
+        "title": "Política de cobranza temprana",
+        "content": "Para atrasos de hasta 30 días, el agente puede preparar una propuesta dentro de los rangos autorizados. La confirmación requiere un responsable humano. En esta demo no existen rangos numéricos habilitados: solo se admite un borrador informativo que conserve el saldo consultado. Aplican las condiciones de la sección 3 y las excepciones de la sección 7.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 2,
+        "lexicalRank": 3,
+        "fusionRank": 2,
+        "rerankPosition": 1,
+        "rerankReason": "Regla para preparar un borrador informativo con revisión humana."
+      },
+      {
+        "id": 3,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§3 Condiciones de contacto",
+        "title": "Política de cobranza temprana",
+        "content": "El contacto solo puede prepararse para una obligación con 1 a 30 días de atraso y saldo vencido positivo, sin pago pendiente de conciliación, promesa incumplida ni marca vigente de atención especial. Deben cumplirse además las secciones 5, 6 y 7. Para más de 30 días se deriva al supervisor.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 1,
+        "lexicalRank": 1,
+        "fusionRank": 1,
+        "rerankPosition": 2,
+        "rerankReason": "Comprueba atraso, saldo y ausencia de condiciones de pausa."
+      },
+      {
+        "id": 7,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§7 Excepciones",
+        "title": "Política de cobranza temprana",
+        "content": "Un pago pendiente, una promesa incumplida, información contradictoria o una marca de atención especial obliga a pausar el flujo y derivar el caso. La conciliación se rige por POL-PAG-02 §4; la atención especial por MAN-ATN-02 §3; y las promesas incumplidas por POL-PRO-03 §7. Estas pausas prevalecen sobre la preparación de contacto.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 4,
+        "lexicalRank": 2,
+        "fusionRank": 3,
+        "rerankPosition": 3,
+        "rerankReason": "Muestra las excepciones que bloquean el contacto."
+      },
+      {
+        "id": 6,
+        "document_code": "POL-COB-04",
+        "version": "v4",
+        "section": "§6 Canales y trazabilidad",
+        "title": "Política de cobranza temprana",
+        "content": "Los recordatorios se envían únicamente al correo o número autorizado. Se registra la consulta, las fuentes utilizadas, la versión de la política, la aprobación y el resultado del envío.",
+        "source_hash": "11c019c9f5409f2c5253d6dd3a1b6a4414b0ad9728a7398e721a5241337a0e47",
+        "access_role": "COBRANZA",
+        "vectorRank": 3,
+        "lexicalRank": 4,
+        "fusionRank": 4,
+        "rerankPosition": 4,
+        "rerankReason": "Comprueba las condiciones de comunicación y aprobación."
+      }
+    ],
+    "selectedIds": [
+      5,
+      3,
+      7,
+      6
+    ]
+  },
+  "reminder": "",
+  "traces": [
+    {
+      "agent": "Caso del asesor",
+      "source": "Guion precargado",
+      "result": "Revisar pagos atrasados, historial y política aplicable para decidir si preparar un recordatorio"
+    },
+    {
+      "agent": "Datos operativos",
+      "source": "Instantánea de datos sintéticos",
+      "result": "S/ 1,850 vencidos, 18 días de atraso y pago anterior aplicado."
+    },
+    {
+      "agent": "Recuperación",
+      "source": "Resultados ilustrativos precargados",
+      "result": "Cuatro pasajes de la Política de cobranza temprana v4."
+    },
+    {
+      "agent": "Respuesta",
+      "source": "Redacción preparada para clase",
+      "result": "Preparar borrador para revisión humana, sin envío."
+    }
+  ]
+}
