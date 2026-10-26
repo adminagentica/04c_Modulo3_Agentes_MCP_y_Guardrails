@@ -43,9 +43,9 @@ class AgentTeamTests(unittest.TestCase):
         self.assertNotIn('IGNORA',json.dumps(memory));self.assertNotIn('blocked',json.dumps(memory))
         self.complete();prepared2=self.prepare(ident=str(uuid.uuid4()))
         self.assertEqual(len(json.loads(prepared2['openai_payload']['input'])['memory_context']['events']),3)
-    def test_conflicting_dni_never_opens_internal_mcp(self):
+    def test_multiple_dnis_never_opens_internal_mcp(self):
         with patch('agent_team.TeamMcpSession') as client:
-            result=self.chat.prepare('saldo 40112233','74851236',self.ident)
+            result=self.chat.prepare('saldo 40112233 y 74851236','',self.ident)
         client.assert_not_called();self.assertFalse(result['call_openai']);self.assertEqual(result['response']['state'],'clarify')
         self.assertEqual({e['agent_id'] for e in result['response']['agent_trace']},{'orquestador'})
     def test_policy_only_does_not_read_customer_or_memory(self):

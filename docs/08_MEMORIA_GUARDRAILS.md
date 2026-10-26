@@ -10,13 +10,13 @@ El índice documental y el historial de un caso son almacenes distintos. No envi
 
 | Capa | Ejemplo | Resultado |
 |---|---|---|
-| Entrada | DNI escrito distinto al seleccionado | Aclaración sin OpenAI ni divulgación |
+| Entrada | Dos DNI en una misma pregunta | Aclaración sin OpenAI ni divulgación |
 | Identidad por correo | Remitente no autorizado | Rechazo sin respuesta de deuda |
 | Datos | Monto SQL difiere de lo propuesto | Mostrar solo importe del backend |
 | Documentación | Cita inventada o índice modificado | Rechazo o revisión |
 | Negocio | Caso pagado/disputado/sin consentimiento | Bloquear preparación de contacto |
 | Contacto | Recordatorio reservado o contacto reciente | Evitar duplicidad y respetar intervalo |
-| Acción | Consulta sobre envío | Evaluación; no ejecutar correo |
+| Acción | Primera consulta sobre envío | Preparar borrador; exigir confirmación posterior |
 | Salida | JSON fuera del contrato | Detener y registrar |
 | Entorno | API key o token en archivo público | Fallar la revisión de distribución |
 

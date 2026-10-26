@@ -1,3 +1,9 @@
+# 0.8.1
+
+- Cliente activo obtenido del DNI escrito, sin selector obligatorio; seguimiento y restauración por conversación.
+- Cambio de cliente invalida borradores pendientes y evita completar una respuesta del contexto anterior.
+- Gmail mantiene la validación correo + DNI. Pruebas sin consumo de modelos ni envío real.
+
 # 0.8.0
 
 - Borrador local completo al consultar saldo y recordatorio, con confirmación en el siguiente turno.

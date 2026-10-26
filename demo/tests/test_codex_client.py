@@ -10,7 +10,7 @@ class CodexClientTests(unittest.TestCase):
     def test_codex_profile_only_exposes_orchestrator(self):
         tools=asyncio.run(create_mcp(None,'codex').list_tools())
         self.assertEqual([t.name for t in tools],['consultar_orquestador'])
-        self.assertIn('dni_seleccionado',tools[0].inputSchema['required'])
+        self.assertNotIn('dni_seleccionado',tools[0].inputSchema['required'])
     def test_codex_calls_same_n8n_bridge(self):
         with patch.dict(os.environ,{'COBRANZA_TOKEN':'local-token-for-test'}),patch('codex_client.ask_n8n',return_value={'orchestrated_by':'n8n'}) as call:
             result=consultar_flujo('saldo DNI 40112233','74851236')

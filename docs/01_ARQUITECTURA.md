@@ -1,6 +1,6 @@
 # Arquitectura: un equipo orquestado
 
-La arquitectura principal de la versión 0.8.0 utiliza un supervisor ejecutable, especialistas, memoria, guardrails, MCP Python y RAG. La app y Codex/Claude entran por el mismo workflow n8n. El canal Gmail usa el mismo supervisor y una capacidad de correo separada.
+La arquitectura principal de la versión 0.8.1 utiliza un supervisor ejecutable, especialistas, memoria, guardrails, MCP Python y RAG. La app y Codex/Claude entran por el mismo workflow n8n. El canal Gmail usa el mismo supervisor y una capacidad de correo separada.
 
 ```mermaid
 flowchart TD
@@ -86,3 +86,5 @@ El supervisor deriva mediante una capacidad MCP separada a human_handoffs. La ba
 La generación independiente del RAG usa OpenAI mediante agentica-rag-openai. La consulta del supervisor solo recupera fragmentos y mantiene su única generación en el workflow principal. Ver 11_CASOS_Y_CITAS.md y 12_RAG_OPENAI.md.
 
 La ruta conversacional de recordatorios incorpora memoria, preparación y confirmación vinculada al borrador exacto. [Diagrama y contratos](13_BORRADOR_Y_CONFIRMACION.md).
+
+El chat identifica al cliente por el DNI explícito y conserva active_dni por conversación. Un cambio de cliente invalida borradores pendientes, y una respuesta tardía no puede completar el contexto anterior. El campo dni_seleccionado solo se conserva para compatibilidad de clientes; no se exige en la app.

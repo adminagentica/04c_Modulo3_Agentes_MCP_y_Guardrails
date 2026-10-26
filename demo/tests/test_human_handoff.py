@@ -34,7 +34,7 @@ class HumanHandoffTests(unittest.TestCase):
         self.assertFalse(ticket['context']['case_validated']);self.assertIsNone(ticket['case_id'])
         self.assertNotIn('balance_cents',ticket['context'])
     def test_conflicting_identity_is_not_attached_to_a_ticket(self):
-        result=self.chat.prepare('Quiero hablar con un ejecutivo humano del DNI 40112233','74851236',self.ident)
+        result=self.chat.prepare('Quiero hablar con un ejecutivo humano del DNI 40112233 y 74851236','',self.ident)
         self.assertFalse(result['call_openai']);self.assertEqual(result['response']['state'],'clarify')
         self.assertEqual(self.queue.list(),[])
     def test_only_minimal_validated_context_is_stored(self):

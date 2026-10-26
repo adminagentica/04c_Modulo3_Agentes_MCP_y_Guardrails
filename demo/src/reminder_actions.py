@@ -38,6 +38,8 @@ class ReminderActions:
             c.execute('BEGIN IMMEDIATE')
             existing=c.execute('SELECT * FROM reminder_drafts WHERE request_id=? AND conversation_id=?',(request_id,conversation_id)).fetchone()
             if existing:return self.view(existing)
+            active=c.execute('SELECT active_dni FROM chat_conversations WHERE id=?',(conversation_id,)).fetchone()
+            if active and active[0] and active[0]!=dni:raise ValueError('Cambió el cliente activo antes de preparar el borrador')
             account=self.service.balance(dni,c);check=self.service.reminder_eligibility(dni,c)
             if not check['can_prepare'] or account['email']!=MAILBOX:raise ValueError('No se puede preparar el recordatorio de este cliente')
             case=self.service.store.case('demo',account['case_id'],c)
@@ -61,6 +63,8 @@ class ReminderActions:
         return {'state':'answered','answer':'Borrador cancelado. No se envió ningún correo.','orchestrated_by':'n8n','citations':[]}
 
     def check(self,draft,c,ignore_key=''):
+        active=c.execute('SELECT active_dni FROM chat_conversations WHERE id=?',(draft['conversation_id'],)).fetchone()
+        if active and active[0] and active[0]!=draft['dni']:raise ValueError('Cambió el cliente activo; prepara otro borrador')
         account=self.service.balance(draft['dni'],c)
         case=self.service.store.case('demo',draft['case_id'],c)
         check=self.service.reminder_eligibility(draft['dni'],c,ignore_key=ignore_key)
@@ -75,7 +79,7 @@ class ReminderActions:
         draft=self.pending(conversation_id)
         if not draft:return {'state':'clarify','answer':'Primero prepara y revisa un borrador en esta conversación. No se envió ningún correo.','citations':[],'orchestrated_by':'n8n'}
         if selected_dni and selected_dni!=draft['dni']:
-            return {'state':'clarify','answer':'El cliente seleccionado no coincide con el borrador pendiente. Revisa el cliente antes de confirmar.','citations':[],'orchestrated_by':'n8n'}
+            return {'state':'clarify','answer':'Cambió el cliente activo. Prepara y revisa un nuevo borrador para este cliente antes de confirmar.','citations':[],'orchestrated_by':'n8n'}
         if draft['state']=='draft' and expected_draft_id!=draft['id']:
             return {'state':'clarify','answer':'Falta identificar el borrador mostrado o ya existe otro más reciente. Revisa el último borrador antes de confirmar.','citations':[],'orchestrated_by':'n8n'}
         if draft['state']=='sent':return {'state':'answered','answer':'Este recordatorio ya fue enviado. No se volverá a enviar.','citations':[],'orchestrated_by':'n8n','draft':self.view(draft)}

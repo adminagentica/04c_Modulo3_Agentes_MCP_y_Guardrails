@@ -1,12 +1,11 @@
-# Verificación 0.8.0
+# Verificación 0.8.1
 
-- 148 pruebas Python aprobadas con conexiones TCP bloqueadas.
-- 40 pruebas RAG aprobadas con modelos simulados.
-- n8n aislado: borrador → confirmación → Gmail simulado → repetición sin duplicado, aprobado.
-- App aislada: presentación del borrador, historial al recargar, confirmación y prevención de duplicado, aprobado.
-- Runtime local: versión 0.8.0, RAG ready; ejecución 29 rechaza DNI contradictorio sin invocar modelo.
-- Cero llamadas pagadas y cero correos reales enviados durante la preparación.
+- 157 pruebas Python aprobadas, con conexiones TCP bloqueadas.
+- 40 pruebas RAG aprobadas, con modelos simulados.
+- Nuevos casos: DNI explícito sin selector, prioridad sobre contexto antiguo, seguimiento sin DNI, dos DNI ambiguos, cambio de cliente e invalidación del borrador, cambio después de aprobar antes de reservar, aislamiento por conversación, respuesta tardía y migración de memoria.
+- App aislada: consulta sin selector → seguimiento sin DNI → cambio de cliente → borrador anterior bloqueado → historial y cliente restaurados al recargar, aprobado.
+- n8n aislado: preparación → confirmación → Gmail simulado → repetición sin duplicado, aprobado.
+- Runtime local: 0.8.1, RAG ready; ejecución 39 rechaza dos DNI sin invocar modelo.
+- Cero llamadas pagadas y cero correos reales durante estas verificaciones.
 
-No se ha ejecutado una entrega Gmail real para probar esta versión. El próximo «Envíalo» del operador sobre un borrador válido sí activará el nodo Gmail real. El envío confirmado no añade otra llamada OpenAI.
-
-Los 2091 tokens de la ejecución 25 corresponden a la prueba real anterior realizada por el usuario. No representan consumo de estas verificaciones.
+La validación correo registrado + DNI del canal Gmail permanece igual. Los envíos reales se ejecutan solo ante la confirmación expresa del operador de un borrador válido; no se probaron con Gmail real durante esta preparación.

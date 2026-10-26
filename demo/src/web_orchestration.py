@@ -141,9 +141,10 @@ class ChatOrchestrator:
                 team.prepared()
                 result['agent_trace']=team.enrich({})['agent_trace']
             else:
-                result['response']=team.finish({**result['response'],'conversation_id':conversation_id})
+                result['response']=team.finish({**result['response'],'conversation_id':conversation_id,'selected_dni':self.memory.active_client(conversation_id)})
                 self.memory.add(conversation_id,request_id,'assistant',result['response']['answer'],result['response'])
             result['conversation_id']=conversation_id
+            result['selected_dni']=self.memory.active_client(conversation_id)
             return result
         except Exception:
             team.failed()
@@ -157,8 +158,11 @@ class ChatOrchestrator:
             raise ValueError('Pregunta inválida')
         normalized=normalize(question)
         found=set(re.findall(r'\b[0-9]{8}\b',question))
-        if len(found)>1 or (dni and found and found!={dni}):
-            return {'call_openai':False,'response':{'state':'clarify','route':'clarify','answer':'Revisa el DNI de la pregunta y el cliente seleccionado.','citations':[],'orchestrated_by':'n8n'}}
+        if len(found)>1:
+            return {'call_openai':False,'response':{'state':'clarify','route':'clarify','answer':'Indica un solo DNI por consulta para identificar al cliente.','citations':[],'orchestrated_by':'n8n'}}
+        # El DNI explícito del ejecutivo tiene prioridad sobre un campo antiguo.
+        dni=next(iter(found)) if found else (dni or self.memory.active_client(conversation_id))
+        if dni:self.memory.select_client(conversation_id,dni)
         intent=action_text(question)
         if intent in CONFIRMATIONS or intent in CANCELLATIONS:
             actions=ReminderActions(self.service,validate_bundle)
@@ -178,7 +182,7 @@ class ChatOrchestrator:
             return {'call_openai':False,'response':{'state':'needs_review','route':'human_handoff',
                     'answer':'Solicité la revisión de un ejecutivo. El caso queda en la bandeja local de atención humana; no se contactó al cliente.',
                     'handoff_reason':'solicitud_explicita','citations':[],'orchestrated_by':'n8n'}}
-        # El DNI seleccionado es contexto independiente; no completarlo desde la pregunta.
+        # El cliente activo persiste en la conversación; no se inventa cuando falta.
         reminder_intent=any(w in normalized for w in ('recordator','recordarle','recordar el pago'))
         policy=reminder_intent or any(w in normalized for w in ('politica','manual','promesa','concili','condicion','norma','regla','control','pol-','man-'))
         account_intent=reminder_intent or any(w in normalized for w in ('saldo','deuda','factura','vencimiento','debo'))
@@ -243,6 +247,7 @@ class ChatOrchestrator:
         try:
             result=self._complete(request_id,provider_response,status,execution_id,team)
             result=team.finish(result)
+            if result.get('conversation_id'):result['selected_dni']=self.memory.active_client(result['conversation_id'])
             if result.get('conversation_id'):self.memory.add(result['conversation_id'],request_id,'assistant',result['answer'],result)
             with self.service.store.connect() as c:
                 c.execute('UPDATE web_chat_runs SET result=? WHERE id=?',(json.dumps(result),request_id))
@@ -258,6 +263,8 @@ class ChatOrchestrator:
             row=c.execute('SELECT context,state FROM web_chat_runs WHERE id=?',(request_id,)).fetchone()
         if not row or row['state']!='prepared':raise ValueError('Ejecución desconocida o ya completada')
         context=json.loads(row['context'])
+        if context.get('selected_dni') and self.memory.active_client(context['conversation_id'])!=context['selected_dni']:
+            raise ValueError('Cambió el cliente activo durante la consulta; repite la pregunta para el cliente actual')
         if status!=200 or provider_response.get('error'):
             code=provider_response.get('error',{}).get('code') or 'provider_error'
             friendly={'insufficient_quota':'OpenAI no tiene crédito o cuota disponible. Carga saldo en la cuenta vinculada a la API key de n8n.',

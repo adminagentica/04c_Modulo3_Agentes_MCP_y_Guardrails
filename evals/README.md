@@ -10,7 +10,7 @@
 
 ## Dataset de cobranza
 
-casos.jsonl define entradas, contexto independiente del cliente, resultado esperado y controles críticos. Los casos de disputa, pagado o contacto previo requieren preparar un fixture aislado; no modificar la cartera en ejecución para pasar la demo.
+casos.jsonl define entradas, cliente activo por conversación, resultado esperado y controles críticos. Los casos de disputa, pagado o contacto previo requieren preparar un fixture aislado; no modificar la cartera en ejecución para pasar la demo.
 
 ## Rúbrica sugerida
 

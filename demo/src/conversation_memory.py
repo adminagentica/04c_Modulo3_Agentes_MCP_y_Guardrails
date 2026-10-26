@@ -24,6 +24,8 @@ class ConversationMemory:
             CREATE TABLE IF NOT EXISTS chat_turns(id INTEGER PRIMARY KEY,conversation_id TEXT,request_id TEXT,role TEXT,content TEXT,metadata TEXT,created TEXT,
                 UNIQUE(conversation_id,request_id,role));
             ''')
+            if 'active_dni' not in {row[1] for row in c.execute('PRAGMA table_info(chat_conversations)')}:
+                c.execute("ALTER TABLE chat_conversations ADD COLUMN active_dni TEXT NOT NULL DEFAULT ''")
 
     def ensure(self,ident=None,actor=ACTOR):
         if actor!=ACTOR:raise ValueError('Operador no autorizado')
@@ -31,7 +33,7 @@ class ConversationMemory:
         with self.store.connect() as c:
             row=c.execute('SELECT actor,expires FROM chat_conversations WHERE id=?',(ident,)).fetchone()
             if row and (row['actor']!=actor or row['expires']<=now().isoformat()):raise ValueError('Conversación no disponible para este operador')
-            c.execute('INSERT OR IGNORE INTO chat_conversations VALUES(?,?,?,?)',(ident,actor,now().isoformat(),(now()+dt.timedelta(days=30)).isoformat()))
+            c.execute('INSERT OR IGNORE INTO chat_conversations(id,actor,created,expires) VALUES(?,?,?,?)',(ident,actor,now().isoformat(),(now()+dt.timedelta(days=30)).isoformat()))
         return ident
 
     def add(self,ident,request_id,role,content,metadata=None):
@@ -53,3 +55,22 @@ class ConversationMemory:
         with self.store.connect() as c:
             row=c.execute("SELECT content FROM chat_turns WHERE conversation_id=? AND request_id=? AND role='user'",(ident,request_id)).fetchone()
         if not row or normalized(row['content']) not in CONFIRMATIONS:raise ValueError('No existe confirmación explícita del operador en este turno')
+
+    def active_client(self,ident):
+        self.ensure(ident)
+        with self.store.connect() as c:
+            return c.execute('SELECT active_dni FROM chat_conversations WHERE id=?',(ident,)).fetchone()[0]
+
+    def select_client(self,ident,dni):
+        """Contexto del ejecutivo; no sustituye la identidad del cliente por Gmail."""
+        self.ensure(ident)
+        if not re.fullmatch('[0-9]{8}',dni):raise ValueError('DNI inválido')
+        with self.store.connect() as c:
+            c.execute('BEGIN IMMEDIATE')
+            previous=c.execute('SELECT active_dni FROM chat_conversations WHERE id=?',(ident,)).fetchone()[0]
+            if previous!=dni:
+                # Migración: también invalida borradores anteriores a active_dni.
+                if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='reminder_drafts'").fetchone():
+                    c.execute("UPDATE reminder_drafts SET state='superseded' WHERE conversation_id=? AND dni!=? AND state IN ('draft','approved')",(ident,dni))
+                c.execute('UPDATE chat_conversations SET active_dni=? WHERE id=?',(dni,ident))
+        return previous!=dni

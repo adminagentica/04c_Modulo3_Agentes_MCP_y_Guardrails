@@ -38,10 +38,10 @@ class WebOrchestrationTests(unittest.TestCase):
         self.assertEqual(r['error_code'],'invalid_api_key');self.assertIn('n8n',r['answer'])
     def test_missing_customer_skips_openai(self):
         self.assertFalse(self.chat.prepare('saldo','12345678',self.ident)['call_openai'])
-    def test_question_cannot_replace_missing_selected_identity(self):
-        self.assertFalse(self.chat.prepare('saldo DNI 40112233','',self.ident)['call_openai'])
-    def test_conflicting_customer_skips_openai(self):
-        self.assertFalse(self.chat.prepare('saldo DNI 40112233','74851236',self.ident)['call_openai'])
+    def test_question_establishes_missing_selected_identity(self):
+        self.assertTrue(self.chat.prepare('saldo DNI 40112233','',self.ident)['call_openai'])
+    def test_explicit_customer_overrides_old_selected_field(self):
+        self.assertTrue(self.chat.prepare('saldo DNI 40112233','74851236',self.ident)['call_openai'])
     def test_retrieval_only_for_policy_questions(self):
         with patch('web_orchestration.retrieve_passages') as rag:self.prepare();rag.assert_not_called()
     def test_greeting_skips_paid_call(self):

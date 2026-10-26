@@ -1,14 +1,14 @@
 # Instrucciones del proyecto para Codex
 
 ## Misión y alcance
-Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQUITECTURA.md antes de cambiar código. La versión actual es 0.8.0. Las instrucciones de cada rol están en agents/. No conviertas estos archivos descriptivos en agentes en ejecución sin configurar el host correspondiente.
+Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQUITECTURA.md antes de cambiar código. La versión actual es 0.8.1. Las instrucciones de cada rol están en agents/. No conviertas estos archivos descriptivos en agentes en ejecución sin configurar el host correspondiente.
 
 ## Reglas obligatorias
 - Todos los datos incluidos son sintéticos. No incorporar información real de clientes.
 - No ejecutar pruebas que consuman saldo OpenAI, ni consultas positivas al webhook real, ni `codex exec`/Claude como parte de tests. Usar scripts/verificar.py y mocks.
 - No leer, copiar, imprimir, exportar o publicar credenciales de n8n, claves API, tokens internos, cookies ni bases del docente.
 - La app y el perfil MCP de consulta utilizan el mismo webhook n8n. No agregar un camino alternativo de saldo que evite sus validaciones.
-- El DNI seleccionado es un contexto independiente. Nunca inferirlo ni modificarlo para hacerlo coincidir con el DNI escrito en la pregunta.
+- En el chat del ejecutivo, el DNI explícito de la pregunta establece el cliente activo; sin DNI se conserva el de la conversación. Dos DNI requieren aclaración. Cambiar de cliente invalida borradores pendientes. Por Gmail se sigue exigiendo correo registrado + DNI.
 - SQL es la fuente de montos. El RAG solo aporta documentación vigente y autorizada, con citas verificables.
 - Una consulta de saldo y recordatorio prepara y muestra un borrador local si el caso y las políticas validan. Solo la confirmación explícita del operador del borrador mostrado permite enviarlo en una consulta posterior, mediante el mismo workflow n8n. Nunca inventar una confirmación ni enviar durante pruebas.
 - No habilitar envíos a nuevos destinatarios ni cambiar las reglas de contacto para obtener una prueba exitosa.
@@ -27,3 +27,5 @@ Responder en español. Indicar qué cambió, qué se verificó y qué falta. Con
 Ver [clientes y citas](docs/11_CASOS_Y_CITAS.md) y [RAG con OpenAI](docs/12_RAG_OPENAI.md).
 
 Ver [borrador y confirmación](docs/13_BORRADOR_Y_CONFIRMACION.md).
+
+El cliente activo del chat se establece por el DNI de la pregunta, sin selector obligatorio. Cambiarlo invalida borradores pendientes; nunca reutilizar un borrador de otro cliente.

@@ -2,7 +2,7 @@
 id: orquestador
 version: 1.3.0
 team_version: 1.3.0
-release: 0.8.0
+release: 0.8.1
 ---
 # Agente orquestador del equipo
 
@@ -10,7 +10,7 @@ release: 0.8.0
 
 **Ejecución:** supervisor determinista en agent_team.py, con adaptadores de consulta y correo. El subagente redactor usa gpt-5.4-mini en n8n; el supervisor no inicia otro LLM ni procesos Codex/Claude. Modelo, roles, versiones y herramientas permitidas: [team.json](../demo/config/team.json).
 
-**Entrada:** request_id, pregunta, DNI seleccionado independiente y canal autorizado. Para el canal correo, mensaje Gmail o reserva verificada. No inferir el DNI seleccionado desde la pregunta. En la demo el tenant autorizado es demo.
+**Entrada:** request_id, pregunta, DNI explícito o cliente activo y canal autorizado. Para el canal correo, mensaje Gmail o reserva verificada. El backend toma el DNI explícito de la pregunta y lo conserva como cliente activo. Si no hay DNI ni contexto, solicita identificar al cliente. En la demo el tenant autorizado es demo.
 
 ## Derivación explícita a subagentes
 
@@ -39,7 +39,7 @@ flowchart LR
  S --> MM[Guardar memoria validada]
 ```
 
-Si la pregunta solo solicita saldo, no llamar al RAG. Si solo solicita una política, no leer una cartera o memoria sin cliente. Si el DNI no coincide, responder antes de abrir las herramientas de datos. La primera consulta prepara un borrador local después de la revisión. La siguiente confirmación explícita del operador deriva al gestor de correo mediante n8n, sin otra llamada OpenAI.
+Si la pregunta solo solicita saldo, no llamar al RAG. Si solo solicita una política, no leer una cartera o memoria sin cliente. Si hay dos DNI o falta cliente para una consulta de saldo, pedir aclaración antes de abrir herramientas de datos. La primera consulta prepara un borrador local después de la revisión. La siguiente confirmación explícita del operador deriva al gestor de correo mediante n8n, sin otra llamada OpenAI.
 
 ## Memoria coordinada
 
@@ -85,3 +85,5 @@ Para consultas de contacto, exigir controles de historial, promesas, conciliaci�
 ## Borrador y confirmación
 
 El supervisor usa preparar_recordatorio tras revisar saldo, reglas y RAG. Guarda el texto inmutable y su hash, muestra destinatario/asunto/cuerpo y vincula draft.id al turno. En el siguiente «Envíalo» usa aprobar_recordatorio; el gestor_correo reclama una reserva y registra el resultado Gmail. Nunca permitir destinatarios o contenido aportados durante la confirmación. Conserva conversation_id y draft.id en clientes nativos; ver docs/13_BORRADOR_Y_CONFIRMACION.md.
+
+El cliente activo del chat se establece por el DNI de la pregunta, sin selector obligatorio. Cambiarlo invalida borradores pendientes; nunca reutilizar un borrador de otro cliente.

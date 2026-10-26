@@ -1,6 +1,6 @@
 # Módulo 3 · Agentes, MCP y Guardrails
 
-Demo de cobranza de Agentica · versión **0.8.0** · datos completamente sintéticos.
+Demo de cobranza de Agentica · versión **0.8.1** · datos completamente sintéticos.
 
 Construimos un asistente para el ejecutivo, un orquestador con memoria, un subagente RAG documental, reglas de negocio y un MCP en Python. La app y el cliente Codex/Claude consultan **el mismo workflow n8n local**. Un workflow separado responde consultas de deuda recibidas por Gmail.
 
@@ -54,3 +54,7 @@ El supervisor crea una derivación cuando se solicita un ejecutivo, falta eviden
 No se incluyen claves, tokens, sesiones, bases con memoria anterior ni credenciales de n8n. No se transfieren automáticamente las credenciales que ya existen en el equipo del docente. Los modelos Ollama se descargan por separado.
 
 Ver [clientes y citas](docs/11_CASOS_Y_CITAS.md) y [RAG con OpenAI](docs/12_RAG_OPENAI.md).
+
+## Cliente activo del chat
+
+Escribe «¿Cuál es el saldo de 71425836?» sin seleccionar un caso. Después puedes preguntar «¿Puedo mandarle un recordatorio?» y el chat conserva el cliente. Al escribir otro DNI cambia el contexto e invalida borradores pendientes del anterior. Dos DNI en una pregunta requieren aclaración. El panel derecho muestra el DNI activo y se restaura al recargar. Gmail conserva su validación de correo registrado + DNI.
