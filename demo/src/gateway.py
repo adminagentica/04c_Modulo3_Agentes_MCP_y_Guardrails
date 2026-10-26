@@ -15,6 +15,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 import uvicorn
 from customer_service import CustomerService
+from mail_orchestration import MailOrchestrator
 from mcp_server import create_mcp
 from web_orchestration import ChatOrchestrator, ask_n8n, N8nUnavailable, MODEL, WORKFLOW
 
@@ -30,6 +31,7 @@ def build_app(service=None, admin_token=None):
         raise ValueError('COBRANZA_TOKEN debe contener al menos 24 caracteres')
     mcp = create_mcp(service)
     chat = ChatOrchestrator(service)
+    mail = MailOrchestrator(service)
     mcp_app = mcp.streamable_http_app()
     sessions, attempts = {}, {}
 
@@ -92,7 +94,7 @@ def build_app(service=None, admin_token=None):
                     rag_state = 'unavailable'
                 with service.store.connect() as c:
                     gmail_verified = bool(c.execute("SELECT 1 FROM email_inquiries WHERE state='gmail_accepted' LIMIT 1").fetchone())
-                result = {'version':'0.4.1','mcp':'Python SDK / Streamable HTTP','mailbox':'contacto@agentica.com.pe',
+                result = {'version':'0.5.0','mcp':'Python SDK / Streamable HTTP','mailbox':'contacto@agentica.com.pe',
                           'data':'synthetic','gmail':'Respuesta verificada' if gmail_verified else 'Pendiente de prueba OAuth en n8n',
                           'gmail_verified':gmail_verified,'dni_demo':'74851236', 'rag_state':rag_state,
                           'chat_transport':'n8n_webhook','chat_model':MODEL,'chat_workflow':WORKFLOW}
@@ -101,11 +103,11 @@ def build_app(service=None, admin_token=None):
             elif request.url.path == '/chat/result':
                 result = await asyncio.to_thread(chat.complete,data['request_id'],data['openai_response'],data['openai_status'],str(data['execution_id']))
             elif request.url.path == '/mail/prepare':
-                result = await asyncio.to_thread(service.prepare_email, data)
+                result = await asyncio.to_thread(mail.prepare, data)
             elif request.url.path == '/mail/claim':
-                result = await asyncio.to_thread(service.claim, data['reservation'])
+                result = await asyncio.to_thread(mail.claim, data['reservation'])
             elif request.url.path == '/mail/sent':
-                result = await asyncio.to_thread(service.sent, data['reservation'], data['gmail_id'])
+                result = await asyncio.to_thread(mail.sent, data['reservation'], data['gmail_id'])
             elif request.url.path == '/legacy/start':
                 result = await asyncio.to_thread(service.store.start, data['tenant_id'], data['case_id'], 'n8n', data.get('mode','demo'))
             elif request.url.path == '/legacy/agent':

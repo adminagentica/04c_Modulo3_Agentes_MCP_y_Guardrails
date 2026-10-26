@@ -1,5 +1,13 @@
 # Cambios
 
+## 0.5.0 · Equipo unificado
+- Supervisor ejecutable común para consultas y coordinación del canal Gmail.
+- Derivación real a especialistas mediante cliente/servidor MCP del SDK Python con transporte en memoria.
+- Lectura de memoria filtrada por caso y escritura de eventos validados; traza de roles, versiones y herramientas.
+- Revisor con revalidación de fuentes, huella e historial; control de concurrencia y permisos por canal.
+- Recorrido visible en la app; máximo una llamada OpenAI por consulta.
+- El motor anterior de cuatro roles se conserva como ejercicio histórico.
+
 ## 0.4.1 · Entrega de clase
 - Incluye RAG, corpus documental y demo de cobranza en un repositorio portable.
 - Agrega instrucciones para Codex y Claude Code, contratos de agentes, guion y Evals.

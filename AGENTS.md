@@ -1,7 +1,7 @@
 # Instrucciones del proyecto para Codex
 
 ## Misión y alcance
-Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQUITECTURA.md antes de cambiar código. La versión actual es 0.4.1. Las instrucciones de cada rol están en agents/. No conviertas estos archivos descriptivos en agentes en ejecución sin configurar el host correspondiente.
+Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQUITECTURA.md antes de cambiar código. La versión actual es 0.5.0. Las instrucciones de cada rol están en agents/. No conviertas estos archivos descriptivos en agentes en ejecución sin configurar el host correspondiente.
 
 ## Reglas obligatorias
 - Todos los datos incluidos son sintéticos. No incorporar información real de clientes.
@@ -17,7 +17,7 @@ Mantener y explicar la demo de cobranza de la clase. Lee README.md y docs/01_ARQ
 - No realizar pushes forzados ni reemplazar archivos del repositorio ajenos a la tarea.
 
 ## Trabajo y pruebas
-Usar Python para MCP/gateway y Node para el RAG existente. Mantener separados los caminos descritos en docs/01_ARQUITECTURA.md. Revisar los casos de evals/casos.jsonl para cambios en comportamiento. Ejecutar scripts/verificar.py con el entorno Python instalado. Las pruebas no requieren credenciales reales.
+Usar Python para MCP/gateway y Node para el RAG existente. Mantener la orquestación común de docs/01_ARQUITECTURA.md, con herramientas acotadas por rol/canal. El registro principal es demo/config/team.json; el motor de cuatro roles de config/agents.json es histórico. Revisar los casos de evals/casos.jsonl para cambios en comportamiento. Ejecutar scripts/verificar.py con el entorno Python instalado. Las pruebas no requieren credenciales reales.
 
 ## Respuesta al usuario
 Responder en español. Indicar qué cambió, qué se verificó y qué falta. Conservar estados, referencias de ejecución y fuentes. No afirmar un envío, una aprobación documental o una prueba con modelo real que no ocurrió.

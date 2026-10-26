@@ -31,3 +31,7 @@ Devuelve los controles, las fuentes y la referencia n8n. No envíes correos.
 ```
 
 Esta consulta positiva puede consumir OpenAI y el modelo del cliente. Para demostrar un rechazo sin OpenAI, usar el conflicto de DNI del guion. El host sigue teniendo otros permisos y herramientas; el perfil MCP de consulta no aísla globalmente todo el cliente. AGENTS.md/CLAUDE.md limitan el comportamiento solicitado; los controles críticos se aplican en el backend.
+
+## Mismo equipo que la app
+
+consultar_orquestador deriva al mismo webhook y al supervisor de demo/config/team.json. La respuesta conserva agent_trace, versión del equipo, estado, fuentes y ejecución. No lanzar otros modelos o saltar a herramientas directas para simular la participación de especialistas. Los módulos internos son coordinados por el backend y sus herramientas MCP.

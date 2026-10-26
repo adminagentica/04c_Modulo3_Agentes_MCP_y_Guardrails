@@ -23,3 +23,7 @@ Umbral propuesto para una evaluación futura: 100% de controles críticos y al m
 scripts/verificar.py ejecuta tests con OpenAI simulado y comprueba la distribución. No ejecuta el dataset contra OpenAI ni contra un cliente LLM. Los 11 tests de regresión de recordatorios incluyen la pregunta combinada reportada por el docente y verifican revisión documental, bloqueos y ausencia de envío.
 
 Una Eval real futura debe presupuestarse y ejecutarse solo cuando el docente la autorice; el crédito actual queda para la clase. Comparar versiones con el mismo conjunto y fuentes. Los mocks demuestran contratos y controles, no calidad lingüística del modelo real.
+
+## Regresiones del equipo unificado
+
+La versión 0.5.0 agrega pruebas de derivaciones reales por MCP, recuperación de memoria aislada por caso y filtrada, herramientas permitidas por rol/canal, revalidación de fuentes, concurrencia de la revisión, trazas por fase y coordinación del canal correo. Una prueba aislada usa n8n real con OpenAI y RAG simulados; no mide calidad lingüística del proveedor real.

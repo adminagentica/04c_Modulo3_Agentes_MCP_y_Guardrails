@@ -1,0 +1,196 @@
+{
+  "verification": "n8n real aislado; MCP real; RAG y LLM simulados",
+  "openai_calls": 0,
+  "emails_sent": 0,
+  "result": {
+    "state": "answered",
+    "route": "account+reminder+rag",
+    "answer": "Cliente sintético · DNI ******36\nSaldo: PEN 1500.00\nFactura: F-MAIL-DEMO-001\nVencimiento: 2026-10-21\n\nRecordatorio: los controles operativos permiten preparar un borrador de prueba para contacto@agentica.com.pe. Antes de enviarlo se debe confirmar la política aplicable y aprobar expresamente el envío. Esta consulta no envía correos.\n\nRevisar las condiciones de contacto [3].",
+    "citations": [
+      {
+        "id": 3,
+        "code": "POL-COB-04",
+        "version": "v4",
+        "section": "§3",
+        "content": "Validar condiciones de contacto.",
+        "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "orchestrated_by": "n8n",
+    "execution_id": "1",
+    "request_id": "3a4f4ab1-c9cb-4ffe-87cf-1367c53ff685",
+    "workflow_id": "agentica-orquestador-rag",
+    "model": "simulated-no-api-credit",
+    "usage": {
+      "total_tokens": 0
+    },
+    "memory_context_events": 0,
+    "reminder_check": {
+      "can_prepare": true,
+      "blocking_reasons": [],
+      "recipient": "contacto@agentica.com.pe",
+      "scope": "synthetic_preview_only",
+      "requires_explicit_confirmation": true,
+      "sent": false,
+      "policy_version": "1.1.0",
+      "evaluated_at": "2026-10-26T04:21:27.529586+00:00"
+    },
+    "team_version": "1.0.0",
+    "agent_trace": [
+      {
+        "agent_id": "orquestador",
+        "agent_version": "1.0.0",
+        "phase": "input_guardrail",
+        "status": "started",
+        "tool": "",
+        "name": "Orquestador"
+      },
+      {
+        "agent_id": "analista_saldo",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "started",
+        "tool": "saldo_cliente",
+        "name": "Analista de saldo"
+      },
+      {
+        "agent_id": "analista_saldo",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "completed",
+        "tool": "saldo_cliente",
+        "name": "Analista de saldo"
+      },
+      {
+        "agent_id": "orquestador",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "started",
+        "tool": "recordar_contexto",
+        "name": "Orquestador"
+      },
+      {
+        "agent_id": "orquestador",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "completed",
+        "tool": "recordar_contexto",
+        "name": "Orquestador"
+      },
+      {
+        "agent_id": "analista_elegibilidad",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "started",
+        "tool": "evaluar_contacto",
+        "name": "Analista de contacto"
+      },
+      {
+        "agent_id": "analista_elegibilidad",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "completed",
+        "tool": "evaluar_contacto",
+        "name": "Analista de contacto"
+      },
+      {
+        "agent_id": "rag_politicas",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "started",
+        "tool": "recuperar_politicas",
+        "name": "Especialista RAG"
+      },
+      {
+        "agent_id": "rag_politicas",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "completed",
+        "tool": "recuperar_politicas",
+        "name": "Especialista RAG"
+      },
+      {
+        "agent_id": "orquestador",
+        "agent_version": "1.0.0",
+        "phase": "input_guardrail",
+        "status": "passed",
+        "tool": "",
+        "name": "Orquestador"
+      },
+      {
+        "agent_id": "redactor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "llm_response",
+        "status": "awaiting_n8n",
+        "tool": "",
+        "name": "Redactor de respuesta"
+      },
+      {
+        "agent_id": "redactor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "llm_response",
+        "status": "returned",
+        "tool": "",
+        "name": "Redactor de respuesta"
+      },
+      {
+        "agent_id": "revisor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "output_guardrail",
+        "status": "started",
+        "tool": "",
+        "name": "Revisor de respuesta"
+      },
+      {
+        "agent_id": "revisor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "started",
+        "tool": "saldo_cliente",
+        "name": "Revisor de respuesta"
+      },
+      {
+        "agent_id": "revisor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "completed",
+        "tool": "saldo_cliente",
+        "name": "Revisor de respuesta"
+      },
+      {
+        "agent_id": "revisor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "started",
+        "tool": "verificar_contexto",
+        "name": "Revisor de respuesta"
+      },
+      {
+        "agent_id": "revisor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "delegation",
+        "status": "completed",
+        "tool": "verificar_contexto",
+        "name": "Revisor de respuesta"
+      },
+      {
+        "agent_id": "revisor_respuesta",
+        "agent_version": "1.0.0",
+        "phase": "output_guardrail",
+        "status": "passed",
+        "tool": "",
+        "name": "Revisor de respuesta"
+      },
+      {
+        "agent_id": "orquestador",
+        "agent_version": "1.0.0",
+        "phase": "final_response",
+        "status": "answered",
+        "tool": "",
+        "name": "Orquestador"
+      }
+    ],
+    "mcp_transport": "sdk_in_memory",
+    "email_sent": false
+  }
+}

@@ -27,3 +27,9 @@ Las reglas del motor original mantienen destinatarios example.test. Solo la eval
 RAG no disponible → saldo exacto y revisión documental pendiente en la pregunta combinada. Modelo sin citas → conservar controles y pedir revisión concreta. Cambio de saldo durante la consulta → detener y pedir nueva consulta. OpenAI sin crédito o credencial → mensaje explícito, sin reintento automático. Gmail incierto → revisión humana antes de reintentar.
 
 Estos controles cubren escenarios concretos. No presentar un caso de DNI discordante como protección universal ante prompt injection.
+
+## Equipo unificado 0.5.0
+
+El orquestador recupera memoria mediante MCP después de validar el caso. El modelo recibe solo evento, fecha y estado permitido, con authority=context_only. team_runs y team_events registran la coordinación y las derivaciones reales, separadas del almacén de memoria.
+
+Los guardrails de entrada actúan antes de abrir herramientas de datos ante DNI discordante. El revisor valida contrato y citas, luego reconsulta mediante MCP fuentes, huella e historial. Una revisión por request_id se reclama de forma atómica para evitar completar dos veces. El perfil MCP interno de consulta no expone capacidades de correo. El perfil de correo no expone consultas o generación LLM.

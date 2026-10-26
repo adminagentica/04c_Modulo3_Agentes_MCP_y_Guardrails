@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "release": "0.5.0",
+  "defaults": {
+    "llm_model": "gpt-5.4-mini",
+    "max_llm_calls_per_query": 1,
+    "automatic_retries": 0,
+    "max_depth": 1,
+    "parallel_calls": false,
+    "mcp_transport": "sdk_in_memory"
+  },
+  "agents": [
+    {
+      "id": "orquestador",
+      "name": "Orquestador",
+      "version": "1.0.0",
+      "description": "Clasifica, deriva, aplica guardrails y conserva el control de la consulta.",
+      "execution": "supervisor_determinista",
+      "tools": [
+        "recordar_contexto"
+      ],
+      "delegates_to": [
+        "analista_saldo",
+        "analista_elegibilidad",
+        "rag_politicas",
+        "redactor_respuesta",
+        "revisor_respuesta",
+        "gestor_correo"
+      ],
+      "memory": {
+        "read": true,
+        "write": "validated_backend_events_only"
+      }
+    },
+    {
+      "id": "analista_saldo",
+      "name": "Analista de saldo",
+      "version": "1.0.0",
+      "description": "Obtiene hechos SQL del cliente seleccionado.",
+      "execution": "especialista_determinista",
+      "tools": [
+        "saldo_cliente"
+      ],
+      "delegates_to": [],
+      "memory": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "id": "analista_elegibilidad",
+      "name": "Analista de contacto",
+      "version": "1.0.0",
+      "description": "Evalúa reglas de contacto; no envía correos.",
+      "execution": "especialista_determinista",
+      "tools": [
+        "evaluar_contacto"
+      ],
+      "delegates_to": [],
+      "memory": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "id": "rag_politicas",
+      "name": "Especialista RAG",
+      "version": "1.0.0",
+      "description": "Recupera fuentes vigentes y autorizadas mediante el RAG local.",
+      "execution": "recuperador_documental",
+      "tools": [
+        "recuperar_politicas"
+      ],
+      "delegates_to": [],
+      "memory": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "id": "redactor_respuesta",
+      "name": "Redactor de respuesta",
+      "version": "1.0.0",
+      "description": "Redacta la respuesta documental con contrato estructurado y citas.",
+      "execution": "llm_n8n",
+      "tools": [],
+      "delegates_to": [],
+      "memory": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "id": "revisor_respuesta",
+      "name": "Revisor de respuesta",
+      "version": "1.0.0",
+      "description": "Valida contrato, fuentes, huella e historial antes de responder.",
+      "execution": "especialista_determinista",
+      "tools": [
+        "saldo_cliente",
+        "verificar_contexto"
+      ],
+      "delegates_to": [],
+      "memory": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "id": "gestor_correo",
+      "name": "Gestor de correo",
+      "version": "1.0.0",
+      "description": "Gestiona identidad, reserva y confirmación del canal Gmail; n8n realiza el envío físico.",
+      "execution": "especialista_determinista",
+      "tools": [
+        "preparar_consulta_correo",
+        "reservar_respuesta_correo",
+        "confirmar_envio_correo"
+      ],
+      "delegates_to": [],
+      "memory": {
+        "read": false,
+        "write": false
+      }
+    }
+  ]
+}

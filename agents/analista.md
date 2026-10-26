@@ -3,6 +3,8 @@ id: analista
 version: 1.0.0
 prompt_version: 1.0.0
 ---
+> Ejercicio histórico de cuatro roles LLM. El equipo principal de consultas se describe en [agents/README](README.md).
+
 # Analista
 
 **Descripción:** Comprueba la consistencia de hechos y bloqueos de negocio.

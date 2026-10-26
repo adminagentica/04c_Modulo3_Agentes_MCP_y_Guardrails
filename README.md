@@ -1,6 +1,6 @@
 # Módulo 3 · Agentes, MCP y Guardrails
 
-Demo de cobranza de Agentica · versión **0.4.1** · datos completamente sintéticos.
+Demo de cobranza de Agentica · versión **0.5.0** · datos completamente sintéticos.
 
 Construimos un asistente para el ejecutivo, un orquestador con memoria, un subagente RAG documental, reglas de negocio y un MCP en Python. La app y el cliente Codex/Claude consultan **el mismo workflow n8n local**. Un workflow separado responde consultas de deuda recibidas por Gmail.
 
@@ -17,13 +17,17 @@ Construimos un asistente para el ejecutivo, un orquestador con memoria, un subag
 | `scripts/` | Preparación local, configuración MCP y verificación sin OpenAI |
 | `AGENTS.md`, `CLAUDE.md` | Instrucciones de trabajo para Codex y Claude Code |
 
-## Qué se ejecuta en cada recorrido
+## Un solo equipo orquestado
 
-1. **App o cliente MCP → n8n:** valida el DNI seleccionado, consulta SQL y RAG si corresponde, hace como máximo una llamada a OpenAI y valida la respuesta. Saldo + recordatorio se resuelven como dos intenciones. Consultar elegibilidad no envía correo.
-2. **Multiagente didáctico:** el motor incluido organiza orquestador → analista → redactor → revisor. Sus modos con modelos reales son opcionales y consumen recursos; no se ejecutan durante la preparación.
-3. **Gmail:** recibe una consulta de prueba, compara correo y DNI, reserva una respuesta, envía por Gmail y registra el ID. El cliente autorizado es la misma cuenta de prueba. No utiliza OpenAI.
+El supervisor deriva a **analista de saldo, analista de contacto, especialista RAG, redactor y revisor** según la intención. Recupera memoria del caso, llama capacidades mediante MCP Python real y guarda eventos validados. El canal Gmail usa el mismo supervisor con el gestor de correo. Cada respuesta incluye la traza de los pasos ejecutados, visible en la app.
 
-El RAG es documental: **SQL calcula el saldo; el RAG aporta políticas**. Las reglas, los permisos y las escrituras permanecen fuera del modelo. MCP es la interfaz de herramientas y no equivale a otro LLM.
+El redactor usa gpt-5.4-mini en n8n; los otros especialistas son módulos deterministas acotados. Se mantiene un máximo de una llamada OpenAI por consulta. No es una cadena de siete LLM ni un planificador de delegación libre. Las reglas y escrituras críticas permanecen en el backend.
+
+MCP público conecta Codex/Claude con el workflow. MCP interno conecta especialistas y herramientas mediante el SDK oficial y transporte en memoria, con capacidades separadas para consulta y correo. [Ver el diagrama y los límites](docs/01_ARQUITECTURA.md).
+
+El RAG aporta documentación; SQL aporta los montos; la memoria aporta contexto previo del mismo caso. Consultar si procede un recordatorio no envía correo. El envío Gmail real sigue dentro de n8n, después de validar y reservar la respuesta.
+
+El motor didáctico anterior de cuatro roles LLM se conserva como ejercicio histórico; el registro del equipo principal es demo/config/team.json.
 
 ## Documentación
 

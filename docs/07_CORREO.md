@@ -2,7 +2,7 @@
 
 ## Alcance actual
 
-El workflow consulta-gmail responde una **consulta entrante** de deuda. La app evalúa si se podría preparar un recordatorio, pero **no envía recordatorios**. El motor didáctico captura archivos .eml para destinatarios example.test. No mezclar estos tres comportamientos al enseñar la demo.
+El workflow consulta-gmail responde una **consulta entrante** de deuda a través de MailOrchestrator, el supervisor común y el gestor de correo con herramientas MCP acotadas. No utiliza LLM ni RAG para una consulta exclusivamente de saldo. La app evalúa si se podría preparar un recordatorio, pero **no envía recordatorios**. El motor didáctico captura archivos .eml para destinatarios example.test. No mezclar estos tres comportamientos al enseñar la demo.
 
 Solo el docente puede activar el recorrido real de prueba y revisar el buzón destinatario. La cuenta de demostración configurada es contacto@agentica.com.pe; para otro buzón de prueba se deben adaptar el registro sintético y los controles, con autorización explícita.
 
@@ -29,3 +29,7 @@ El proveedor debe entregar las etiquetas SENT e INBOX para este autoenvío. El b
 Mensaje entrante → preparado → reserva/claim → sending → sent con ID Gmail. El ID de mensaje entrante evita responder dos veces. Una huella verifica que no cambió el caso antes de enviar. Si el resultado del envío es incierto, revisar el buzón y la ejecución; no reintentar automáticamente ni eliminar el registro para forzar otro correo.
 
 La prueba previa del docente comprobó una respuesta real con datos sintéticos. Sus mensajes, IDs, memoria y credenciales no forman parte de esta distribución; cada instalación comienza sin ese historial.
+
+## Actualizar una instalación existente
+
+No migrar tokens, credenciales ni historial al repositorio. Evitar actualizar mientras un correo está entre preparación, reserva y confirmación. Las reservas anteriores sin traza de supervisor requieren revisión manual; no se recrean ni se reintentan para forzar un envío.

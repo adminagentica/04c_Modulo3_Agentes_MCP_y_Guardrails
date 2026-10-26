@@ -5,7 +5,7 @@
 | 0–10 min | Explicar el flujo manual y el mapa de componentes | Separar SQL, RAG, reglas, agentes y MCP |
 | 10–20 min | Leer AGENTS.md y los contratos Markdown | Ver límites, modelos, versiones y delegación |
 | 20–30 min | Revisar corpus, fragmentos y fuentes | Comprender citas, vigencia, roles y huellas |
-| 30–45 min | Recorrer el workflow n8n y la app | Mostrar una consulta y su ejecución |
+| 30–45 min | Recorrer el workflow n8n y la app | Mostrar una consulta, sus subagentes, memoria y ejecución |
 | 45–55 min | Usar el mismo MCP desde Codex o Claude | Conservar la validación del workflow |
 | 55–65 min | Demostrar guardrails y revisar memoria | Evidenciar bloqueos sin filtrar deuda |
 | 65–75 min | Comparar test tradicional y Eval | Revisar cobertura y limitaciones |
@@ -31,3 +31,7 @@ Si el docente desea la demostración real ya configurada, usar el asunto y texto
 ## Cierre
 
 Inspeccionar la ejecución n8n y los eventos de memoria: identidad, versión, reglas y resultado; no cadenas de razonamiento. Explicar qué faltaría para producción: identidad fuerte, perfiles de acceso, gestión de consentimiento, aprobaciones, observabilidad y pruebas revisadas con políticas reales autorizadas.
+
+## Mostrar la orquestación
+
+Desplegar «Ver recorrido del agente» debajo de una respuesta. Explicar cada rol, su herramienta y su estado. En la pregunta combinada deben aparecer saldo, memoria, contacto, RAG, redacción y revisión; en una pregunta simple se omiten especialistas innecesarios. No afirmar que cada especialista es otro LLM. Para una evidencia gratuita reproducible, revisar examples/traza-orquestacion-simulada.json y scripts/probar_n8n_aislado.py.

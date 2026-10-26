@@ -1,14 +1,42 @@
 {
-  "release": "0.4.1",
-  "checked_at_utc": "2026-10-26T03:51:40.569980+00:00",
-  "python_tests_passed": 79,
+  "release": "0.5.0",
+  "team_version": "1.0.0",
+  "checked_at_utc": "2026-10-26T04:27:39.670570+00:00",
+  "python_tests_passed": 98,
   "rag_tests_passed": 30,
   "python_test_network": "TCP connections blocked",
-  "rag_model_io": "simulated",
+  "mcp": "real client/server SDK protocol over in-memory transport",
+  "n8n_e2e": "passed in isolated n8n with RAG and OpenAI simulated",
+  "live_positive_generation": "not executed; credit reserved for class",
   "openai_calls": 0,
   "native_codex_or_claude_model_runs": 0,
   "emails_sent": 0,
-  "live_positive_generation": "not executed; credit reserved for class",
-  "distribution": "no credentials, runtime databases, tokens, sessions or downloaded models",
-  "remaining_setup": "install dependencies, create local token, assign n8n credentials and publish workflows explicitly"
+  "features_verified": [
+    "supervisor delegation",
+    "case-scoped filtered memory",
+    "MCP tool whitelists",
+    "input/output guardrails",
+    "RAG source checks",
+    "single completion claim",
+    "mail prepare/claim/confirmation with synthetic IDs",
+    "app gateway trace"
+  ],
+  "limitations": [
+    "bounded deterministic supervisor and data/rule specialists; only response writer uses OpenAI",
+    "semantic quality of real model not evaluated",
+    "Gmail delivery is performed by n8n, not by query agent"
+  ],
+  "remaining_setup_for_new_machine": "install dependencies, initialize local data, assign n8n credentials and start services",
+  "live_guardrail": {
+    "status": "passed",
+    "runtime_release": "0.5.0",
+    "execution_id": "23",
+    "executed_nodes": [
+      "App · Consulta recibida",
+      "Herramientas Python · Contexto",
+      "¿Requiere OpenAI?",
+      "App · Solicitar aclaración"
+    ],
+    "openai_node_executed": false
+  }
 }

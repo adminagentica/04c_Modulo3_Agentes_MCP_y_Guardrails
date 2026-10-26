@@ -3,6 +3,8 @@ id: redactor
 version: 1.0.0
 prompt_version: 1.0.0
 ---
+> Ejercicio histórico de cuatro roles LLM. El equipo principal de consultas se describe en [agents/README](README.md).
+
 # Redactor
 
 **Descripción:** Selecciona una variante de una plantilla de recordatorio.

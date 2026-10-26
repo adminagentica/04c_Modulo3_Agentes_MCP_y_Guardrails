@@ -58,3 +58,13 @@ python3 scripts/verificar.py
 Instalar previamente los clientes que se quieran registrar. La configuración Claude se guarda en .mcp.json local; para Codex se registra una conexión con rutas absolutas. Reabrir el cliente para cargarla. Las verificaciones usan modelos simulados y no necesitan Gmail ni OpenAI.
 
 Para apagar, detener cada terminal del servicio con Ctrl+C. No detener procesos de otras demos ni borrar las bases existentes. El repositorio se entrega sin bases; los saldos sintéticos se inicializan en cada instalación. El vencimiento se establece al crear el caso, cinco días antes, y luego se conserva.
+
+## Prueba completa sin proveedor de pago
+
+Con n8n instalado y puertos temporales libres:
+
+```sh
+python3 scripts/probar_n8n_aislado.py
+```
+
+Crea una instalación n8n efímera, reemplaza el nodo OpenAI por un Code con respuesta simulada y utiliza un RAG simulado. El supervisor y el protocolo MCP son reales. No lee las credenciales del docente ni llama Gmail. Genera una traza de ejemplo claramente marcada como simulada. Los tests del corpus/RAG real se ejecutan por separado con scripts/verificar.py.
