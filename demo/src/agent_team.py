@@ -105,6 +105,12 @@ class AgentSupervisor:
         self.event('revisor_respuesta', 'output_guardrail', 'needs_review' if parsed['state']=='needs_review' else 'passed')
         return result
 
+    def reminder_action(self,tool,scope,agent='orquestador'):
+        async def run():
+            async with TeamMcpSession(self.service,'',None,self.validate,channel='reminder',reminder_scope=scope) as session:
+                return await self.delegate(session,agent,tool)
+        return asyncio.run(run())
+
     def handoff(self,reason):
         with self.service.store.connect() as c:
             row=c.execute('SELECT case_id FROM team_runs WHERE id=?',(self.request_id,)).fetchone()
@@ -128,7 +134,8 @@ class AgentSupervisor:
             c.execute('UPDATE team_runs SET state=? WHERE id=?', (result['state'], self.request_id))
             if row and row['case_id']:
                 payload = {'agent_id': 'orquestador', 'version': VERSION, 'status': result['state'],
-                           'n8n_execution_id': result.get('execution_id'), 'reminder_sent': False}
+                           'n8n_execution_id': result.get('execution_id'), 'email_sent':bool(result.get('email_sent')),
+                           'reminder_sent':result.get('route')=='reminder_send' and bool(result.get('email_sent'))}
                 self.service.store.remember(c, 'demo', row['case_id'], self.request_id, 'agent_completed', payload)
         return self.enrich(result)
 

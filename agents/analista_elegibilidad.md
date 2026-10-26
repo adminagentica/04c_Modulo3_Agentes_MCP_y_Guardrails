@@ -1,7 +1,7 @@
 ---
 id: analista_elegibilidad
 version: 1.1.0
-team_version: 1.2.0
+team_version: 1.3.0
 ---
 # Analista elegibilidad
 

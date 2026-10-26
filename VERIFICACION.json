@@ -1,8 +1,8 @@
 {
-  "release": "0.7.0",
-  "team_version": "1.2.0",
-  "checked_at_utc": "2026-10-26T05:23:40.782567+00:00",
-  "python_tests_passed": 125,
+  "release": "0.8.0",
+  "team_version": "1.3.0",
+  "checked_at_utc": "2026-10-26T06:05:56.898878+00:00",
+  "python_tests_passed": 148,
   "rag_tests_passed": 40,
   "automated_paid_calls": 0,
   "emails_sent_during_preparation": 0,
@@ -43,5 +43,18 @@
     "total_tokens": 2091,
     "source": "user-executed real OpenAI test, metadata read only"
   },
-  "quality_limitation": "No additional real generation was executed to quantify improvement; fixtures, contracts and controls tested with simulated providers."
+  "quality_limitation": "No additional real generation was executed to quantify improvement; fixtures, contracts and controls tested with simulated providers.",
+  "conversation_memory": "20 turns / 30 days, persisted and restored",
+  "draft_ttl_minutes": 30,
+  "confirmation_test": "passed isolated n8n with mocked OpenAI and Gmail, duplicate confirmation does not send twice",
+  "browser_test": "passed isolated mock: preview, reload, confirm, duplicate",
+  "live_guard_check": {
+    "version": "0.8.0",
+    "rag": "ready",
+    "guard_execution": "29",
+    "state": "clarify",
+    "model": "no-invocado",
+    "paid_calls": 0,
+    "emails_sent": 0
+  }
 }

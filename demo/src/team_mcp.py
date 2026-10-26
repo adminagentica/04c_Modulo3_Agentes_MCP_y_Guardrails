@@ -7,9 +7,32 @@ from cobranza import fingerprint
 from human_handoff import HandoffQueue
 
 
-def create_team_tools(service, dni, retrieve, validate, channel="chat", handoff_scope=None):
+def create_team_tools(service, dni, retrieve, validate, channel="chat", handoff_scope=None, reminder_scope=None):
     server = FastMCP('Agentica herramientas del equipo')
     scope = {'case_id': None}
+    if channel == 'reminder':
+        from reminder_actions import ReminderActions
+        if not reminder_scope or not reminder_scope.get('conversation_id'):raise ValueError('Falta conversación de la acción')
+        actions=ReminderActions(service,validate)
+        @server.tool()
+        def preparar_recordatorio() -> dict:
+            """Crea y devuelve un borrador inmutable para revisión; no envía."""
+            return actions.create(reminder_scope['conversation_id'],reminder_scope['request_id'],reminder_scope['dni'],reminder_scope['rag'],reminder_scope.get('case_fingerprint'))
+        @server.tool()
+        def aprobar_recordatorio() -> dict:
+            """Solo confirma si existe un turno auténtico del operador y un borrador mostrado."""
+            return actions.approve(reminder_scope['conversation_id'],reminder_scope['request_id'],reminder_scope.get('dni',''),reminder_scope.get('draft_id'))
+        @server.tool()
+        def cancelar_recordatorio() -> dict:
+            return actions.cancel(reminder_scope['conversation_id'])
+        @server.tool()
+        def reclamar_recordatorio() -> dict:
+            """Reserva una única salida Gmail con aprobación y controles vigentes."""
+            return actions.claim(reminder_scope['conversation_id'],reminder_scope['request_id'],reminder_scope['draft_id'])
+        @server.tool()
+        def registrar_recordatorio() -> dict:
+            return actions.result(reminder_scope['conversation_id'],reminder_scope['request_id'],reminder_scope['draft_id'],reminder_scope.get('gmail_id'))
+        return server
     if channel == 'handoff':
         if not handoff_scope or not handoff_scope.get('request_id'):
             raise ValueError('Falta el ámbito de la derivación humana')
@@ -99,8 +122,8 @@ def create_team_tools(service, dni, retrieve, validate, channel="chat", handoff_
 
 class TeamMcpSession:
     """Cliente SDK MCP con transporte en memoria, mismo protocolo y validación de herramientas."""
-    def __init__(self, service, dni, retrieve, validate, channel="chat", handoff_scope=None):
-        self.server = create_team_tools(service, dni, retrieve, validate, channel, handoff_scope)
+    def __init__(self, service, dni, retrieve, validate, channel="chat", handoff_scope=None, reminder_scope=None):
+        self.server = create_team_tools(service, dni, retrieve, validate, channel, handoff_scope, reminder_scope)
 
     async def __aenter__(self):
         self.manager = create_connected_server_and_client_session(self.server, read_timeout_seconds=timedelta(seconds=180))

@@ -81,24 +81,27 @@ class CustomerService:
                 c.execute('INSERT OR IGNORE INTO inquiry_contact_controls VALUES(?,?,?,?,?,?,?)',
                           (case_id,1,1,int(fixture['pending_payment']),0,0,'EMAIL'))
 
-    def balance(self, dni):
+    def balance(self, dni, c=None):
+        if c is None:
+            with self.store.connect() as connection:return self.balance(dni,connection)
         if not isinstance(dni, str) or not re.fullmatch(r'\d{8}', dni):
             raise ValueError('DNI debe contener exactamente 8 dígitos')
-        with self.store.connect() as c:
-            row = c.execute('SELECT * FROM inquiry_customers WHERE dni=?', (dni,)).fetchone()
+        row = c.execute('SELECT * FROM inquiry_customers WHERE dni=?', (dni,)).fetchone()
         if not row:
             raise ValueError('No se pudo validar la identidad')
-        case = self.store.case('demo', row['case_id'])
+        case = self.store.case('demo', row['case_id'],c)
         return {'case_id': case['id'], 'name': row['name'], 'email': row['email'], 'dni_masked': '******'+dni[-2:],
                 'balance_cents': case['balance_cents'], 'balance': f"{case['balance_cents']/100:.2f}",
                 'currency': case['currency'], 'invoice': case['invoice'], 'due': case['due'],
                 'source': 'SQLite: cases (datos sintéticos)', 'version': case['version']}
 
-    def reminder_eligibility(self,dni):
+    def reminder_eligibility(self,dni,c=None,ignore_key=""):
         """Evalúa una preparación de prueba; no autoriza ni ejecuta un envío."""
-        account=self.balance(dni)
-        case=self.store.case('demo',account['case_id'])
-        rules=self.store.rules(case)
+        if c is None:
+            with self.store.connect() as connection:return self.reminder_eligibility(dni,connection,ignore_key)
+        account=self.balance(dni,c)
+        case=self.store.case('demo',account['case_id'],c)
+        rules=self.store.rules(case,c,ignore_key)
         reasons=list(rules['reasons'])
         # El motor de envío original mantiene su restricción example.test.
         # Solo la vista previa del cliente sintético puede usar la cuenta de prueba autorizada.
@@ -108,8 +111,7 @@ class CustomerService:
         if case['recipient']!=account['email']:
             reasons.append('correo_no_coincide_con_registro')
         days_overdue=(dt.datetime.now(dt.timezone.utc).date()-dt.date.fromisoformat(case['due'])).days
-        with self.store.connect() as c:
-            control=c.execute('SELECT * FROM inquiry_contact_controls WHERE case_id=?',(case['id'],)).fetchone()
+        control=c.execute('SELECT * FROM inquiry_contact_controls WHERE case_id=?',(case['id'],)).fetchone()
         if not control or not control['payment_history_checked'] or not control['promises_checked']:
             reasons.append('historial_no_verificado')
         if control:

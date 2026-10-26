@@ -31,7 +31,7 @@ class AgentTeamTests(unittest.TestCase):
         agents={e['agent_id'] for e in result['agent_trace']}
         self.assertEqual(agents,{'orquestador','analista_saldo','analista_elegibilidad','rag_politicas','redactor_respuesta','revisor_respuesta'})
         tools=[e['tool'] for e in result['agent_trace'] if e['status']=='completed' and e['tool']]
-        self.assertEqual(tools,['saldo_cliente','recordar_contexto','evaluar_contacto','recuperar_politicas','saldo_cliente','verificar_contexto'])
+        self.assertEqual(tools,['saldo_cliente','recordar_contexto','evaluar_contacto','recuperar_politicas','saldo_cliente','verificar_contexto','preparar_recordatorio'])
         self.assertTrue(prepared['call_openai']);self.assertEqual(result['mcp_transport'],'sdk_in_memory')
         self.assertFalse(result['email_sent']);self.assertIn('1500.00',result['answer']);self.assertEqual(self.state(),'answered')
     def test_memory_is_recalled_on_next_query_and_filtered(self):
@@ -42,7 +42,7 @@ class AgentTeamTests(unittest.TestCase):
         self.assertEqual(len(memory['events']),1);self.assertEqual(memory['authority'],'context_only')
         self.assertNotIn('IGNORA',json.dumps(memory));self.assertNotIn('blocked',json.dumps(memory))
         self.complete();prepared2=self.prepare(ident=str(uuid.uuid4()))
-        self.assertEqual(len(json.loads(prepared2['openai_payload']['input'])['memory_context']['events']),2)
+        self.assertEqual(len(json.loads(prepared2['openai_payload']['input'])['memory_context']['events']),3)
     def test_conflicting_dni_never_opens_internal_mcp(self):
         with patch('agent_team.TeamMcpSession') as client:
             result=self.chat.prepare('saldo 40112233','74851236',self.ident)

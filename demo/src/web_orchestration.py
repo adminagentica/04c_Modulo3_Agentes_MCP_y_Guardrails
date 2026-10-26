@@ -12,6 +12,8 @@ import urllib.parse
 import urllib.request
 import uuid
 from customer_service import CustomerService
+from conversation_memory import ConversationMemory,CONFIRMATIONS,CANCELLATIONS,normalized as action_text
+from reminder_actions import ReminderActions
 from agent_team import AgentSupervisor, TEAM_REGISTRY
 from cobranza import fingerprint, stamp
 from rag_client import request as rag_request, source_fingerprint, validate_bundle
@@ -48,8 +50,8 @@ def reminder_section(check):
     if not check['can_prepare']:
         reasons='; '.join(labels.get(x,x) for x in check['blocking_reasons'])
         return 'Recordatorio: no se puede preparar para envío porque '+reasons+'. No se ha enviado ningún correo.'
-    return ('Recordatorio: los controles operativos permiten preparar un borrador de prueba para '+check['recipient']+
-            '. Antes de enviarlo se debe confirmar la política aplicable y aprobar expresamente el envío. Esta consulta no envía correos.')
+    return ('Recordatorio: controles operativos verificados para '+check['recipient']+
+            '. El envío requiere tu confirmación del borrador y una última revalidación del caso.')
 
 
 def retrieve_passages(question):
@@ -120,29 +122,34 @@ def focus_contact_citations(rag,check):
 class ChatOrchestrator:
     def __init__(self,service):
         self.service=service
+        self.memory=ConversationMemory(service.store)
         with service.store.connect() as c:
             c.execute('CREATE TABLE IF NOT EXISTS web_chat_runs(id TEXT PRIMARY KEY,context TEXT,state TEXT,result TEXT,created TEXT)')
 
     def supervisor(self,request_id):
         return AgentSupervisor(self.service,request_id,retrieve_passages,validate_bundle)
 
-    def prepare(self,question,dni,request_id):
+    def prepare(self,question,dni,request_id,conversation_id=None,expected_draft_id=None):
         uuid.UUID(request_id)
         team=self.supervisor(request_id)
         team.begin()
         try:
-            result=self._prepare(question,dni,request_id,team)
+            conversation_id=self.memory.ensure(conversation_id)
+            self.memory.add(conversation_id,request_id,'user',question)
+            result=self._prepare(question,dni,request_id,team,conversation_id,expected_draft_id)
             if result['call_openai']:
                 team.prepared()
                 result['agent_trace']=team.enrich({})['agent_trace']
             else:
-                result['response']=team.finish(result['response'])
+                result['response']=team.finish({**result['response'],'conversation_id':conversation_id})
+                self.memory.add(conversation_id,request_id,'assistant',result['response']['answer'],result['response'])
+            result['conversation_id']=conversation_id
             return result
         except Exception:
             team.failed()
             raise
 
-    def _prepare(self,question,dni,request_id,team):
+    def _prepare(self,question,dni,request_id,team,conversation_id,expected_draft_id):
         uuid.UUID(request_id)
         if not isinstance(dni,str) or (dni and not re.fullmatch(r'[0-9]{8}',dni)):
             raise ValueError('DNI seleccionado inválido')
@@ -152,6 +159,18 @@ class ChatOrchestrator:
         found=set(re.findall(r'\b[0-9]{8}\b',question))
         if len(found)>1 or (dni and found and found!={dni}):
             return {'call_openai':False,'response':{'state':'clarify','route':'clarify','answer':'Revisa el DNI de la pregunta y el cliente seleccionado.','citations':[],'orchestrated_by':'n8n'}}
+        intent=action_text(question)
+        if intent in CONFIRMATIONS or intent in CANCELLATIONS:
+            actions=ReminderActions(self.service,validate_bundle)
+            draft=actions.pending(conversation_id)
+            if draft and (not dni or dni==draft['dni']):
+                with self.service.store.connect() as c:
+                    c.execute('UPDATE team_runs SET case_id=? WHERE id=?',(draft['case_id'],request_id))
+            tool='aprobar_recordatorio' if intent in CONFIRMATIONS else 'cancelar_recordatorio'
+            response=team.reminder_action(tool,{'conversation_id':conversation_id,'request_id':request_id,'dni':dni,'draft_id':expected_draft_id})
+            return {'call_openai':False,'response':response}
+        if intent.startswith(('envia','enviar','mandalo')) and ('@' in question or 'borrador' in intent):
+            return {'call_openai':False,'response':{'state':'clarify','answer':'Revisa el borrador y confirma con «Envíalo». El destinatario no se puede cambiar desde el mensaje.','citations':[],'orchestrated_by':'n8n'}}
         human_requested=any(term in normalized for term in ('hablar con un humano','hablar con una persona','hablar con un ejecutivo','hablar con un asesor','hablar con ejecutivo','hablar con asesor','derivar a un humano','derivar a una persona','derivacion humana','quiero atencion humana','solicito atencion humana','solicito revision humana','necesito un ejecutivo'))
         if human_requested:
             if dni:
@@ -197,7 +216,7 @@ class ChatOrchestrator:
         facts={k:v for k,v in account.items() if k!='email'} if account else None
         snapshot=collected['fingerprint']
         context={'request_id':request_id,'question':question,'route':route,'account':facts,'case_fingerprint':snapshot,'rag':rag,
-                 'reminder_check':reminder,'selected_dni':dni,'memory_context':collected['memory']}
+                 'reminder_check':reminder,'selected_dni':dni,'memory_context':collected['memory'],'conversation_id':conversation_id}
         with self.service.store.connect() as c:
             c.execute('INSERT INTO web_chat_runs VALUES(?,?,?,?,?)',(request_id,json.dumps(context),'prepared',None,stamp()))
         citations=rag['citations'] if rag else []
@@ -224,6 +243,7 @@ class ChatOrchestrator:
         try:
             result=self._complete(request_id,provider_response,status,execution_id,team)
             result=team.finish(result)
+            if result.get('conversation_id'):self.memory.add(result['conversation_id'],request_id,'assistant',result['answer'],result)
             with self.service.store.connect() as c:
                 c.execute('UPDATE web_chat_runs SET result=? WHERE id=?',(json.dumps(result),request_id))
             return result
@@ -280,12 +300,19 @@ class ChatOrchestrator:
                     'workflow_id':WORKFLOW,'model':provider_response.get('model',MODEL),'usage':provider_response.get('usage',{}),
                     'memory_context_events':len(context['memory_context']['events'])}
             if reminder:result['reminder_check']=reminder
+            result['conversation_id']=context['conversation_id']
+            if reminder and reminder['can_prepare'] and result['state']=='answered':
+                draft=team.reminder_action('preparar_recordatorio',{'conversation_id':context['conversation_id'],
+                    'request_id':request_id,'dni':context['selected_dni'],'rag':context['rag'],'case_fingerprint':context['case_fingerprint']})
+                result['draft']=draft
+                result['answer']+='\n\nBorrador preparado (aún no enviado)\nPara: '+draft['recipient']+'\nAsunto: '+draft['subject']+'\n\n'+draft['body']+'\n\n¿Confirmas el envío de este borrador? Responde «Envíalo» o «Cancela el borrador».'
+        result.setdefault('conversation_id',context['conversation_id'])
         with self.service.store.connect() as c:
             c.execute('UPDATE web_chat_runs SET state=?,result=? WHERE id=?',(result['state'],json.dumps(result),request_id))
         return result
 
 
-def ask_n8n(question,dni,token):
+def ask_n8n(question,dni,token,conversation_id=None,draft_id=None):
     url=os.getenv('N8N_CHAT_URL',WEBHOOK)
     parsed=urllib.parse.urlsplit(url)
     if parsed.scheme!='http' or parsed.hostname not in {'127.0.0.1','localhost'} or parsed.username or parsed.query or parsed.fragment:
@@ -293,6 +320,10 @@ def ask_n8n(question,dni,token):
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self,*args):raise N8nUnavailable('Redirección de n8n rechazada')
     data={'question':question,'dni':dni,'request_id':str(uuid.uuid4())}
+    if conversation_id:
+        uuid.UUID(conversation_id);data['conversation_id']=conversation_id
+    if draft_id:
+        uuid.UUID(draft_id);data['draft_id']=draft_id
     req=urllib.request.Request(url,data=json.dumps(data).encode(),headers={'Content-Type':'application/json','Authorization':'Bearer '+token})
     try:
         with urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect()).open(req,timeout=180) as response:

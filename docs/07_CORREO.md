@@ -2,7 +2,7 @@
 
 ## Alcance actual
 
-El workflow consulta-gmail responde una **consulta entrante** de deuda a través de MailOrchestrator, el supervisor común y el gestor de correo con herramientas MCP acotadas. No utiliza LLM ni RAG para una consulta exclusivamente de saldo. La app evalúa si se podría preparar un recordatorio, pero **no envía recordatorios**. El motor didáctico captura archivos .eml para destinatarios example.test. No mezclar estos tres comportamientos al enseñar la demo.
+El workflow consulta-gmail responde una **consulta entrante** de deuda a través de MailOrchestrator, el supervisor común y el gestor de correo con herramientas MCP acotadas. No utiliza LLM ni RAG para una consulta exclusivamente de saldo. La app prepara un borrador local y, tras una confirmación explícita posterior, n8n puede enviarlo al único destinatario demo autorizado. Ver [borrador y confirmación](13_BORRADOR_Y_CONFIRMACION.md). El motor didáctico captura archivos .eml para destinatarios example.test. No mezclar estos tres comportamientos al enseñar la demo.
 
 Solo el docente puede activar el recorrido real de prueba y revisar el buzón destinatario. La cuenta de demostración configurada es contacto@agentica.com.pe; para otro buzón de prueba se deben adaptar el registro sintético y los controles, con autorización explícita.
 

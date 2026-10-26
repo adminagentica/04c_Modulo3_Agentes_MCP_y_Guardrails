@@ -8,6 +8,7 @@ REASONS = {
     'evidencia_insuficiente': 'Falta evidencia documental suficiente o vigente.',
     'regla_contacto': 'Un control operativo impide continuar el contacto.',
     'fallo_validacion': 'El flujo se detuvo por una validación o un fallo técnico.',
+    'envio_incierto': 'No se pudo confirmar el envío Gmail; revisar el buzón antes de volver a contactar.',
     'fallo_proveedor': 'El proveedor de generación no pudo completar la consulta.',
 }
 DECISIONS = {

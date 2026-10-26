@@ -1,7 +1,7 @@
 ---
 id: analista_saldo
 version: 1.0.0
-team_version: 1.2.0
+team_version: 1.3.0
 ---
 # Analista saldo
 

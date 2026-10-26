@@ -1,3 +1,10 @@
+# 0.8.0
+
+- Borrador local completo al consultar saldo y recordatorio, con confirmación en el siguiente turno.
+- Memoria conversacional persistente, restauración del chat y confirmación del borrador exacto mostrado.
+- Envío Gmail por n8n con revalidación, reserva única, deduplicación y derivación ante resultado incierto.
+- Mismo contrato para app y clientes MCP Codex/Claude; pruebas aisladas sin consumo ni correo real.
+
 # Cambios
 
 ## 0.7.0 · OpenAI en el RAG, casos y citas

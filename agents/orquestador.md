@@ -1,8 +1,8 @@
 ---
 id: orquestador
-version: 1.2.0
-team_version: 1.2.0
-release: 0.7.0
+version: 1.3.0
+team_version: 1.3.0
+release: 0.8.0
 ---
 # Agente orquestador del equipo
 
@@ -23,7 +23,7 @@ release: 0.7.0
 | [revisor_respuesta](revisor_respuesta.md) | Llega la salida del redactor | Contrato, contexto conservado, huella y referencias | Validación, fuentes reconsultadas y contacto revaluado | Ante cambio/fallo: detener. Si falta respaldo: revisión explícita |
 | [gestor_correo](gestor_correo.md) | Canal Gmail autorizado | Mensaje, reserva o confirmación correspondiente a la fase | Resultado de identidad, preparación, reserva o aceptación Gmail | El envío físico ocurre solamente en n8n, después de la reserva |
 
-Los especialistas no se llaman entre sí. El supervisor decide la ruta según intención/canal y valida cada transición. Las capacidades se ejecutan mediante el protocolo MCP interno. No usar las herramientas de correo en el canal de consulta.
+Los especialistas no se llaman entre sí. El supervisor decide la ruta según intención/canal y valida cada transición. Las capacidades se ejecutan mediante el protocolo MCP interno. Las herramientas de recordatorio tienen un canal separado, con conversación, solicitud y borrador capturados por el supervisor.
 
 ## Secuencia para saldo y recordatorio
 
@@ -39,7 +39,7 @@ flowchart LR
  S --> MM[Guardar memoria validada]
 ```
 
-Si la pregunta solo solicita saldo, no llamar al RAG. Si solo solicita una política, no leer una cartera o memoria sin cliente. Si el DNI no coincide, responder antes de abrir las herramientas de datos. Las consultas no envían correo.
+Si la pregunta solo solicita saldo, no llamar al RAG. Si solo solicita una política, no leer una cartera o memoria sin cliente. Si el DNI no coincide, responder antes de abrir las herramientas de datos. La primera consulta prepara un borrador local después de la revisión. La siguiente confirmación explícita del operador deriva al gestor de correo mediante n8n, sin otra llamada OpenAI.
 
 ## Memoria coordinada
 
@@ -81,3 +81,7 @@ Registrar human_handoff con ID y estado, automation_paused y el evento de memori
 La atención posterior pertenece al ejecutivo: pendiente → en revisión → resuelta. Los modelos no tienen herramientas de reclamo o resolución. Una decisión humana no autoriza correos ni salta reglas; las acciones no se reanudan automáticamente. Ver [flujo y límites](../docs/10_DERIVACION_HUMANA.md).
 
 Para consultas de contacto, exigir controles de historial, promesas, conciliación, atención especial, días de atraso y canal. Ante un bloqueo, responder y derivar antes del LLM. Seleccionar como máximo tres secciones directamente pertinentes y mostrar solo enlaces citados en el texto.
+
+## Borrador y confirmación
+
+El supervisor usa preparar_recordatorio tras revisar saldo, reglas y RAG. Guarda el texto inmutable y su hash, muestra destinatario/asunto/cuerpo y vincula draft.id al turno. En el siguiente «Envíalo» usa aprobar_recordatorio; el gestor_correo reclama una reserva y registra el resultado Gmail. Nunca permitir destinatarios o contenido aportados durante la confirmación. Conserva conversation_id y draft.id en clientes nativos; ver docs/13_BORRADOR_Y_CONFIRMACION.md.

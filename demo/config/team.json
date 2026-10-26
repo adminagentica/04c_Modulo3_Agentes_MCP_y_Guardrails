@@ -1,6 +1,6 @@
 {
-  "version": "1.2.0",
-  "release": "0.7.0",
+  "version": "1.3.0",
+  "release": "0.8.0",
   "defaults": {
     "llm_model": "gpt-5.4-mini",
     "max_llm_calls_per_query": 1,
@@ -13,12 +13,15 @@
     {
       "id": "orquestador",
       "name": "Orquestador",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "description": "Clasifica, deriva, aplica guardrails y conserva el control de la consulta.",
       "execution": "supervisor_determinista",
       "tools": [
         "recordar_contexto",
-        "derivar_a_humano"
+        "derivar_a_humano",
+        "preparar_recordatorio",
+        "aprobar_recordatorio",
+        "cancelar_recordatorio"
       ],
       "delegates_to": [
         "analista_saldo",
@@ -110,13 +113,15 @@
     {
       "id": "gestor_correo",
       "name": "Gestor de correo",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "Gestiona identidad, reserva y confirmación del canal Gmail; n8n realiza el envío físico.",
       "execution": "especialista_determinista",
       "tools": [
         "preparar_consulta_correo",
         "reservar_respuesta_correo",
-        "confirmar_envio_correo"
+        "confirmar_envio_correo",
+        "reclamar_recordatorio",
+        "registrar_recordatorio"
       ],
       "delegates_to": [],
       "memory": {

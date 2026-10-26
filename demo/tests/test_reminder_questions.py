@@ -34,8 +34,8 @@ class ReminderQuestionTests(unittest.TestCase):
         self.assertNotIn(MAILBOX,p['openai_payload']['input'])
     def test_original_question_answers_balance_and_reminder(self):
         self.prepare();result=self.complete()
-        self.assertIn('1500.00',result['answer']);self.assertIn('permiten preparar un borrador',result['answer'])
-        self.assertIn('Esta consulta no envía correos',result['answer']);self.assertFalse(result['reminder_check']['sent'])
+        self.assertIn('1500.00',result['answer']);self.assertIn('Borrador preparado (aún no enviado)',result['answer'])
+        self.assertIn('¿Confirmas el envío de este borrador?',result['answer']);self.assertFalse(result['reminder_check']['sent'])
         self.assertNotIn('Necesito información adicional',result['answer'])
         with self.service.store.connect() as c:self.assertEqual(c.execute('SELECT count(*) FROM email_inquiries').fetchone()[0],0)
     def test_zero_balance_blocks_reminder(self):

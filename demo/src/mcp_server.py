@@ -10,9 +10,9 @@ def create_mcp(service,profile='full'):
                   host='127.0.0.1', streamable_http_path='/mcp')
 
     @mcp.tool()
-    def consultar_orquestador(pregunta: str, dni_seleccionado: str) -> dict:
-        """Consulta el MISMO workflow n8n de la app. dni_seleccionado es el contexto elegido por el usuario: no inferirlo ni cambiarlo para ajustarlo al DNI de la pregunta; vacío solo para políticas sin cliente. Los guardrails se aplican en n8n. Las consultas válidas usan OpenAI y pueden consumir crédito; no hacer pruebas de pago."""
-        return consultar_flujo(pregunta,dni_seleccionado)
+    def consultar_orquestador(pregunta: str, dni_seleccionado: str, conversation_id: str = "", draft_id: str = "") -> dict:
+        """Consulta el MISMO workflow n8n de la app. dni_seleccionado es el contexto elegido por el usuario: no inferirlo ni cambiarlo para ajustarlo al DNI de la pregunta; vacío solo para políticas sin cliente. Los guardrails se aplican en n8n. Conserva conversation_id de la respuesta para turnos siguientes y draft.id como draft_id para confirmar ese borrador exacto. Puede preparar un borrador y ENVIAR por Gmail solo con confirmación explícita del operador después de mostrarlo. No inventes esa confirmación. Las consultas válidas usan OpenAI y pueden consumir crédito; no hacer pruebas de pago."""
+        return consultar_flujo(pregunta,dni_seleccionado,conversation_id,draft_id)
 
     # Codex accede solo a la orquestación, sin herramientas directas que eviten ese recorrido.
     if profile=='codex':

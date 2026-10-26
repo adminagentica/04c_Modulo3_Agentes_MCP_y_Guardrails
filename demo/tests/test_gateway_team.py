@@ -18,9 +18,9 @@ class GatewayTeamTests(unittest.TestCase):
         headers={'Authorization':'Bearer '+self.token}
         with TestClient(self.app) as client:
             client.post('/login',json={'password':'DemoAgentica!2026'})
-            def simulated_n8n(question,dni,token):
+            def simulated_n8n(question,dni,token,conversation_id):
                 self.assertEqual(token,self.token)
-                context=client.post('/chat/context',json={'question':question,'dni':dni,'request_id':'89908be2-bb55-48af-a315-f230a7548a03'},headers=headers)
+                context=client.post('/chat/context',json={'question':question,'dni':dni,'request_id':'89908be2-bb55-48af-a315-f230a7548a03','conversation_id':conversation_id},headers=headers)
                 self.assertEqual(context.status_code,200)
                 prepared=context.json();self.assertTrue(prepared['call_openai'])
                 structured={'request_id':prepared['request_id'],'intro':'Consulta verificada contra las fuentes disponibles.','policy_answer':'Revisar condiciones [3].','citation_ids':[3],'state':'answered'}
@@ -30,7 +30,7 @@ class GatewayTeamTests(unittest.TestCase):
             with patch('gateway.ask_n8n',side_effect=simulated_n8n),patch('web_orchestration.retrieve_passages',return_value=rag),patch('web_orchestration.validate_bundle',return_value=True):
                 response=client.post('/api/ask',json={'question':'saldo y recordatorio','dni':'74851236'})
             self.assertEqual(response.status_code,200);result=response.json()
-            self.assertEqual(result['team_version'],'1.2.0');self.assertFalse(result['email_sent'])
+            self.assertEqual(result['team_version'],'1.3.0');self.assertFalse(result['email_sent'])
             self.assertIn('revisor_respuesta',{e['agent_id'] for e in result['agent_trace']})
             self.assertIn('1500.00',result['answer'])
     def test_mail_prepare_uses_same_supervisor_and_keeps_session_blocked(self):

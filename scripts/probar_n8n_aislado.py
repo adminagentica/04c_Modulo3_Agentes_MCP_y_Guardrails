@@ -2,7 +2,7 @@
 from pathlib import Path
 import argparse,json,os,secrets,shutil,sqlite3,subprocess,tempfile,time,uuid,urllib.request
 ROOT=Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser();p.add_argument('--python',default=str(ROOT/'demo/.venv/bin/python'));p.add_argument('--human-handoff',action='store_true');p.add_argument('--port',type=int,default=8793);p.add_argument('--broker-port',type=int,default=5694);args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--python',default=str(ROOT/'demo/.venv/bin/python'));p.add_argument('--human-handoff',action='store_true');p.add_argument('--two-turn-send',action='store_true');p.add_argument('--port',type=int,default=8793);p.add_argument('--broker-port',type=int,default=5694);args=p.parse_args()
 n8n=shutil.which('n8n')
 if not n8n:raise SystemExit('Instala n8n o agrega su ejecutable a PATH.')
 with tempfile.TemporaryDirectory(prefix='agentica-n8n-simulado-') as tmp:
@@ -11,10 +11,10 @@ with tempfile.TemporaryDirectory(prefix='agentica-n8n-simulado-') as tmp:
          'N8N_USER_FOLDER':str(folder/'n8n'),'N8N_RUNNERS_BROKER_PORT':str(args.broker_port),
          'N8N_DIAGNOSTICS_ENABLED':'false','N8N_LOG_LEVEL':'error','AGENTICA_DEMO_SRC':str(ROOT/'demo/src')}
     source=json.loads((ROOT/'demo/n8n/workflow.json').read_text())
-    names={'App · Consulta recibida','Herramientas Python · Contexto','¿Requiere OpenAI?','OpenAI · Orquestador','Guardrails · Validar respuesta','App · Responder consulta','App · Solicitar aclaración'}
+    names={'App · Consulta recibida','Herramientas Python · Contexto','¿Requiere OpenAI?','OpenAI · Orquestador','Guardrails · Validar respuesta','App · Responder consulta','App · Solicitar aclaración','¿Enviar recordatorio aprobado?','Recordatorio · Reservar envío','¿Reserva de envío válida?','Recordatorio · Gmail enviar','Recordatorio · Registrar resultado'}
     nodes=[node for node in source['nodes'] if node['name'] in names]
     connections={key:value for key,value in source['connections'].items() if key in names}
-    assert len(nodes)==7,'Revisar nombres del workflow: no ejecutar una selección incompleta'
+    assert len(nodes)==12,'Revisar nombres del workflow: no ejecutar una selección incompleta'
     for node in nodes:
         node.pop('credentials',None)
         if node['name']=='App · Consulta recibida':node.update(type='n8n-nodes-base.manualTrigger',typeVersion=1,parameters={})
@@ -25,9 +25,11 @@ with tempfile.TemporaryDirectory(prefix='agentica-n8n-simulado-') as tmp:
             node.pop('credentials',None)
             code='const p=$("Herramientas Python · Contexto").first().json; return [{json:{statusCode:200,body:{model:"simulated-no-api-credit",output:[{content:[{type:"output_text",text:JSON.stringify({request_id:p.request_id,intro:"Consulta verificada contra las fuentes disponibles.",policy_answer:"Revisar las condiciones de contacto [3].",citation_ids:[3],state:"answered"})}]}],usage:{total_tokens:0}}}}];'
             node.update(type='n8n-nodes-base.code',typeVersion=2,parameters={'jsCode':'throw new Error("La derivación humana no debe invocar el modelo");' if args.human_handoff else code})
+        if node['name']=='Recordatorio · Gmail enviar':
+            node.update(type='n8n-nodes-base.code',typeVersion=2,parameters={'jsCode':'return [{json:{id:"1a1755a9466a84cc"}}];' if args.two_turn_send else 'throw new Error("Esta prueba no debe enviar correo");'})
         if node['type']=='n8n-nodes-base.respondToWebhook':node.update(type='n8n-nodes-base.code',typeVersion=2,parameters={'jsCode':'return $input.all();'})
-    ident=str(uuid.uuid4())
-    fixture={'question':'Quiero hablar con un ejecutivo humano' if args.human_handoff else '¿Cuál es el saldo de 74851236 y puedo mandarle un recordatorio?','dni':'74851236','request_id':ident}
+    ident=str(uuid.uuid4());conversation_id=str(uuid.uuid4())
+    fixture={'question':'Quiero hablar con un ejecutivo humano' if args.human_handoff else '¿Cuál es el saldo de 74851236 y puedo mandarle un recordatorio?','dni':'74851236','request_id':ident,'conversation_id':conversation_id}
     nodes.append({'id':'fixture-web','name':'Consulta simulada','type':'n8n-nodes-base.code','typeVersion':2,'position':[0,0],'parameters':{'jsCode':'return [{json:{body:'+json.dumps(fixture)+'}}];'}})
     connections['App · Consulta recibida']={'main':[[{'node':'Consulta simulada','type':'main','index':0}]]}
     connections['Consulta simulada']={'main':[[{'node':'Herramientas Python · Contexto','type':'main','index':0}]]}
@@ -42,9 +44,10 @@ with tempfile.TemporaryDirectory(prefix='agentica-n8n-simulado-') as tmp:
     cred.unlink()
     (folder/'mock_gateway.py').write_text('''import os,sys
 sys.path.insert(0,os.environ['AGENTICA_DEMO_SRC'])
-import gateway,web_orchestration
+import gateway,web_orchestration,reminder_orchestration
 web_orchestration.retrieve_passages=lambda question:{'index_version':'simulated-index','citations':[{'id':3,'code':'POL-COB-04','version':'v4','section':'§3','content':'Validar condiciones de contacto.','sourceHash':'a'*64}]}
 web_orchestration.validate_bundle=lambda bundle:True
+reminder_orchestration.validate_bundle=lambda bundle:True
 build_app=gateway.build_app
 ''')
     server=subprocess.Popen([args.python,'-m','uvicorn','mock_gateway:build_app','--factory','--app-dir',str(folder),'--host','127.0.0.1','--port',str(args.port)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -76,5 +79,26 @@ build_app=gateway.build_app
             (ROOT/'examples').mkdir(exist_ok=True)
             (ROOT/'examples/traza-orquestacion-simulada.json').write_text(json.dumps({'verification':'n8n real aislado; MCP real; RAG y LLM simulados','openai_calls':0,'emails_sent':0,'result':output},ensure_ascii=False,indent=2)+'\n')
             print('n8n → supervisor → subagentes → MCP → revisión → memoria: APROBADO. OpenAI: 0 llamadas; correos: 0.')
+            if args.two_turn_send:
+                assert output.get('draft',{}).get('state')=='draft'
+                assert not any(node['type']=='n8n-nodes-base.gmail' for node in nodes)
+                for attempt in range(2):
+                    confirmation_id=str(uuid.uuid4())
+                    next_body={'question':'Envíalo','dni':'74851236','request_id':confirmation_id,'conversation_id':conversation_id,'draft_id':output['draft']['id']}
+                    next(n for n in nodes if n['name']=='Consulta simulada')['parameters']['jsCode']='return [{json:{body:'+json.dumps(next_body)+'}}];'
+                    next(n for n in nodes if n['name']=='OpenAI · Orquestador')['parameters']['jsCode']='throw new Error("La confirmación no debe llamar OpenAI");'
+                    wf.write_text(json.dumps(workflow))
+                    imported=subprocess.run([n8n,'import:workflow','--input='+str(wf)],env=env,capture_output=True,text=True,timeout=60)
+                    assert imported.returncode==0,'No se pudo actualizar el fixture'
+                    executed=subprocess.run([n8n,'execute','--id=agentica-simulation-only','--rawOutput'],env=env,capture_output=True,text=True,timeout=90)
+                    if executed.returncode:raise RuntimeError('Falló la confirmación simulada: '+executed.stdout[-1000:].replace(token,'[omitido]'))
+                with sqlite3.connect(folder/'cases.sqlite') as db:
+                    draft=db.execute('SELECT state,gmail_id FROM reminder_drafts WHERE conversation_id=?',(conversation_id,)).fetchone()
+                    count=db.execute('SELECT count(*) FROM outbox').fetchone()[0]
+                    turns=db.execute('SELECT count(*) FROM chat_turns WHERE conversation_id=?',(conversation_id,)).fetchone()[0]
+                assert draft==('sent','1a1755a9466a84cc') and count==1 and turns==6,(draft,count,turns)
+                (ROOT/'examples/confirmacion-envio-simulado.json').write_text(json.dumps({'verification':'Dos turnos + repetición en n8n real aislado, OpenAI y Gmail sustituidos','real_openai_calls':0,'real_emails_sent':0,'draft_state':draft[0],'simulated_gmail_id':draft[1],'outbox_records':count,'conversation_turns':turns},ensure_ascii=False,indent=2)+'\n')
+                print('Borrador → Envíalo → Gmail SIMULADO → repetición sin duplicado: APROBADO. Llamadas y correos reales: 0.')
+
     finally:
         server.terminate();server.wait(timeout=8)

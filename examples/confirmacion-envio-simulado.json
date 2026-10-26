@@ -1,0 +1,9 @@
+{
+  "verification": "Dos turnos + repetición en n8n real aislado, OpenAI y Gmail sustituidos",
+  "real_openai_calls": 0,
+  "real_emails_sent": 0,
+  "draft_state": "sent",
+  "simulated_gmail_id": "1a1755a9466a84cc",
+  "outbox_records": 1,
+  "conversation_turns": 6
+}

@@ -1,6 +1,6 @@
 {
   "id": "agentica-orquestador-rag",
-  "name": "Agentica · Orquestador de cobranza · App + OpenAI v0.4.0",
+  "name": "Agentica · Conversación, borrador y envío confirmado v0.8.0",
   "nodes": [
     {
       "parameters": {},
@@ -529,6 +529,141 @@
         "height": 260,
         "width": 1140
       }
+    },
+    {
+      "id": "reminder-send-if",
+      "name": "¿Enviar recordatorio aprobado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        -360
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "use-model",
+              "leftValue": "={{ $json.response.dispatch_requested === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "reminder-claim",
+      "name": "Recordatorio · Reservar envío",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        -460
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/reminder/claim",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.response) }}",
+        "options": {
+          "timeout": 160000
+        }
+      }
+    },
+    {
+      "id": "reminder-gmail-send",
+      "name": "Recordatorio · Gmail enviar",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "position": [
+        1200,
+        -460
+      ],
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "id": "reminder-result",
+      "name": "Recordatorio · Registrar resultado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        -460
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8790/reminder/result",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({...$(\"Recordatorio · Reservar envío\").first().json, gmail_id:$json.error ? null : ($json.id || null), execution_id:$execution.id}) }}",
+        "options": {
+          "timeout": 160000
+        }
+      }
+    },
+    {
+      "id": "reminder-claim-if",
+      "name": "¿Reserva de envío válida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1080,
+        -600
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "use-model",
+              "leftValue": "={{ $json.should_send === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
     }
   ],
   "connections": {
@@ -708,7 +843,7 @@
         ],
         [
           {
-            "node": "App · Solicitar aclaración",
+            "node": "¿Enviar recordatorio aprobado?",
             "type": "main",
             "index": 0
           }
@@ -728,6 +863,75 @@
     },
     "Guardrails · Validar respuesta": {
       "main": [
+        [
+          {
+            "node": "App · Responder consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar recordatorio aprobado?": {
+      "main": [
+        [
+          {
+            "node": "Recordatorio · Reservar envío",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "App · Solicitar aclaración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recordatorio · Reservar envío": {
+      "main": [
+        [
+          {
+            "node": "¿Reserva de envío válida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recordatorio · Gmail enviar": {
+      "main": [
+        [
+          {
+            "node": "Recordatorio · Registrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recordatorio · Registrar resultado": {
+      "main": [
+        [
+          {
+            "node": "App · Responder consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Reserva de envío válida?": {
+      "main": [
+        [
+          {
+            "node": "Recordatorio · Gmail enviar",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "App · Responder consulta",

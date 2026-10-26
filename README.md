@@ -1,10 +1,10 @@
 # Módulo 3 · Agentes, MCP y Guardrails
 
-Demo de cobranza de Agentica · versión **0.7.0** · datos completamente sintéticos.
+Demo de cobranza de Agentica · versión **0.8.0** · datos completamente sintéticos.
 
 Construimos un asistente para el ejecutivo, un orquestador con memoria, un subagente RAG documental, reglas de negocio y un MCP en Python. La app y el cliente Codex/Claude consultan **el mismo workflow n8n local**. Un workflow separado responde consultas de deuda recibidas por Gmail.
 
-**Empieza aquí:** [instalación](docs/02_INSTALACION.md), [guion de clase](docs/03_GUION_CLASE.md) y [arquitectura](docs/01_ARQUITECTURA.md).
+**Empieza aquí:** [instalación](docs/02_INSTALACION.md) y [arquitectura](docs/01_ARQUITECTURA.md).
 
 | Carpeta | Contenido |
 |---|---|
@@ -25,9 +25,11 @@ El redactor usa gpt-5.4-mini en n8n; los otros especialistas son módulos determ
 
 MCP público conecta Codex/Claude con el workflow. MCP interno conecta especialistas y herramientas mediante el SDK oficial y transporte en memoria, con capacidades separadas para consulta y correo. [Ver el diagrama y los límites](docs/01_ARQUITECTURA.md).
 
-El RAG aporta documentación; SQL aporta los montos; la memoria aporta contexto previo del mismo caso. Consultar si procede un recordatorio no envía correo. El envío Gmail real sigue dentro de n8n, después de validar y reservar la respuesta.
+El RAG aporta documentación; SQL aporta los montos; la memoria aporta contexto previo del mismo caso. La primera consulta de saldo y recordatorio prepara y muestra un borrador; la siguiente «Envíalo» confirma ese texto y permite enviarlo. El envío Gmail real sigue dentro de n8n, después de validar y reservar la respuesta.
 
 El motor didáctico anterior de cuatro roles LLM se conserva como ejercicio histórico; el registro del equipo principal es demo/config/team.json.
+
+[Ver el flujo de borrador y confirmación](docs/13_BORRADOR_Y_CONFIRMACION.md). La confirmación no llama a OpenAI.
 
 ## Derivación humana
 
@@ -38,7 +40,6 @@ El supervisor crea una derivación cuando se solicita un ejecutivo, falta eviden
 - [Diseño y flujo manual](docs/00_PLANIFICACION.md)
 - [Arquitectura y recorridos](docs/01_ARQUITECTURA.md)
 - [Instalación reproducible](docs/02_INSTALACION.md)
-- [Guion para el docente](docs/03_GUION_CLASE.md)
 - [Configuración de n8n](docs/04_N8N.md)
 - [RAG y corpus](docs/05_RAG.md)
 - [Codex y Claude Code](docs/06_CODEX_CLAUDE.md)

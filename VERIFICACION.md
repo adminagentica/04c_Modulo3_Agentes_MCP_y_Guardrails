@@ -1,12 +1,12 @@
-# Verificación 0.7.0
+# Verificación 0.8.0
 
-- **125 tests Python y 40 tests Node/RAG aprobados.** Python bloqueó conexiones TCP; los proveedores se simularon.
-- Puente de generación RAG aprobado en n8n aislado, sustituyendo OpenAI por un nodo Code. Comprobados límites de entrada, esquema estricto, modelo fijo, ausencia de reintentos y selección RRF sin una segunda llamada.
-- Cliente 71425836 comprobado localmente: PEN 850.00, historial/promesas verificados, cinco días de atraso y sin bloqueos; requiere aprobación antes de enviar un recordatorio.
-- Cliente 72536914 probado en el workflow local: PEN 1200.00 y pago pendiente. Ejecución 26: needs_review, POL-PAG-02 §4, derivación humana y **nodo OpenAI no ejecutado**, comprobado al leer sus nodos.
-- RAG local ready con generación OpenAI y embeddinggemma local. Workflow adicional publicado usando la misma referencia de credencial que la app; no se extrajo la API key.
-- **Cero llamadas pagadas y cero correos enviados por las pruebas de preparación.** La ejecución real 25 fue realizada por el usuario y consumió 2091 tokens; está registrada por separado en evals/manual/ejecucion25.json.
+- 148 pruebas Python aprobadas con conexiones TCP bloqueadas.
+- 40 pruebas RAG aprobadas con modelos simulados.
+- n8n aislado: borrador → confirmación → Gmail simulado → repetición sin duplicado, aprobado.
+- App aislada: presentación del borrador, historial al recargar, confirmación y prevención de duplicado, aprobado.
+- Runtime local: versión 0.8.0, RAG ready; ejecución 29 rechaza DNI contradictorio sin invocar modelo.
+- Cero llamadas pagadas y cero correos reales enviados durante la preparación.
 
-No se ejecutó otra generación real para medir mejora semántica. Los IDs correctos no demuestran por sí solos que una frase esté sustentada. La selección de citas se acota a secciones pertinentes y el backend solo muestra enlaces realmente usados; se mantiene revisión humana.
+No se ha ejecutado una entrega Gmail real para probar esta versión. El próximo «Envíalo» del operador sobre un borrador válido sí activará el nodo Gmail real. El envío confirmado no añade otra llamada OpenAI.
 
-El caso bloqueado deja una derivación pendiente en la bandeja local para que el docente muestre la atención humana. No se cerró ni se aprobó automáticamente. La app no envía recordatorios por una consulta; la respuesta Gmail de prueba mantiene su recorrido controlado y su cuenta autorizada.
+Los 2091 tokens de la ejecución 25 corresponden a la prueba real anterior realizada por el usuario. No representan consumo de estas verificaciones.
